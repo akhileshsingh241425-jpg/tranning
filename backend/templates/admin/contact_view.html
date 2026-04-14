@@ -1,0 +1,114 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}View Message{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="logo-text">TrainingProtec</span>
+        </div>
+        
+        <nav>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_courses') }}">
+                        <i class="fas fa-book-open"></i>
+                        <span>Courses</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_blogs') }}">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Blog Posts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_contacts') }}" class="active">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:3005" target="_blank">
+                        <i class="fas fa-globe"></i>
+                        <span>View Website</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">View Message</h1>
+            <a href="{{ url_for('admin_contacts') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Back to Messages
+            </a>
+        </div>
+
+        <div class="card">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-bottom: 2rem;">
+                <div>
+                    <label style="color: var(--text-secondary); font-size: 0.9rem;">From</label>
+                    <p style="font-size: 1.2rem; font-weight: 600;">{{ contact.name }}</p>
+                </div>
+                <div>
+                    <label style="color: var(--text-secondary); font-size: 0.9rem;">Email</label>
+                    <p style="font-size: 1.2rem;">
+                        <a href="mailto:{{ contact.email }}" style="color: var(--primary-color);">{{ contact.email }}</a>
+                    </p>
+                </div>
+                <div>
+                    <label style="color: var(--text-secondary); font-size: 0.9rem;">Phone</label>
+                    <p style="font-size: 1.2rem;">{{ contact.phone or 'Not provided' }}</p>
+                </div>
+                <div>
+                    <label style="color: var(--text-secondary); font-size: 0.9rem;">Service Interest</label>
+                    <p style="font-size: 1.2rem;">{{ contact.service or 'General Inquiry' }}</p>
+                </div>
+                <div>
+                    <label style="color: var(--text-secondary); font-size: 0.9rem;">Date</label>
+                    <p style="font-size: 1.2rem;">{{ contact.created_at.strftime('%B %d, %Y at %H:%M') }}</p>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(0, 212, 255, 0.1); padding-top: 2rem;">
+                <label style="color: var(--text-secondary); font-size: 0.9rem; display: block; margin-bottom: 1rem;">Message</label>
+                <div style="background: rgba(10, 14, 23, 0.5); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(0, 212, 255, 0.1); line-height: 1.8;">
+                    {{ contact.message }}
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <a href="mailto:{{ contact.email }}?subject=Re: Your Inquiry at TrainingProtec" class="btn btn-primary">
+                    <i class="fas fa-reply"></i>
+                    Reply via Email
+                </a>
+                <a href="{{ url_for('admin_contact_delete', id=contact.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this message?')">
+                    <i class="fas fa-trash"></i>
+                    Delete
+                </a>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{% if blog %}Edit{% else %}New{% endif %} Blog Post{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="logo-text">TrainingProtec</span>
+        </div>
+        
+        <nav>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_courses') }}">
+                        <i class="fas fa-book-open"></i>
+                        <span>Courses</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_blogs') }}" class="active">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Blog Posts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_contacts') }}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:3005" target="_blank">
+                        <i class="fas fa-globe"></i>
+                        <span>View Website</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">{% if blog %}Edit{% else %}New{% endif %} Blog Post</h1>
+            <a href="{{ url_for('admin_blogs') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Back to Blogs
+            </a>
+        </div>
+
+        <div class="card">
+            <form method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="title">Title *</label>
+                        <input type="text" id="title" name="title" class="form-control" 
+                               value="{{ blog.title if blog else '' }}" placeholder="Enter blog title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="slug">Slug (URL)</label>
+                        <input type="text" id="slug" name="slug" class="form-control" 
+                               value="{{ blog.slug if blog else '' }}" placeholder="auto-generated-from-title">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="excerpt">Excerpt *</label>
+                    <input type="text" id="excerpt" name="excerpt" class="form-control" 
+                           value="{{ blog.excerpt if blog else '' }}" placeholder="Brief description for blog cards" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">Content *</label>
+                    <textarea id="content" name="content" class="form-control" 
+                              placeholder="Write your blog content here... (HTML supported)" required>{{ blog.content if blog else '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="image_url">Image URL *</label>
+                    <input type="url" id="image_url" name="image_url" class="form-control" 
+                           value="{{ blog.image_url if blog else '' }}" placeholder="https://images.unsplash.com/..." required>
+                    <small style="color: var(--text-secondary);">Use Unsplash or any other image URL</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="author">Author Name *</label>
+                        <input type="text" id="author" name="author" class="form-control" 
+                               value="{{ blog.author if blog else '' }}" placeholder="Author name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" class="form-control" required>
+                            <option value="">Select Category</option>
+                            <option value="Programming" {% if blog and blog.category == 'Programming' %}selected{% endif %}>Programming</option>
+                            <option value="Study Tips" {% if blog and blog.category == 'Study Tips' %}selected{% endif %}>Study Tips</option>
+                            <option value="EdTech" {% if blog and blog.category == 'EdTech' %}selected{% endif %}>EdTech</option>
+                            <option value="Career Guide" {% if blog and blog.category == 'Career Guide' %}selected{% endif %}>Career Guide</option>
+                            <option value="Freelancing" {% if blog and blog.category == 'Freelancing' %}selected{% endif %}>Freelancing</option>
+                            <option value="Data Science" {% if blog and blog.category == 'Data Science' %}selected{% endif %}>Data Science</option>
+                            <option value="Web Development" {% if blog and blog.category == 'Web Development' %}selected{% endif %}>Web Development</option>
+                            <option value="Design" {% if blog and blog.category == 'Design' %}selected{% endif %}>Design</option>
+                            <option value="Digital Marketing" {% if blog and blog.category == 'Digital Marketing' %}selected{% endif %}>Digital Marketing</option>
+                            <option value="Tips & Tutorials" {% if blog and blog.category == 'Tips & Tutorials' %}selected{% endif %}>Tips & Tutorials</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tags">Tags (comma-separated)</label>
+                    <input type="text" id="tags" name="tags" class="form-control" 
+                           value="{{ blog.tags if blog else '' }}" placeholder="programming, career, tips">
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="is_published" name="is_published" 
+                               {% if not blog or blog.is_published %}checked{% endif %}>
+                        <label for="is_published">Publish this post</label>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        {% if blog %}Update{% else %}Create{% endif %} Blog Post
+                    </button>
+                    <a href="{{ url_for('admin_blogs') }}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Auto-generate slug from title
+    document.getElementById('title').addEventListener('input', function() {
+        const slug = this.value.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+        document.getElementById('slug').placeholder = slug || 'auto-generated-from-title';
+    });
+</script>
+{% endblock %}

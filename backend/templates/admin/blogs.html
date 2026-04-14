@@ -1,0 +1,142 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Blog Posts{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="logo-text">TrainingProtec</span>
+        </div>
+        
+        <nav>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_courses') }}">
+                        <i class="fas fa-book-open"></i>
+                        <span>Courses</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_blogs') }}" class="active">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Blog Posts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_contacts') }}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:3005" target="_blank">
+                        <i class="fas fa-globe"></i>
+                        <span>View Website</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Blog Posts</h1>
+            <a href="{{ url_for('admin_blog_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                New Blog Post
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fas {% if category == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            {% if blogs %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Author</th>
+                            <th>Views</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for blog in blogs %}
+                        <tr>
+                            <td>
+                                <img src="{{ blog.image_url }}" alt="{{ blog.title }}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 5px;">
+                            </td>
+                            <td>{{ blog.title[:40] }}{% if blog.title|length > 40 %}...{% endif %}</td>
+                            <td>{{ blog.category }}</td>
+                            <td>{{ blog.author }}</td>
+                            <td>{{ blog.views }}</td>
+                            <td>
+                                {% if blog.is_published %}
+                                    <span class="badge badge-success">Published</span>
+                                {% else %}
+                                    <span class="badge badge-warning">Draft</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ blog.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{{ url_for('admin_blog_edit', id=blog.id) }}" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ url_for('admin_blog_delete', id=blog.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this blog post?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-newspaper"></i>
+                <h3>No Blog Posts Yet</h3>
+                <p>Create your first blog post to get started</p>
+                <a href="{{ url_for('admin_blog_new') }}" class="btn btn-primary" style="margin-top: 1rem;">
+                    <i class="fas fa-plus"></i>
+                    Create Blog Post
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+{% endblock %}

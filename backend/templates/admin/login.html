@@ -1,0 +1,118 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+<style>
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, var(--dark-bg) 0%, var(--secondary-color) 100%);
+        padding: 2rem;
+    }
+
+    .login-box {
+        background: var(--card-bg);
+        border: 1px solid rgba(79, 70, 229, 0.2);
+        border-radius: 20px;
+        padding: 3rem;
+        width: 100%;
+        max-width: 450px;
+        text-align: center;
+    }
+
+    .login-logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 2rem;
+    }
+
+    .login-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-subtitle {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+    }
+
+    .login-form .form-group {
+        text-align: left;
+    }
+
+    .login-form .btn-primary {
+        width: 100%;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .cyber-decoration {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border: 1px solid rgba(79, 70, 229, 0.1);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .cyber-decoration.top-left {
+        top: -100px;
+        left: -100px;
+    }
+
+    .cyber-decoration.bottom-right {
+        bottom: -100px;
+        right: -100px;
+    }
+</style>
+
+<div class="login-container">
+    <div class="cyber-decoration top-left"></div>
+    <div class="cyber-decoration bottom-right"></div>
+    
+    <div class="login-box">
+        <div class="login-logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="logo-text">TrainingProtec</span>
+        </div>
+        
+        <h1 class="login-title">Admin Login</h1>
+        <p class="login-subtitle">Enter your credentials to access the dashboard</p>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" class="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i>
+                Login to Dashboard
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

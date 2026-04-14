@@ -1,0 +1,254 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="logo-text">TrainingProtec</span>
+        </div>
+        
+        <nav>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}" class="active">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_courses') }}">
+                        <i class="fas fa-book-open"></i>
+                        <span>Courses</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_blogs') }}">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Blog Posts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_contacts') }}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:3005" target="_blank">
+                        <i class="fas fa-globe"></i>
+                        <span>View Website</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+            <div style="display: flex; gap: 0.75rem;">
+                <a href="{{ url_for('admin_course_new') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    New Course
+                </a>
+                <a href="{{ url_for('admin_blog_new') }}" class="btn btn-secondary">
+                    <i class="fas fa-plus"></i>
+                    New Blog
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ courses_count }}</h3>
+                    <p>Total Courses</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ blogs_count }}</h3>
+                    <p>Total Blog Posts</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_views }}</h3>
+                    <p>Total Views</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ contacts_count }}</h3>
+                    <p>Unread Messages</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Courses -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Courses</h3>
+                <a href="{{ url_for('admin_courses') }}" class="btn btn-secondary btn-sm">View All</a>
+            </div>
+            
+            {% if recent_courses %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Price</th>
+                            <th>Instructor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in recent_courses %}
+                        <tr>
+                            <td>{{ course.title }}</td>
+                            <td style="color: var(--success-color);">₹{{ '{:,}'.format(course.price) }}</td>
+                            <td>{{ course.instructor_name }}</td>
+                            <td>
+                                {% if course.is_published %}
+                                    <span class="badge badge-success">Published</span>
+                                {% else %}
+                                    <span class="badge badge-warning">Draft</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-book-open"></i>
+                <p>No courses yet</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent Blogs -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Blog Posts</h3>
+                <a href="{{ url_for('admin_blogs') }}" class="btn btn-secondary btn-sm">View All</a>
+            </div>
+            
+            {% if recent_blogs %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Views</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for blog in recent_blogs %}
+                        <tr>
+                            <td>{{ blog.title }}</td>
+                            <td>{{ blog.category }}</td>
+                            <td>{{ blog.views }}</td>
+                            <td>
+                                {% if blog.is_published %}
+                                    <span class="badge badge-success">Published</span>
+                                {% else %}
+                                    <span class="badge badge-warning">Draft</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ blog.created_at.strftime('%Y-%m-%d') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-newspaper"></i>
+                <p>No blog posts yet</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent Contacts -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Messages</h3>
+                <a href="{{ url_for('admin_contacts') }}" class="btn btn-secondary btn-sm">View All</a>
+            </div>
+            
+            {% if recent_contacts %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Service</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contact in recent_contacts %}
+                        <tr>
+                            <td>{{ contact.name }}</td>
+                            <td>{{ contact.email }}</td>
+                            <td>{{ contact.service or 'General' }}</td>
+                            <td>
+                                {% if contact.is_read %}
+                                    <span class="badge badge-success">Read</span>
+                                {% else %}
+                                    <span class="badge badge-danger">New</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ contact.created_at.strftime('%Y-%m-%d') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-envelope"></i>
+                <p>No messages yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+{% endblock %}

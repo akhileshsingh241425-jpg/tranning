@@ -1,0 +1,433 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{% if course %}Edit{% else %}New{% endif %} Course{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="logo-text">TrainingProtec</span>
+        </div>
+        
+        <nav>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_courses') }}" class="active">
+                        <i class="fas fa-book-open"></i>
+                        <span>Courses</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_blogs') }}">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Blog Posts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_contacts') }}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:3005" target="_blank">
+                        <i class="fas fa-globe"></i>
+                        <span>View Website</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">{% if course %}Edit{% else %}New{% endif %} Course</h1>
+            <a href="{{ url_for('admin_courses') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Back to Courses
+            </a>
+        </div>
+
+        <div class="card">
+            <form method="POST">
+                <!-- Basic Info -->
+                <h3 style="color: var(--accent-color); margin-bottom: 1.5rem;">
+                    <i class="fas fa-info-circle"></i> Basic Information
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="title">Course Title *</label>
+                        <input type="text" id="title" name="title" class="form-control" 
+                               value="{{ course.title if course else '' }}" placeholder="e.g. Data Science & AI" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="slug">Slug (URL)</label>
+                        <input type="text" id="slug" name="slug" class="form-control" 
+                               value="{{ course.slug if course else '' }}" placeholder="auto-generated-from-title">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" name="description" class="form-control" 
+                              placeholder="Detailed course description..." required style="min-height: 120px;">{{ course.description if course else '' }}</textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="image">Course Image URL *</label>
+                        <input type="url" id="image" name="image" class="form-control" 
+                               value="{{ course.image if course else '' }}" placeholder="https://images.unsplash.com/..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="icon">Icon Name</label>
+                        <select id="icon" name="icon" class="form-control">
+                            <option value="FaDatabase" {{ 'selected' if course and course.icon == 'FaDatabase' }}>FaDatabase — Data Science</option>
+                            <option value="FaCloud" {{ 'selected' if course and course.icon == 'FaCloud' }}>FaCloud — Cloud</option>
+                            <option value="FaShieldAlt" {{ 'selected' if course and course.icon == 'FaShieldAlt' }}>FaShieldAlt — Security</option>
+                            <option value="FaCode" {{ 'selected' if course and course.icon == 'FaCode' }}>FaCode — Development</option>
+                            <option value="FaBullhorn" {{ 'selected' if course and course.icon == 'FaBullhorn' }}>FaBullhorn — Marketing</option>
+                            <option value="FaChartBar" {{ 'selected' if course and course.icon == 'FaChartBar' }}>FaChartBar — Analytics</option>
+                            <option value="FaPaintBrush" {{ 'selected' if course and course.icon == 'FaPaintBrush' }}>FaPaintBrush — Design</option>
+                            <option value="FaMobileAlt" {{ 'selected' if course and course.icon == 'FaMobileAlt' }}>FaMobileAlt — Mobile</option>
+                            <option value="FaBookOpen" {{ 'selected' if course and course.icon == 'FaBookOpen' }}>FaBookOpen — General</option>
+                            <option value="FaLaptopCode" {{ 'selected' if course and course.icon == 'FaLaptopCode' }}>FaLaptopCode — Coding</option>
+                            <option value="FaRobot" {{ 'selected' if course and course.icon == 'FaRobot' }}>FaRobot — AI/ML</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Pricing -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-dollar-sign"></i> Pricing
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price">Sale Price ($) *</label>
+                        <input type="number" id="price" name="price" class="form-control" 
+                               value="{{ course.price if course else '' }}" placeholder="e.g. 199" required min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="original_price">Original Price ($) *</label>
+                        <input type="number" id="original_price" name="original_price" class="form-control" 
+                               value="{{ course.original_price if course else '' }}" placeholder="e.g. 599" required min="0">
+                    </div>
+                </div>
+
+                <!-- Course Details -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-cogs"></i> Course Details
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="duration">Duration *</label>
+                        <input type="text" id="duration" name="duration" class="form-control" 
+                               value="{{ course.duration if course else '' }}" placeholder="e.g. 6 Months" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="level">Level</label>
+                        <select id="level" name="level" class="form-control">
+                            <option value="Beginner" {{ 'selected' if course and course.level == 'Beginner' }}>Beginner</option>
+                            <option value="Intermediate" {{ 'selected' if course and course.level == 'Intermediate' }}>Intermediate</option>
+                            <option value="Advanced" {{ 'selected' if course and course.level == 'Advanced' }}>Advanced</option>
+                            <option value="Beginner to Advanced" {{ 'selected' if course and course.level == 'Beginner to Advanced' }}>Beginner to Advanced</option>
+                            <option value="Beginner to Intermediate" {{ 'selected' if course and course.level == 'Beginner to Intermediate' }}>Beginner to Intermediate</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="modules">Modules</label>
+                        <input type="number" id="modules" name="modules" class="form-control" 
+                               value="{{ course.modules if course else '0' }}" placeholder="Number of modules" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="projects">Projects</label>
+                        <input type="number" id="projects" name="projects" class="form-control" 
+                               value="{{ course.projects if course else '0' }}" placeholder="Number of projects" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tag">Tag / Badge</label>
+                        <select id="tag" name="tag" class="form-control">
+                            <option value="" {{ 'selected' if not course or not course.tag }}>— No Tag —</option>
+                            <option value="Bestseller" {{ 'selected' if course and course.tag == 'Bestseller' }}>Bestseller</option>
+                            <option value="Trending" {{ 'selected' if course and course.tag == 'Trending' }}>Trending</option>
+                            <option value="Hot" {{ 'selected' if course and course.tag == 'Hot' }}>Hot</option>
+                            <option value="Popular" {{ 'selected' if course and course.tag == 'Popular' }}>Popular</option>
+                            <option value="New" {{ 'selected' if course and course.tag == 'New' }}>New</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sort_order">Sort Order</label>
+                        <input type="number" id="sort_order" name="sort_order" class="form-control" 
+                               value="{{ course.sort_order if course else '0' }}" placeholder="0 = default" min="0">
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-chart-bar"></i> Stats & Social Proof
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rating">Rating (0-5)</label>
+                        <input type="number" id="rating" name="rating" class="form-control" 
+                               value="{{ course.rating if course else '4.5' }}" placeholder="e.g. 4.8" min="0" max="5" step="0.1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reviews">Reviews Count</label>
+                        <input type="number" id="reviews" name="reviews" class="form-control" 
+                               value="{{ course.reviews if course else '0' }}" placeholder="e.g. 2840" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="learners">Learners</label>
+                    <input type="text" id="learners" name="learners" class="form-control" 
+                           value="{{ course.learners if course else '' }}" placeholder="e.g. 12,500+">
+                </div>
+
+                <!-- Curriculum -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-list-check"></i> Curriculum Topics
+                </h3>
+
+                <div class="form-group">
+                    <label for="curriculum">Curriculum (comma-separated)</label>
+                    <input type="text" id="curriculum" name="curriculum" class="form-control" 
+                           value="{{ course.curriculum if course else '' }}" 
+                           placeholder="e.g. Python & Statistics, Machine Learning, Deep Learning, AI with TensorFlow">
+                    <small style="color: var(--text-secondary);">Separate topics with commas. These show as tags on the course card.</small>
+                </div>
+
+                <!-- Instructor Details -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-chalkboard-teacher"></i> Instructor Details
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="instructor_name">Instructor Name *</label>
+                        <input type="text" id="instructor_name" name="instructor_name" class="form-control" 
+                               value="{{ course.instructor_name if course else '' }}" placeholder="e.g. Dr. Amit Sharma" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="instructor_experience">Experience</label>
+                        <input type="text" id="instructor_experience" name="instructor_experience" class="form-control" 
+                               value="{{ course.instructor_experience if course else '' }}" placeholder="e.g. 14+ years">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="instructor_role">Instructor Role / Credentials *</label>
+                    <input type="text" id="instructor_role" name="instructor_role" class="form-control" 
+                           value="{{ course.instructor_role if course else '' }}" placeholder="e.g. Ex-Google AI Engineer | IIT Delhi" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="instructor_image">Instructor Photo URL</label>
+                    <input type="url" id="instructor_image" name="instructor_image" class="form-control" 
+                           value="{{ course.instructor_image if course else '' }}" placeholder="https://images.unsplash.com/...">
+                </div>
+
+                <!-- Publish -->
+                <hr style="border: none; border-top: 2px solid rgba(79, 70, 229, 0.1); margin: 2.5rem 0;">
+
+                <!-- ============ COURSE DETAIL PAGE FIELDS ============ -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 0.5rem; font-size: 1.3rem;">
+                    <i class="fas fa-file-alt"></i> Course Detail Page Content
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                    These fields populate the full course detail page that visitors see when they click "View Course Details".
+                </p>
+
+                <div class="form-group">
+                    <label for="tagline">Tagline / Subtitle</label>
+                    <input type="text" id="tagline" name="tagline" class="form-control" 
+                           value="{{ course.tagline if course else '' }}" 
+                           placeholder="e.g. Become a Data Scientist — Learn Python, ML, Deep Learning & AI">
+                </div>
+
+                <div class="form-group">
+                    <label for="hero_image">Hero Image URL (large banner)</label>
+                    <input type="url" id="hero_image" name="hero_image" class="form-control" 
+                           value="{{ course.hero_image if course else '' }}" 
+                           placeholder="https://images.unsplash.com/... (leave blank to use course image)">
+                </div>
+
+                <div class="form-group">
+                    <label for="overview">Overview / About This Course</label>
+                    <textarea id="overview" name="overview" class="form-control" 
+                              placeholder="Detailed overview paragraph about the course..." 
+                              style="min-height: 150px;">{{ course.overview if course else '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="key_benefits">Key Benefits / What You'll Learn (one per line)</label>
+                    <textarea id="key_benefits" name="key_benefits" class="form-control" 
+                              placeholder="Master Python, Pandas, NumPy & data visualization&#10;Build ML models with scikit-learn & TensorFlow&#10;15+ real-world projects including capstone&#10;Placement assistance with 200+ hiring partners" 
+                              style="min-height: 140px;">{{ course.key_benefits if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Enter each benefit on a new line.</small>
+                </div>
+
+                <!-- Detail Stats -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-chart-pie"></i> Detail Page Stats
+                </h3>
+                <div class="form-group">
+                    <label for="detail_stats">Stats (JSON format)</label>
+                    <textarea id="detail_stats" name="detail_stats" class="form-control" 
+                              placeholder='[{"number": "12,500+", "label": "Learners"}, {"number": "4.8", "label": "Rating"}, {"number": "180+", "label": "Hours Content"}, {"number": "15+", "label": "Projects"}]'
+                              style="min-height: 80px;">{{ course.detail_stats if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">JSON array of {number, label} objects. Shows in hero section.</small>
+                </div>
+
+                <!-- Modules Detail -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-cubes"></i> Course Modules (Detail)
+                </h3>
+                <div class="form-group">
+                    <label for="modules_detail">Modules Detail (JSON format)</label>
+                    <textarea id="modules_detail" name="modules_detail" class="form-control" 
+                              placeholder='[{"title": "Python for Data Science", "description": "Master Python programming, Pandas, NumPy for data analysis."}, {"title": "Machine Learning", "description": "Learn supervised & unsupervised algorithms."}]'
+                              style="min-height: 140px;">{{ course.modules_detail if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">JSON array of {title, description} objects. These are the detailed curriculum modules shown on the detail page.</small>
+                </div>
+
+                <!-- Learning Path -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-route"></i> Learning Path
+                </h3>
+                <div class="form-group">
+                    <label for="learning_path">Learning Path Steps (JSON format)</label>
+                    <textarea id="learning_path" name="learning_path" class="form-control" 
+                              placeholder='[{"step": 1, "title": "Python & Statistics", "description": "Master Python, statistics & probability."}, {"step": 2, "title": "Data Analysis & SQL", "description": "Learn SQL, data wrangling & visualization."}]'
+                              style="min-height: 140px;">{{ course.learning_path if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">JSON array of {step, title, description} objects.</small>
+                </div>
+
+                <!-- Technologies -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-microchip"></i> Tools & Technologies
+                </h3>
+                <div class="form-group">
+                    <label for="technologies_list">Technologies (comma-separated)</label>
+                    <input type="text" id="technologies_list" name="technologies_list" class="form-control" 
+                           value="{{ course.technologies_list if course else '' }}" 
+                           placeholder="Python, Pandas, NumPy, scikit-learn, TensorFlow, Keras, SQL, Tableau">
+                    <small style="color: var(--text-secondary);">Comma-separated technology names. Shown as tags on detail page.</small>
+                </div>
+
+                <!-- FAQ -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-question-circle"></i> FAQ
+                </h3>
+                <div class="form-group">
+                    <label for="faq">Frequently Asked Questions (JSON format)</label>
+                    <textarea id="faq" name="faq" class="form-control" 
+                              placeholder='[{"question": "Do I need prior experience?", "answer": "No! We start from basics."}, {"question": "Is there placement assistance?", "answer": "Yes! We provide dedicated placement support."}]'
+                              style="min-height: 140px;">{{ course.faq if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">JSON array of {question, answer} objects.</small>
+                </div>
+
+                <hr style="border: none; border-top: 2px solid rgba(79, 70, 229, 0.1); margin: 2.5rem 0;">
+
+                <!-- Publish -->
+                <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(79, 70, 229, 0.05); border-radius: 10px; border: 1px solid rgba(79, 70, 229, 0.15);">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="is_published" name="is_published" 
+                               {{ 'checked' if not course or course.is_published }}>
+                        <label for="is_published" style="margin-bottom: 0; cursor: pointer;">
+                            <i class="fas fa-globe"></i> Publish this course (visible on website)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div id="pricePreview" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(34, 197, 94, 0.05); border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.15); display: none;">
+                    <strong style="color: var(--success-color);"><i class="fas fa-eye"></i> Price Preview:</strong>
+                    <span id="previewText" style="margin-left: 0.5rem;"></span>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        {% if course %}Update Course{% else %}Create Course{% endif %}
+                    </button>
+                    <a href="{{ url_for('admin_courses') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Auto-generate slug from title
+    document.getElementById('title').addEventListener('input', function() {
+        const slugField = document.getElementById('slug');
+        if (!slugField.value || slugField.dataset.auto === 'true') {
+            slugField.value = this.value.toLowerCase()
+                .replace(/&/g, 'and')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '');
+            slugField.dataset.auto = 'true';
+        }
+    });
+    document.getElementById('slug').addEventListener('input', function() {
+        this.dataset.auto = 'false';
+    });
+
+    // Price preview
+    function updatePreview() {
+        const price = parseInt(document.getElementById('price').value) || 0;
+        const original = parseInt(document.getElementById('original_price').value) || 0;
+        const preview = document.getElementById('pricePreview');
+        const text = document.getElementById('previewText');
+        
+        if (price > 0 && original > 0) {
+            const discount = Math.round(((original - price) / original) * 100);
+            const emi = Math.round(price / 6);
+            text.innerHTML = `$${price.toLocaleString()} <del style="color:var(--text-secondary)">$${original.toLocaleString()}</del> — <strong>${discount}% OFF</strong> — EMI from $${emi.toLocaleString()}/mo`;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+    document.getElementById('price').addEventListener('input', updatePreview);
+    document.getElementById('original_price').addEventListener('input', updatePreview);
+    updatePreview();
+</script>
+{% endblock %}

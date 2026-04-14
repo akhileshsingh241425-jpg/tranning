@@ -24,7 +24,7 @@ const Contact = () => {
     setLoading(true);
     
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5050'}/api/contact`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://147.93.19.87'}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

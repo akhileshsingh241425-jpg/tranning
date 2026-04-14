@@ -12,7 +12,7 @@ app.config['SECRET_KEY'] = 'trainingprotec-secret-key-2026'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///eduhub.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-CORS(app, origins=['http://localhost:3000', 'http://localhost:3005', 'http://93.127.194.235', 'http://93.127.194.235:5050'], supports_credentials=True)
+CORS(app, origins=['http://localhost:3000', 'http://localhost:3005', 'http://147.93.19.87', 'http://147.93.19.87:5050'], supports_credentials=True)
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'admin_login'

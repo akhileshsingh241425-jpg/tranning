@@ -248,7 +248,7 @@ const Courses = () => {
   const [courses, setCourses] = useState(fallbackCourses);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5050'}/api/courses`)
+    fetch(`${process.env.REACT_APP_API_URL || 'http://147.93.19.87'}/api/courses`)
       .then(res => res.ok ? res.json() : Promise.reject())
       .then(data => {
         if (data && data.length > 0) {

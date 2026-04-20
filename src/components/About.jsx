@@ -1,6 +1,5 @@
 import React from 'react';
 import { FaCheckCircle, FaArrowRight, FaAward, FaHandshake, FaGlobeAsia, FaBullseye, FaEye, FaRocket, FaUsers, FaLaptopCode, FaBriefcase, FaChalkboardTeacher, FaCertificate, FaProjectDiagram, FaHeadset } from 'react-icons/fa';
-import logo from '../assets/fevicon.png';
 import teamImg from '../assets/images/about/team.jpg';
 
 const whyChooseUs = [
@@ -34,7 +33,6 @@ const About = () => {
     <section className="about" id="about">
       {/* Main About Hero */}
       <div className="about-hero-header">
-        <img src={logo} alt="TrainingProtec" className="about-hero-logo" />
         <span className="section-badge">About TrainingProtec</span>
         <h2 className="about-hero-title">
           Transforming Careers Through <span>Industry-Focused</span> Certification Training

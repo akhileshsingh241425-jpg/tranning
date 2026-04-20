@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FaArrowLeft, FaArrowRight, FaCheckCircle, FaQuoteLeft, FaChevronDown, FaChevronUp, FaClock, FaGraduationCap, FaTag, FaSpinner } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaCheckCircle, FaQuoteLeft, FaChevronDown, FaChevronUp, FaClock, FaGraduationCap, FaTag, FaSpinner, FaWhatsapp } from 'react-icons/fa';
 import coursesDetailData from './courseData';
 import SEO from './SEO';
 
@@ -32,7 +32,7 @@ const CourseDetail = () => {
           title: data.title,
           tagline: data.tagline || (localCourse && localCourse.tagline) || data.description,
           heroImage: data.heroImage || data.image || (localCourse && localCourse.heroImage),
-          price: data.price ? `$${data.price}` : (localCourse && localCourse.price),
+          price: data.price ? `₹${data.price}` : (localCourse && localCourse.price),
           duration: data.duration || (localCourse && localCourse.duration),
           level: data.level || (localCourse && localCourse.level),
           overview: data.overview || (localCourse && localCourse.overview) || data.description,
@@ -281,8 +281,13 @@ const CourseDetail = () => {
             <h2>Ready to Start Learning?</h2>
             <p>Enroll in {course.title} today and take the first step toward mastering new skills. Join thousands of successful students.</p>
             <div className="sd-cta-buttons">
-              <a href="/#contact" className="sd-btn-primary">
-                <FaGraduationCap /> Enroll Now — {course.price}
+              <a
+                href={`https://wa.me/919876543210?text=${encodeURIComponent(`Hi! I want to enroll in the *${course.title}* course.\n\nCourse Details:\n📚 Course: ${course.title}\n💰 Price: ${course.price}\n⏱️ Duration: ${course.duration}\n📊 Level: ${course.level}\n\nPlease share enrollment details. Thank you!`)}`}
+                className="sd-btn-primary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaWhatsapp /> Enroll Now — {course.price}
               </a>
               <a href="/#courses" className="sd-btn-secondary">
                 <FaArrowLeft /> Browse More Courses

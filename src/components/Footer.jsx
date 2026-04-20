@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   FaTwitter, 
   FaLinkedinIn, 
@@ -123,8 +124,8 @@ const Footer = () => {
       <div className="footer-bottom">
         <p>&copy; {currentYear} TrainingProtec. All rights reserved. | Global Professional Training Platform</p>
         <div className="footer-bottom-links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
+          <Link to="/terms">Privacy Policy</Link>
+          <Link to="/terms">Terms of Service</Link>
           <a href="#">Refund Policy</a>
           <a href="#">Cookie Policy</a>
         </div>

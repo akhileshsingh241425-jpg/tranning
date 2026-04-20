@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import SEO from './components/SEO';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Courses from './components/Courses';
@@ -12,11 +14,18 @@ import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Chatbot from './components/Chatbot';
+import TermsAndConditions from './components/TermsAndConditions';
 import './App.css';
 
 function HomePage() {
   return (
     <>
+      <SEO
+        title="IT Certification Training – Data Science, Cloud, Cyber Security & More"
+        description="TrainingProtec offers live instructor-led courses in Data Science, Cloud Computing, Cyber Security, Full Stack Development, Digital Marketing & more. Expert trainers, real projects, job assistance."
+        keywords="IT training, data science course, cloud computing, cyber security, full stack development, digital marketing, business analytics, UI UX design, mobile app development, online training India"
+        canonical="/"
+      />
       <Hero />
       <Courses />
       <About />
@@ -52,17 +61,20 @@ function App() {
   }
 
   return (
+    <HelmetProvider>
     <Router>
       <div className="App">
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/courses/:slug" element={<CourseDetail />} />
+          <Route path="/terms" element={<TermsAndConditions />} />
         </Routes>
         <Footer />
         <Chatbot />
       </div>
     </Router>
+    </HelmetProvider>
   );
 }
 

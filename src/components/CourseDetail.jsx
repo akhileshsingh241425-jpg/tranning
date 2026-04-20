@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FaArrowLeft, FaArrowRight, FaCheckCircle, FaQuoteLeft, FaChevronDown, FaChevronUp, FaClock, FaGraduationCap, FaTag, FaSpinner } from 'react-icons/fa';
 import coursesDetailData from './courseData';
+import SEO from './SEO';
 
 const CourseDetail = () => {
   const { slug } = useParams();
@@ -106,6 +107,13 @@ const CourseDetail = () => {
 
   return (
     <div className="service-detail-page">
+      <SEO
+        title={`${course.title} Course | Online Training`}
+        description={course.overview ? course.overview.slice(0, 155) : `Enroll in ${course.title} training at TrainingProtec. Live classes, expert instructors, real projects and job assistance.`}
+        keywords={`${course.title} course, ${course.title} training, online ${course.title}, TrainingProtec ${course.title}`}
+        canonical={`/courses/${slug}`}
+        ogType="article"
+      />
       {/* Hero Section */}
       <section className="sd-hero">
         <div className="sd-hero-bg">

@@ -1,6 +1,5 @@
 import React from 'react';
 import { 
-  FaBriefcase, 
   FaCertificate, 
   FaChalkboardTeacher, 
   FaProjectDiagram, 
@@ -11,12 +10,6 @@ import {
 } from 'react-icons/fa';
 
 const featuresData = [
-  {
-    icon: <FaBriefcase />,
-    title: "100% Placement Assistance",
-    description: "Dedicated placement cell with 200+ hiring partners including TCS, Infosys, Wipro, Deloitte & startups.",
-    highlight: true
-  },
   {
     icon: <FaChalkboardTeacher />,
     title: "Live Instructor-Led Classes",

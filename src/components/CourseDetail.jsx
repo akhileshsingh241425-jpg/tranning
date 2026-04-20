@@ -282,7 +282,7 @@ const CourseDetail = () => {
             <p>Enroll in {course.title} today and take the first step toward mastering new skills. Join thousands of successful students.</p>
             <div className="sd-cta-buttons">
               <a
-                href={`https://wa.me/919876543210?text=${encodeURIComponent(`Hi! I want to enroll in the *${course.title}* course.\n\nCourse Details:\n📚 Course: ${course.title}\n💰 Price: ${course.price}\n⏱️ Duration: ${course.duration}\n📊 Level: ${course.level}\n\nPlease share enrollment details. Thank you!`)}`}
+                href={`https://wa.me/919773983859?text=${encodeURIComponent(`Hi! I want to enroll in the *${course.title}* course.\n\nCourse Details:\n📚 Course: ${course.title}\n💰 Price: ${course.price}\n⏱️ Duration: ${course.duration}\n📊 Level: ${course.level}\n\nPlease share enrollment details. Thank you!`)}`}
                 className="sd-btn-primary"
                 target="_blank"
                 rel="noopener noreferrer"

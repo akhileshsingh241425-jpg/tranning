@@ -44,7 +44,7 @@ const Navbar = () => {
         <div className="nav-top-content">
           <span className="nav-top-text">Upskill with industry-recognized certifications | <strong>Placement Assistance</strong> included</span>
           <div className="nav-top-right">
-            <a href="tel:+919876543210" className="nav-top-phone"><FaPhone /> +91 98765 43210</a>
+            <a href="tel:+919773983859" className="nav-top-phone"><FaPhone /> +91 97739 83859</a>
           </div>
         </div>
       </div>

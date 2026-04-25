@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock } from 'react-icons/fa';
+import { FaEnvelope, FaClock } from 'react-icons/fa';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -72,26 +72,6 @@ const Contact = () => {
           </p>
 
           <div className="contact-details">
-            <div className="contact-item">
-              <div className="contact-icon">
-                <FaMapMarkerAlt />
-              </div>
-              <div className="contact-item-text">
-                <h4>Location</h4>
-                <p>Remote / Worldwide Service</p>
-              </div>
-            </div>
-
-            <div className="contact-item">
-              <div className="contact-icon">
-                <FaPhone />
-              </div>
-              <div className="contact-item-text">
-                <h4>Phone Number</h4>
-                <p>+91 Contact via Social</p>
-              </div>
-            </div>
-
             <div className="contact-item">
               <div className="contact-icon">
                 <FaEnvelope />

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  FaDatabase, 
-  FaCloud, 
-  FaShieldAlt, 
-  FaCode, 
-  FaBullhorn, 
+import {
+  FaDatabase,
+  FaCloud,
+  FaShieldAlt,
+  FaCode,
+  FaBullhorn,
   FaChartBar,
   FaPaintBrush,
   FaMobileAlt,
@@ -18,7 +18,10 @@ import {
   FaPercent,
   FaLaptopCode,
   FaCertificate,
-  FaRobot
+  FaRobot,
+  FaSearch,
+  FaTimes,
+  FaFilter
 } from 'react-icons/fa';
 import courseDataAnalytics from '../assets/images/courses/data-analytics.jpg';
 import courseNetworkSecurity from '../assets/images/courses/network-security.jpg';
@@ -246,6 +249,15 @@ const fallbackCourses = [
 const Courses = () => {
   const [showAll, setShowAll] = useState(false);
   const [courses, setCourses] = useState(fallbackCourses);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  const filterOptions = [
+    { key: 'all', label: 'All Courses' },
+    { key: 'Beginner', label: 'Beginner' },
+    { key: 'Intermediate', label: 'Intermediate' },
+    { key: 'Advanced', label: 'Advanced' },
+  ];
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL || 'http://147.93.19.87'}/api/courses`)
@@ -277,7 +289,22 @@ const Courses = () => {
       .catch(() => {});
   }, []);
 
-  const displayedCourses = showAll ? courses : courses.slice(0, 4);
+  // Filter and search logic
+  const filteredCourses = courses.filter(course => {
+    const matchesSearch = !searchQuery.trim() ||
+      course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.level?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.tag?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.duration?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesFilter = activeFilter === 'all' ||
+      course.level?.toLowerCase().includes(activeFilter.toLowerCase());
+
+    return matchesSearch && matchesFilter;
+  });
+
+  const displayedCourses = showAll ? filteredCourses : filteredCourses.slice(0, 4);
 
   const getDiscount = (price, original) => {
     const p = parseInt(price.replace(/[₹$,]/g, ''));
@@ -293,52 +320,110 @@ const Courses = () => {
           Explore Our <span>Courses</span>
         </h2>
         <p className="section-description">
-          Industry-designed courses with placement assistance, live sessions, and 
+          Industry-designed courses with placement assistance, live sessions, and
           certifications recognized worldwide.
         </p>
       </div>
 
-      <div className="tp-courses-grid">
-        {displayedCourses.map((course, index) => (
-          <Link to={`/courses/${course.slug}`} className="tp-course-card" key={index}>
-            <div className="tp-course-img">
-              <img src={course.image} alt={course.title} />
-              {course.tag && <span className="tp-course-badge" data-tag={course.tag}>{course.tag}</span>}
-              <span className="tp-course-discount">{getDiscount(course.price, course.originalPrice)}% OFF</span>
-            </div>
-            <div className="tp-course-body">
-              <div className="tp-course-top">
-                <span className="tp-course-level">{course.level}</span>
-                <span className="tp-course-duration"><FaClock /> {course.duration}</span>
-              </div>
-              <h3 className="tp-course-title">{course.title}</h3>
-              <p className="tp-course-desc">{course.description}</p>
-              
-              <div className="tp-course-instructor">
-                <img src={course.instructor.image} alt={course.instructor.name} />
-                <span>{course.instructor.name}</span>
-              </div>
-
-              <div className="tp-course-bottom">
-                <div className="tp-course-rating">
-                  <FaStar className="tp-star" />
-                  <strong>{course.rating}</strong>
-                  <span>({course.reviews.toLocaleString()})</span>
-                </div>
-                <div className="tp-course-pricing">
-                  <span className="tp-course-price">{course.price}</span>
-                  <span className="tp-course-original">{course.originalPrice}</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-        ))}
+      {/* Search & Filter Bar */}
+      <div className="tp-courses-search-bar">
+        <div className="tp-search-input-wrap">
+          <FaSearch className="tp-search-icon" />
+          <input
+            type="text"
+            placeholder="Search courses by name, topic, or level..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="tp-search-input"
+          />
+          {searchQuery && (
+            <button className="tp-search-clear" onClick={() => setSearchQuery('')}>
+              <FaTimes />
+            </button>
+          )}
+        </div>
+        <div className="tp-filter-buttons">
+          <FaFilter className="tp-filter-icon" />
+          {filterOptions.map(opt => (
+            <button
+              key={opt.key}
+              className={`tp-filter-btn ${activeFilter === opt.key ? 'active' : ''}`}
+              onClick={() => setActiveFilter(opt.key)}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {!showAll && courses.length > 4 && (
+      {/* Results count */}
+      {searchQuery && (
+        <div className="tp-search-results-count">
+          {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
+          {searchQuery && <> for "<strong>{searchQuery}</strong>"</>}
+        </div>
+      )}
+
+      {filteredCourses.length > 0 ? (
+        <div className="tp-courses-grid">
+          {displayedCourses.map((course, index) => (
+            <Link to={`/courses/${course.slug}`} className="tp-course-card" key={index}>
+              <div className="tp-course-img">
+                <img src={course.image} alt={course.title} />
+                {course.tag && <span className="tp-course-badge" data-tag={course.tag}>{course.tag}</span>}
+                <span className="tp-course-discount">{getDiscount(course.price, course.originalPrice)}% OFF</span>
+              </div>
+              <div className="tp-course-body">
+                <div className="tp-course-top">
+                  <span className="tp-course-level">{course.level}</span>
+                  <span className="tp-course-duration"><FaClock /> {course.duration}</span>
+                </div>
+                <h3 className="tp-course-title">{course.title}</h3>
+                <p className="tp-course-desc">{course.description}</p>
+                
+                <div className="tp-course-instructor">
+                  <img src={course.instructor.image} alt={course.instructor.name} />
+                  <span>{course.instructor.name}</span>
+                </div>
+
+                <div className="tp-course-bottom">
+                  <div className="tp-course-rating">
+                    <FaStar className="tp-star" />
+                    <strong>{course.rating}</strong>
+                    <span>({course.reviews.toLocaleString()})</span>
+                  </div>
+                  <div className="tp-course-pricing">
+                    <span className="tp-course-price">{course.price}</span>
+                    <span className="tp-course-original">{course.originalPrice}</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className="tp-no-courses">
+          <FaSearch style={{fontSize: '2.5rem', color: '#ccc', marginBottom: '1rem'}} />
+          <h3>No courses found</h3>
+          <p>Try adjusting your search or filter to find what you're looking for.</p>
+          <button className="btn-primary" onClick={() => { setSearchQuery(''); setActiveFilter('all'); }}>
+            Clear Filters <FaTimes />
+          </button>
+        </div>
+      )}
+
+      {!showAll && filteredCourses.length > 4 && (
         <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
           <button className="btn-primary" onClick={() => setShowAll(true)}>
             View All Courses <FaArrowRight />
+          </button>
+        </div>
+      )}
+
+      {showAll && filteredCourses.length > 4 && (
+        <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+          <button className="btn-primary" onClick={() => setShowAll(false)}>
+            Show Less
           </button>
         </div>
       )}

@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  FaTwitter, 
-  FaLinkedinIn, 
-  FaInstagram, 
+import {
+  FaTwitter,
+  FaLinkedinIn,
+  FaInstagram,
   FaYoutube,
   FaFacebook,
-  FaPhone,
   FaEnvelope,
-  FaMapMarkerAlt,
   FaPaperPlane
 } from 'react-icons/fa';
 import logo from '../assets/fevicon.png';
@@ -57,9 +55,7 @@ const Footer = () => {
             through live instructor-led courses, hands-on projects, and certification support.
           </p>
           <div className="footer-contact-info">
-            <div><FaPhone /> +91 1800-XXX-XXXX (Toll Free)</div>
             <div><FaEnvelope /> support@trainingprotec.com</div>
-            <div><FaMapMarkerAlt /> Bangalore | Delhi | Mumbai | Hyderabad</div>
           </div>
           <div className="footer-social">
             <a href="#" className="social-link" aria-label="Facebook"><FaFacebook /></a>
@@ -127,7 +123,6 @@ const Footer = () => {
           <Link to="/terms">Privacy Policy</Link>
           <Link to="/terms">Terms of Service</Link>
           <a href="#">Refund Policy</a>
-          <a href="#">Cookie Policy</a>
         </div>
       </div>
     </footer>

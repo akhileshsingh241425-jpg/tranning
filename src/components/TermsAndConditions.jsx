@@ -73,11 +73,6 @@ const privacySections = [
     content: "We take appropriate measures to protect your personal information from unauthorized access, misuse, or disclosure. While we strive to use commercially acceptable methods to safeguard your data, no system can guarantee complete security."
   },
   {
-    id: 14,
-    title: "Cookies Policy",
-    content: "Our website uses cookies and similar technologies to enhance user experience, analyze website performance, and store user preferences. You have the option to disable cookies through your browser settings, although this may affect certain functionalities of the website."
-  },
-  {
     id: 15,
     title: "Third-Party Services",
     content: "Our website may include links to third-party websites or use external tools and platforms. Training Protec is not responsible for the privacy practices, policies, or performance of these third-party services, and users are encouraged to review their respective terms."

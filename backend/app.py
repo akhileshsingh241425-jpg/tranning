@@ -86,6 +86,36 @@ class Contact(db.Model):
             'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S')
         }
 
+class Testimonial(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    author = db.Column(db.String(200), nullable=False)
+    position = db.Column(db.String(200), nullable=False)
+    prev_role = db.Column(db.String(200), default='')
+    image = db.Column(db.String(500), default='')
+    rating = db.Column(db.Integer, default=5)
+    salary_hike = db.Column(db.String(50), default='')
+    course = db.Column(db.String(200), default='')
+    is_published = db.Column(db.Boolean, default=True)
+    sort_order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'content': self.content,
+            'author': self.author,
+            'position': self.position,
+            'prevRole': self.prev_role,
+            'image': self.image,
+            'rating': self.rating,
+            'salaryHike': self.salary_hike,
+            'course': self.course,
+            'is_published': self.is_published,
+            'sort_order': self.sort_order,
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        }
+
 class Course(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
@@ -227,6 +257,39 @@ def get_course(slug):
     course = Course.query.filter_by(slug=slug, is_published=True).first_or_404()
     return jsonify(course.to_detail_dict())
 
+@app.route('/api/courses/search', methods=['GET'])
+def search_courses():
+    """Search courses by query string and/or filter by level"""
+    query = request.args.get('q', '').strip()
+    level = request.args.get('level', '').strip()
+    
+    courses_query = Course.query.filter_by(is_published=True)
+    
+    if query:
+        search_term = f'%{query}%'
+        courses_query = courses_query.filter(
+            db.or_(
+                Course.title.ilike(search_term),
+                Course.description.ilike(search_term),
+                Course.level.ilike(search_term),
+                Course.tag.ilike(search_term),
+                Course.duration.ilike(search_term)
+            )
+        )
+    
+    if level:
+        courses_query = courses_query.filter(Course.level.ilike(f'%{level}%'))
+    
+    courses = courses_query.order_by(Course.sort_order, Course.created_at.desc()).all()
+    return jsonify([course.to_dict() for course in courses])
+
+# ==================== TESTIMONIAL API ROUTES ====================
+
+@app.route('/api/testimonials', methods=['GET'])
+def get_testimonials():
+    testimonials = Testimonial.query.filter_by(is_published=True).order_by(Testimonial.sort_order, Testimonial.created_at.desc()).all()
+    return jsonify([t.to_dict() for t in testimonials])
+
 # ==================== ADMIN PANEL ROUTES ====================
 
 @app.route('/admin')
@@ -235,14 +298,16 @@ def admin_dashboard():
     blogs_count = Blog.query.count()
     contacts_count = Contact.query.filter_by(is_read=False).count()
     courses_count = Course.query.count()
+    testimonials_count = Testimonial.query.count()
     total_views = db.session.query(db.func.sum(Blog.views)).scalar() or 0
     recent_blogs = Blog.query.order_by(Blog.created_at.desc()).limit(5).all()
     recent_contacts = Contact.query.order_by(Contact.created_at.desc()).limit(5).all()
     recent_courses = Course.query.order_by(Course.created_at.desc()).limit(5).all()
-    return render_template('admin/dashboard.html', 
+    return render_template('admin/dashboard.html',
                          blogs_count=blogs_count,
                          contacts_count=contacts_count,
                          courses_count=courses_count,
+                         testimonials_count=testimonials_count,
                          total_views=total_views,
                          recent_blogs=recent_blogs,
                          recent_contacts=recent_contacts,
@@ -460,6 +525,65 @@ def admin_course_delete(id):
     db.session.commit()
     flash('Course deleted successfully!', 'success')
     return redirect(url_for('admin_courses'))
+
+# ==================== TESTIMONIAL ADMIN ROUTES ====================
+
+@app.route('/admin/testimonials')
+@login_required
+def admin_testimonials():
+    testimonials = Testimonial.query.order_by(Testimonial.sort_order, Testimonial.created_at.desc()).all()
+    return render_template('admin/testimonials.html', testimonials=testimonials)
+
+@app.route('/admin/testimonials/new', methods=['GET', 'POST'])
+@login_required
+def admin_testimonial_new():
+    if request.method == 'POST':
+        testimonial = Testimonial(
+            content=request.form.get('content', ''),
+            author=request.form.get('author', ''),
+            position=request.form.get('position', ''),
+            prev_role=request.form.get('prev_role', ''),
+            image=request.form.get('image', ''),
+            rating=int(request.form.get('rating', 5)),
+            salary_hike=request.form.get('salary_hike', ''),
+            course=request.form.get('course', ''),
+            is_published='is_published' in request.form,
+            sort_order=int(request.form.get('sort_order', 0))
+        )
+        db.session.add(testimonial)
+        db.session.commit()
+        flash('Testimonial created successfully!', 'success')
+        return redirect(url_for('admin_testimonials'))
+    return render_template('admin/testimonial_form.html', testimonial=None)
+
+@app.route('/admin/testimonials/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def admin_testimonial_edit(id):
+    testimonial = Testimonial.query.get_or_404(id)
+    if request.method == 'POST':
+        testimonial.content = request.form.get('content', '')
+        testimonial.author = request.form.get('author', '')
+        testimonial.position = request.form.get('position', '')
+        testimonial.prev_role = request.form.get('prev_role', '')
+        testimonial.image = request.form.get('image', '')
+        testimonial.rating = int(request.form.get('rating', 5))
+        testimonial.salary_hike = request.form.get('salary_hike', '')
+        testimonial.course = request.form.get('course', '')
+        testimonial.is_published = 'is_published' in request.form
+        testimonial.sort_order = int(request.form.get('sort_order', 0))
+        db.session.commit()
+        flash('Testimonial updated successfully!', 'success')
+        return redirect(url_for('admin_testimonials'))
+    return render_template('admin/testimonial_form.html', testimonial=testimonial)
+
+@app.route('/admin/testimonials/delete/<int:id>')
+@login_required
+def admin_testimonial_delete(id):
+    testimonial = Testimonial.query.get_or_404(id)
+    db.session.delete(testimonial)
+    db.session.commit()
+    flash('Testimonial deleted successfully!', 'success')
+    return redirect(url_for('admin_testimonials'))
 
 # ==================== INITIALIZE ====================
 
@@ -798,10 +922,92 @@ def create_sample_courses():
         db.session.commit()
         print('Sample courses created!')
 
+def create_sample_testimonials():
+    if Testimonial.query.count() == 0:
+        testimonials = [
+            Testimonial(
+                content="After completing the Data Science & AI program, I transitioned from a manual testing role to a Data Analyst position at Deloitte. The placement team was incredibly supportive throughout.",
+                author="Priya Sharma",
+                position="Data Analyst, Deloitte",
+                prev_role="Manual Tester",
+                image="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+                rating=5,
+                salary_hike="120%",
+                course="Data Science & AI",
+                is_published=True,
+                sort_order=1
+            ),
+            Testimonial(
+                content="The Cloud Computing & DevOps course gave me hands-on experience with AWS and Kubernetes. Within 2 months of completion, I received 3 job offers. Now working as a DevOps Engineer at Infosys.",
+                author="Rahul Verma",
+                position="DevOps Engineer, Infosys",
+                prev_role="System Administrator",
+                image="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+                rating=5,
+                salary_hike="95%",
+                course="Cloud Computing & DevOps",
+                is_published=True,
+                sort_order=2
+            ),
+            Testimonial(
+                content="As a non-tech graduate, I was skeptical about learning web development. TrainingProtec's structured approach and live classes made it so easy. Got placed at a startup in Bangalore within a month!",
+                author="Anita Desai",
+                position="Full Stack Developer, TechStartup",
+                prev_role="BBA Graduate (Fresher)",
+                image="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+                rating=5,
+                salary_hike="First Job",
+                course="Full Stack Web Development",
+                is_published=True,
+                sort_order=3
+            ),
+            Testimonial(
+                content="The Cyber Security course is world-class. The hands-on labs with real attack scenarios prepared me better than any theory course. Cleared CEH certification on the first attempt!",
+                author="Vikash Kumar",
+                position="Security Analyst, TCS",
+                prev_role="IT Support Engineer",
+                image="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+                rating=5,
+                salary_hike="85%",
+                course="Cyber Security Professional",
+                is_published=True,
+                sort_order=4
+            ),
+            Testimonial(
+                content="I took the Digital Marketing course to grow my own e-commerce business. Within 3 months, my online revenue tripled. The Google Ads and SEO modules were game-changers.",
+                author="Sneha Patel",
+                position="Founder, ShopEasy.in",
+                prev_role="Offline Retailer",
+                image="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+                rating=5,
+                salary_hike="3x Revenue",
+                course="Digital Marketing",
+                is_published=True,
+                sort_order=5
+            ),
+            Testimonial(
+                content="At age 35, I thought career switching was impossible. TrainingProtec proved me wrong. The Business Analytics course helped me move from operations to a data-driven analytics role at Wipro.",
+                author="Deepak Joshi",
+                position="Business Analyst, Wipro",
+                prev_role="Operations Manager",
+                image="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+                rating=5,
+                salary_hike="70%",
+                course="Business Analytics",
+                is_published=True,
+                sort_order=6
+            )
+        ]
+        for testimonial in testimonials:
+            db.session.add(testimonial)
+        db.session.commit()
+        print('Sample testimonials created!')
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         create_admin()
         create_sample_blogs()
         create_sample_courses()
+        create_sample_testimonials()
     app.run(debug=False, host='0.0.0.0', port=5050)

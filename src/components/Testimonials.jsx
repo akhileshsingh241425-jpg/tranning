@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaStar, FaArrowUp, FaQuoteLeft } from 'react-icons/fa';
 import person1 from '../assets/images/testimonials/person-1.jpg';
 import person2 from '../assets/images/testimonials/person-2.jpg';
@@ -7,7 +7,7 @@ import person4 from '../assets/images/testimonials/person-4.jpg';
 import person5 from '../assets/images/testimonials/person-5.jpg';
 import person6 from '../assets/images/testimonials/person-6.jpg';
 
-const testimonialsData = [
+const fallbackTestimonials = [
   {
     content: "After completing the Data Science & AI program, I transitioned from a manual testing role to a Data Analyst position at Deloitte. The placement team was incredibly supportive throughout.",
     author: "Priya Sharma",
@@ -71,6 +71,26 @@ const testimonialsData = [
 ];
 
 const Testimonials = () => {
+  const [testimonials, setTestimonials] = useState(fallbackTestimonials);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const API_URL = process.env.REACT_APP_API_URL || 'http://147.93.19.87';
+        const response = await fetch(`${API_URL}/api/testimonials`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.length > 0) {
+            setTestimonials(data);
+          }
+        }
+      } catch (error) {
+        console.log('Using fallback testimonials data');
+      }
+    };
+    fetchTestimonials();
+  }, []);
+
   return (
     <section className="testimonials" id="testimonials">
       <div className="section-header">
@@ -84,10 +104,10 @@ const Testimonials = () => {
       </div>
 
       <div className="testimonials-grid">
-        {testimonialsData.map((testimonial, index) => (
-          <div className="testimonial-card" key={index}>
+        {testimonials.map((testimonial, index) => (
+          <div className="testimonial-card" key={testimonial.id || index}>
             <div className="testimonial-hike-badge">
-              <FaArrowUp /> {testimonial.salaryHike} {testimonial.salaryHike.includes('%') ? 'Salary Hike' : ''}
+              <FaArrowUp /> {testimonial.salaryHike} {testimonial.salaryHike && testimonial.salaryHike.includes('%') ? 'Salary Hike' : ''}
             </div>
             <div className="testimonial-course-tag">{testimonial.course}</div>
             <div className="testimonial-content">
@@ -104,6 +124,9 @@ const Testimonials = () => {
                 src={testimonial.image} 
                 alt={testimonial.author} 
                 className="author-image"
+                onError={(e) => {
+                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.author)}&background=4f46e5&color=fff`;
+                }}
               />
               <div className="author-info">
                 <h4>{testimonial.author}</h4>
@@ -111,7 +134,7 @@ const Testimonials = () => {
               </div>
             </div>
             <div className="testimonial-rating">
-              {[...Array(testimonial.rating)].map((_, i) => (
+              {[...Array(testimonial.rating || 5)].map((_, i) => (
                 <FaStar key={i} />
               ))}
             </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FaArrowLeft, FaArrowRight, FaCheckCircle, FaQuoteLeft, FaChevronDown, FaChevronUp, FaClock, FaGraduationCap, FaTag, FaSpinner, FaWhatsapp } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaCheckCircle, FaQuoteLeft, FaChevronDown, FaChevronUp, FaClock, FaGraduationCap, FaTag, FaSpinner, FaEnvelope } from 'react-icons/fa';
 import coursesDetailData from './courseData';
 import SEO from './SEO';
 
@@ -282,12 +282,10 @@ const CourseDetail = () => {
             <p>Enroll in {course.title} today and take the first step toward mastering new skills. Join thousands of successful students.</p>
             <div className="sd-cta-buttons">
               <a
-                href={`https://wa.me/919773983859?text=${encodeURIComponent(`Hi! I want to enroll in the *${course.title}* course.\n\nCourse Details:\n📚 Course: ${course.title}\n💰 Price: ${course.price}\n⏱️ Duration: ${course.duration}\n📊 Level: ${course.level}\n\nPlease share enrollment details. Thank you!`)}`}
+                href={`mailto:support@trainingprotec.com?subject=${encodeURIComponent(`Enrollment Inquiry: ${course.title}`)}&body=${encodeURIComponent(`Hi! I want to enroll in the ${course.title} course.\n\nCourse Details:\n- Course: ${course.title}\n- Price: ${course.price}\n- Duration: ${course.duration}\n- Level: ${course.level}\n\nPlease share enrollment details. Thank you!`)}`}
                 className="sd-btn-primary"
-                target="_blank"
-                rel="noopener noreferrer"
               >
-                <FaWhatsapp /> Enroll Now — {course.price}
+                <FaEnvelope /> Enroll Now — {course.price}
               </a>
               <a href="/#courses" className="sd-btn-secondary">
                 <FaArrowLeft /> Browse More Courses

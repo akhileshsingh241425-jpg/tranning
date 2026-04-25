@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaCommentDots, FaTimes, FaPaperPlane, FaRobot, FaUser, FaGraduationCap, FaPhone, FaWhatsapp } from 'react-icons/fa';
+import { FaCommentDots, FaTimes, FaPaperPlane, FaRobot, FaUser, FaGraduationCap, FaEnvelope } from 'react-icons/fa';
 
 const quickReplies = [
   "Tell me about courses",
@@ -15,9 +15,9 @@ const botResponses = {
   courses: "We offer 150+ certification training programs:\n\n🔹 **Data Science & AI**\n🔹 **Cloud Computing & DevOps**\n🔹 **Cyber Security**\n🔹 **Full Stack Web Dev**\n🔹 **Digital Marketing**\n🔹 **Business Analytics**\n🔹 **UI/UX Design**\n🔹 **Project Management** & more\n\nAll courses include live classes, hands-on projects & certification support. Which domain interests you?",
   fees: "💰 **Flexible Payment Options:**\n\n✅ One-time payment with attractive discounts\n✅ EMI options available\n✅ No-cost EMI on select courses\n✅ Corporate group discounts available\n✅ Customized training packages\n\nWant me to connect you with a counsellor for the best offer?",
   placement: "🎯 **Career Support Program:**\n\n✅ Certification Exam Preparation\n✅ Resume Building & LinkedIn Optimization\n✅ Mock Interviews with Industry Experts\n✅ 1-on-1 Career Mentoring\n✅ Job Interview Preparation\n✅ Live Project Support\n\nOur team supports you throughout your learning journey! 🚀",
-  counsellor: "📞 **Connect with a Career Counsellor:**\n\n🔹 **Call:** +91 97739 83859 (Mon-Sat, 9AM-9PM)\n🔹 **WhatsApp:** Click the button below\n🔹 **Email:** support@trainingprotec.com\n\nOr fill out the Contact form on our website and we'll call you within 30 minutes!",
+  counsellor: "📧 **Connect with a Career Counsellor:**\n\n🔹 **Email:** support@trainingprotec.com\n🔹 **Response Time:** Within 24 hours (Mon-Sat)\n\nOr fill out the Contact form on our website and we'll get back to you promptly!",
   certification: "📜 **Globally Recognized Certifications:**\n\n✅ TrainingProtec Course Completion Certificate\n✅ Prep for AWS, Google, CEH, PMP & more\n✅ Globally recognized credentials\n✅ Shareable on LinkedIn\n✅ Lifetime validity\n\nOur certification programs are designed to help you stand out in the global job market!",
-  demo: "🎓 **Book a Free Demo Class:**\n\nExperience our teaching methodology firsthand!\n\n✅ 1-hour live session with industry expert\n✅ Hands-on project walkthrough\n✅ Career path guidance\n✅ Q&A with the instructor\n\nFill out the Contact form or call us at **+91 97739 83859** to book your free class today!",
+  demo: "🎓 **Book a Free Demo Class:**\n\nExperience our teaching methodology firsthand!\n\n✅ 1-hour live session with industry expert\n✅ Hands-on project walkthrough\n✅ Career path guidance\n✅ Q&A with the instructor\n\nFill out the Contact form or email us at **support@trainingprotec.com** to book your free class today!",
   default: "I'd be happy to help! Here are some things I can assist with:\n\n🔹 Course information & curriculum\n🔹 Fees, EMI & scholarship details\n🔹 Placement assistance info\n🔹 Free demo class booking\n🔹 Connecting you with a counsellor\n\nJust ask me anything or choose from the quick options below! 😊"
 };
 
@@ -132,11 +132,8 @@ const Chatbot = () => {
               </div>
             </div>
             <div className="chatbot-header-actions">
-              <a href="tel:+919773983859" className="chatbot-action-btn" title="Call us">
-                <FaPhone />
-              </a>
-              <a href="https://wa.me/919773983859" className="chatbot-action-btn whatsapp" title="WhatsApp" target="_blank" rel="noopener noreferrer">
-                <FaWhatsapp />
+              <a href="mailto:support@trainingprotec.com" className="chatbot-action-btn email" title="Email us">
+                <FaEnvelope />
               </a>
               <button className="chatbot-close" onClick={() => setIsOpen(false)}>
                 <FaTimes />

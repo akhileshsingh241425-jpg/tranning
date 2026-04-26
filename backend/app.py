@@ -1042,9 +1042,79 @@ def create_sample_testimonials():
         db.session.commit()
         print('Sample testimonials created!')
 
+def migrate_db():
+    """Add missing columns to existing database tables."""
+    with app.app_context():
+        # Get existing columns for each table
+        inspector = db.inspect(db.engine)
+        
+        # Migrate Course table
+        course_columns = [col['name'] for col in inspector.get_columns('course')]
+        course_new_columns = {
+            'tagline': "ALTER TABLE course ADD COLUMN tagline VARCHAR(300) DEFAULT ''",
+            'hero_image': "ALTER TABLE course ADD COLUMN hero_image VARCHAR(500) DEFAULT ''",
+            'overview': "ALTER TABLE course ADD COLUMN overview TEXT DEFAULT ''",
+            'key_benefits': "ALTER TABLE course ADD COLUMN key_benefits TEXT DEFAULT ''",
+            'modules_detail': "ALTER TABLE course ADD COLUMN modules_detail TEXT DEFAULT ''",
+            'learning_path': "ALTER TABLE course ADD COLUMN learning_path TEXT DEFAULT ''",
+            'technologies_list': "ALTER TABLE course ADD COLUMN technologies_list TEXT DEFAULT ''",
+            'faq': "ALTER TABLE course ADD COLUMN faq TEXT DEFAULT ''",
+            'detail_stats': "ALTER TABLE course ADD COLUMN detail_stats TEXT DEFAULT ''",
+        }
+        for col_name, sql in course_new_columns.items():
+            if col_name not in course_columns:
+                try:
+                    db.session.execute(db.text(sql))
+                    db.session.commit()
+                    print(f'Added column "{col_name}" to course table')
+                except Exception as e:
+                    db.session.rollback()
+                    print(f'Column "{col_name}" may already exist: {e}')
+
+        # Migrate Testimonial table
+        testimonial_columns = [col['name'] for col in inspector.get_columns('testimonial')]
+        testimonial_new_columns = {
+            'prev_role': "ALTER TABLE testimonial ADD COLUMN prev_role VARCHAR(200) DEFAULT ''",
+            'image': "ALTER TABLE testimonial ADD COLUMN image VARCHAR(500) DEFAULT ''",
+            'rating': "ALTER TABLE testimonial ADD COLUMN rating INTEGER DEFAULT 5",
+            'salary_hike': "ALTER TABLE testimonial ADD COLUMN salary_hike VARCHAR(50) DEFAULT ''",
+            'course': "ALTER TABLE testimonial ADD COLUMN course VARCHAR(200) DEFAULT ''",
+            'is_published': "ALTER TABLE testimonial ADD COLUMN is_published BOOLEAN DEFAULT 1",
+            'sort_order': "ALTER TABLE testimonial ADD COLUMN sort_order INTEGER DEFAULT 0",
+        }
+        for col_name, sql in testimonial_new_columns.items():
+            if col_name not in testimonial_columns:
+                try:
+                    db.session.execute(db.text(sql))
+                    db.session.commit()
+                    print(f'Added column "{col_name}" to testimonial table')
+                except Exception as e:
+                    db.session.rollback()
+                    print(f'Column "{col_name}" may already exist: {e}')
+
+        # Migrate Blog table
+        blog_columns = [col['name'] for col in inspector.get_columns('blog')]
+        blog_new_columns = {
+            'category': "ALTER TABLE blog ADD COLUMN category VARCHAR(100) DEFAULT ''",
+            'tags': "ALTER TABLE blog ADD COLUMN tags VARCHAR(500) DEFAULT ''",
+            'is_published': "ALTER TABLE blog ADD COLUMN is_published BOOLEAN DEFAULT 1",
+        }
+        for col_name, sql in blog_new_columns.items():
+            if col_name not in blog_columns:
+                try:
+                    db.session.execute(db.text(sql))
+                    db.session.commit()
+                    print(f'Added column "{col_name}" to blog table')
+                except Exception as e:
+                    db.session.rollback()
+                    print(f'Column "{col_name}" may already exist: {e}')
+
+        print('Database migration completed!')
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        migrate_db()
         create_admin()
         create_sample_blogs()
         create_sample_courses()

@@ -98,9 +98,49 @@
                                value="{{ testimonial.prev_role if testimonial else '' }}" placeholder="e.g. Manual Tester">
                     </div>
                     <div class="form-group">
-                        <label for="image">Author Photo URL</label>
-                        <input type="url" id="image" name="image" class="form-control" 
-                               value="{{ testimonial.image if testimonial else '' }}" placeholder="https://example.com/photo.jpg">
+                        <label>Author Photo</label>
+                        <div class="image-input-group">
+                            <div class="image-input-tabs">
+                                <button type="button" class="image-input-tab active" onclick="switchImageTab(this, 'upload')">
+                                    <i class="fas fa-upload"></i> Upload
+                                </button>
+                                <button type="button" class="image-input-tab" onclick="switchImageTab(this, 'url')">
+                                    <i class="fas fa-link"></i> URL
+                                </button>
+                            </div>
+                            <div class="image-input-content">
+                                <div class="image-input-panel active" data-panel="upload">
+                                    <div class="image-drop-zone" onclick="this.querySelector('input').click()">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Drag & drop image here or <span class="browse-link">Browse</span></p>
+                                        <p style="font-size: 0.75rem;">PNG, JPG, GIF, WebP (max 5MB)</p>
+                                        <input type="file" accept="image/*" onchange="handleImageUpload(this, 'image')">
+                                    </div>
+                                    <div class="upload-progress" id="image-upload-progress">
+                                        <div class="upload-progress-bar"><div style="width: 0%"></div></div>
+                                        <div class="upload-progress-text">Uploading...</div>
+                                    </div>
+                                    <div class="upload-error" id="image-upload-error"></div>
+                                </div>
+                                <div class="image-input-panel" data-panel="url">
+                                    <input type="url" id="image_url_input" class="form-control"
+                                           value="{{ testimonial.image if testimonial else '' }}"
+                                           placeholder="https://example.com/photo.jpg"
+                                           oninput="document.getElementById('image').value = this.value; updateImagePreview('image')">
+                                </div>
+                            </div>
+                            <div class="image-preview-container" id="image-preview">
+                                <img src="{{ testimonial.image if testimonial and testimonial.image else '' }}" alt="Preview" onerror="this.parentElement.classList.remove('has-image')">
+                                <div class="image-preview-info">
+                                    <div class="filename" id="image-filename"></div>
+                                    <div class="size" id="image-size"></div>
+                                </div>
+                                <button type="button" class="image-preview-remove" onclick="removeImage('image')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="hidden" id="image" name="image" value="{{ testimonial.image if testimonial else '' }}">
                     </div>
                 </div>
 
@@ -175,4 +215,137 @@
         </div>
     </main>
 </div>
+
+<script>
+// Initialize image preview on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initImagePreview('image');
+});
+
+function initImagePreview(fieldId) {
+    const hiddenInput = document.getElementById(fieldId);
+    const preview = document.getElementById(fieldId + '-preview');
+    if (hiddenInput && preview && hiddenInput.value) {
+        const img = preview.querySelector('img');
+        if (img) {
+            img.src = hiddenInput.value;
+            preview.classList.add('has-image');
+        }
+        // Switch to URL tab if value is a URL
+        if (hiddenInput.value.startsWith('http')) {
+            const urlInput = document.getElementById(fieldId + '_url_input');
+            if (urlInput) urlInput.value = hiddenInput.value;
+        }
+    }
+}
+
+function switchImageTab(tabBtn, tabName) {
+    const group = tabBtn.closest('.image-input-group');
+    group.querySelectorAll('.image-input-tab').forEach(t => t.classList.remove('active'));
+    tabBtn.classList.add('active');
+    group.querySelectorAll('.image-input-panel').forEach(p => p.classList.remove('active'));
+    group.querySelector('[data-panel="' + tabName + '"]').classList.add('active');
+}
+
+function handleImageUpload(fileInput, fieldId) {
+    const file = fileInput.files[0];
+    if (!file) return;
+    
+    const progressEl = document.getElementById(fieldId + '-upload-progress');
+    const errorEl = document.getElementById(fieldId + '-upload-error');
+    errorEl.style.display = 'none';
+    progressEl.classList.add('active');
+    progressEl.querySelector('div > div').style.width = '0%';
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/upload');
+    
+    xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+            const pct = Math.round((e.loaded / e.total) * 100);
+            progressEl.querySelector('div > div').style.width = pct + '%';
+        }
+    };
+    
+    xhr.onload = function() {
+        progressEl.classList.remove('active');
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            document.getElementById(fieldId).value = data.url;
+            const urlInput = document.getElementById(fieldId + '_url_input');
+            if (urlInput) urlInput.value = data.url;
+            updateImagePreview(fieldId, data.url, file.name, file.size);
+        } else {
+            try {
+                const data = JSON.parse(xhr.responseText);
+                errorEl.textContent = data.error || 'Upload failed';
+            } catch(e) {
+                errorEl.textContent = 'Upload failed';
+            }
+            errorEl.style.display = 'block';
+        }
+    };
+    
+    xhr.onerror = function() {
+        progressEl.classList.remove('active');
+        errorEl.textContent = 'Network error during upload';
+        errorEl.style.display = 'block';
+    };
+    
+    xhr.send(formData);
+}
+
+function updateImagePreview(fieldId, url, filename, size) {
+    const preview = document.getElementById(fieldId + '-preview');
+    if (!preview) return;
+    const img = preview.querySelector('img');
+    const urlVal = url || document.getElementById(fieldId).value;
+    if (urlVal) {
+        img.src = urlVal;
+        img.onerror = function() { preview.classList.remove('has-image'); };
+        preview.classList.add('has-image');
+        if (filename) {
+            document.getElementById(fieldId + '-filename').textContent = filename;
+        }
+        if (size) {
+            const sizeStr = size < 1024 ? size + ' B' : size < 1048576 ? (size/1024).toFixed(1) + ' KB' : (size/1048576).toFixed(1) + ' MB';
+            document.getElementById(fieldId + '-size').textContent = sizeStr;
+        }
+    } else {
+        preview.classList.remove('has-image');
+    }
+}
+
+function removeImage(fieldId) {
+    document.getElementById(fieldId).value = '';
+    const urlInput = document.getElementById(fieldId + '_url_input');
+    if (urlInput) urlInput.value = '';
+    const preview = document.getElementById(fieldId + '-preview');
+    if (preview) preview.classList.remove('has-image');
+}
+
+// Drag and drop support
+document.querySelectorAll('.image-drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+    zone.addEventListener('dragleave', function() {
+        this.classList.remove('dragover');
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        const fileInput = this.querySelector('input[type="file"]');
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            const fieldId = fileInput.getAttribute('onchange').match(/'(\w+)'/)[1];
+            handleImageUpload(fileInput, fieldId);
+        }
+    });
+});
+</script>
 {% endblock %}

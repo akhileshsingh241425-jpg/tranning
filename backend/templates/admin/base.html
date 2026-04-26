@@ -441,6 +441,161 @@
                 margin-left: 70px;
             }
         }
+
+        /* Image Upload Component */
+        .image-input-group {
+            border: 1px solid rgba(79, 70, 229, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .image-input-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(79, 70, 229, 0.15);
+            background: rgba(79, 70, 229, 0.03);
+        }
+        .image-input-tab {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+        .image-input-tab:hover {
+            color: var(--primary-color);
+            background: rgba(79, 70, 229, 0.05);
+        }
+        .image-input-tab.active {
+            color: var(--primary-color);
+            background: rgba(79, 70, 229, 0.08);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .image-input-content {
+            padding: 0.75rem;
+        }
+        .image-input-panel {
+            display: none;
+        }
+        .image-input-panel.active {
+            display: block;
+        }
+        .image-drop-zone {
+            border: 2px dashed rgba(79, 70, 229, 0.25);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(79, 70, 229, 0.02);
+        }
+        .image-drop-zone:hover, .image-drop-zone.dragover {
+            border-color: var(--primary-color);
+            background: rgba(79, 70, 229, 0.06);
+        }
+        .image-drop-zone i {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .image-drop-zone p {
+            margin: 0.3rem 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .image-drop-zone .browse-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: underline;
+        }
+        .image-drop-zone input[type="file"] {
+            display: none;
+        }
+        .image-preview-container {
+            margin-top: 0.75rem;
+            display: none;
+            position: relative;
+        }
+        .image-preview-container.has-image {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .image-preview-container img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(79, 70, 229, 0.15);
+        }
+        .image-preview-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .image-preview-info .filename {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .image-preview-info .size {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .image-preview-remove {
+            background: rgba(239, 68, 68, 0.1);
+            border: none;
+            color: #ef4444;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .image-preview-remove:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+        .upload-progress {
+            margin-top: 0.5rem;
+            display: none;
+        }
+        .upload-progress.active {
+            display: block;
+        }
+        .upload-progress-bar {
+            height: 4px;
+            background: rgba(79, 70, 229, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .upload-progress-bar div {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+        .upload-progress-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+        .upload-error {
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
     </style>
 </head>
 <body>

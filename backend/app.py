@@ -1,16 +1,24 @@
-from flask import Flask, jsonify, request, render_template, redirect, url_for, flash, session
+from flask import Flask, jsonify, request, render_template, redirect, url_for, flash, session, send_from_directory
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
 import json
+import uuid
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'trainingprotec-secret-key-2026'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///eduhub.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'uploads')
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max upload
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'}
+
+# Ensure upload folder exists
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 CORS(app, origins=['http://localhost:3000', 'http://localhost:3005', 'http://147.93.19.87', 'http://147.93.19.87:5050'], supports_credentials=True)
 db = SQLAlchemy(app)
@@ -289,6 +297,37 @@ def search_courses():
 def get_testimonials():
     testimonials = Testimonial.query.filter_by(is_published=True).order_by(Testimonial.sort_order, Testimonial.created_at.desc()).all()
     return jsonify([t.to_dict() for t in testimonials])
+
+# ==================== IMAGE UPLOAD ====================
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/api/upload', methods=['POST'])
+@login_required
+def upload_image():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    if not allowed_file(file.filename):
+        return jsonify({'error': f'File type not allowed. Allowed types: {", ".join(ALLOWED_EXTENSIONS)}'}), 400
+    
+    # Generate unique filename
+    ext = file.filename.rsplit('.', 1)[1].lower()
+    unique_name = f"{uuid.uuid4().hex[:12]}_{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"
+    
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_name)
+    file.save(filepath)
+    
+    # Return the URL path that can be used as the image value
+    image_url = f"/static/uploads/{unique_name}"
+    return jsonify({'url': image_url, 'filename': unique_name})
+
+@app.route('/static/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # ==================== ADMIN PANEL ROUTES ====================
 

@@ -433,11 +433,13 @@
                     <i class="fas fa-chart-pie"></i> Detail Page Stats
                 </h3>
                 <div class="form-group">
-                    <label for="detail_stats">Stats (JSON format)</label>
-                    <textarea id="detail_stats" name="detail_stats" class="form-control" 
-                              placeholder='[{"number": "12,500+", "label": "Learners"}, {"number": "4.8", "label": "Rating"}, {"number": "180+", "label": "Hours Content"}, {"number": "15+", "label": "Projects"}]'
-                              style="min-height: 80px;">{{ course.detail_stats if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">JSON array of {number, label} objects. Shows in hero section.</small>
+                    <label>Detail Page Stats</label>
+                    <div id="detail_stats_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addDetailStat()">
+                        <i class="fas fa-plus"></i> Add Stat
+                    </button>
+                    <textarea id="detail_stats" name="detail_stats" style="display:none;">{{ course.detail_stats if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add stats like number of learners, rating, hours of content, projects, etc.</small>
                 </div>
 
                 <!-- Modules Detail -->
@@ -445,11 +447,13 @@
                     <i class="fas fa-cubes"></i> Course Modules (Detail)
                 </h3>
                 <div class="form-group">
-                    <label for="modules_detail">Modules Detail (JSON format)</label>
-                    <textarea id="modules_detail" name="modules_detail" class="form-control" 
-                              placeholder='[{"title": "Python for Data Science", "description": "Master Python programming, Pandas, NumPy for data analysis."}, {"title": "Machine Learning", "description": "Learn supervised & unsupervised algorithms."}]'
-                              style="min-height: 140px;">{{ course.modules_detail if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">JSON array of {title, description} objects. These are the detailed curriculum modules shown on the detail page.</small>
+                    <label>Course Modules</label>
+                    <div id="modules_detail_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addModuleDetail()">
+                        <i class="fas fa-plus"></i> Add Module
+                    </button>
+                    <textarea id="modules_detail" name="modules_detail" style="display:none;">{{ course.modules_detail if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add each module with a title and description.</small>
                 </div>
 
                 <!-- Learning Path -->
@@ -457,11 +461,13 @@
                     <i class="fas fa-route"></i> Learning Path
                 </h3>
                 <div class="form-group">
-                    <label for="learning_path">Learning Path Steps (JSON format)</label>
-                    <textarea id="learning_path" name="learning_path" class="form-control" 
-                              placeholder='[{"step": 1, "title": "Python & Statistics", "description": "Master Python, statistics & probability."}, {"step": 2, "title": "Data Analysis & SQL", "description": "Learn SQL, data wrangling & visualization."}]'
-                              style="min-height: 140px;">{{ course.learning_path if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">JSON array of {step, title, description} objects.</small>
+                    <label>Learning Path Steps</label>
+                    <div id="learning_path_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addLearningPath()">
+                        <i class="fas fa-plus"></i> Add Step
+                    </button>
+                    <textarea id="learning_path" name="learning_path" style="display:none;">{{ course.learning_path if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add each step in the learning journey with step number, title, and description.</small>
                 </div>
 
                 <!-- Technologies -->
@@ -481,11 +487,13 @@
                     <i class="fas fa-question-circle"></i> FAQ
                 </h3>
                 <div class="form-group">
-                    <label for="faq">Frequently Asked Questions (JSON format)</label>
-                    <textarea id="faq" name="faq" class="form-control" 
-                              placeholder='[{"question": "Do I need prior experience?", "answer": "No! We start from basics."}, {"question": "Is there placement assistance?", "answer": "Yes! We provide dedicated placement support."}]'
-                              style="min-height: 140px;">{{ course.faq if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">JSON array of {question, answer} objects.</small>
+                    <label>Frequently Asked Questions</label>
+                    <div id="faq_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addFaq()">
+                        <i class="fas fa-plus"></i> Add FAQ
+                    </button>
+                    <textarea id="faq" name="faq" style="display:none;">{{ course.faq if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add each question and its answer.</small>
                 </div>
 
                 <hr style="border: none; border-top: 2px solid rgba(79, 70, 229, 0.1); margin: 2.5rem 0;">
@@ -518,6 +526,121 @@
         </div>
     </main>
 </div>
+
+<style>
+    /* Dynamic Field Builder Styles */
+    .dynamic-field-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .dynamic-field-item {
+        display: flex;
+        gap: 0.5rem;
+        align-items: flex-start;
+        padding: 0.75rem;
+        background: rgba(79, 70, 229, 0.03);
+        border: 1px solid rgba(79, 70, 229, 0.12);
+        border-radius: 8px;
+        position: relative;
+        transition: border-color 0.2s;
+    }
+    .dynamic-field-item:hover {
+        border-color: rgba(79, 70, 229, 0.3);
+    }
+    .dynamic-field-item .field-inputs {
+        flex: 1;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    .dynamic-field-item .field-inputs input,
+    .dynamic-field-item .field-inputs textarea {
+        flex: 1;
+        min-width: 120px;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid rgba(79, 70, 229, 0.15);
+        border-radius: 6px;
+        font-size: 0.875rem;
+        background: var(--bg-primary, #fff);
+        color: var(--text-primary, #1a1a2e);
+        transition: border-color 0.2s;
+    }
+    .dynamic-field-item .field-inputs input:focus,
+    .dynamic-field-item .field-inputs textarea:focus {
+        outline: none;
+        border-color: var(--accent-color, #4f46e5);
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+    }
+    .dynamic-field-item .field-inputs textarea {
+        min-height: 60px;
+        resize: vertical;
+        min-width: 100%;
+    }
+    .dynamic-field-item .field-inputs input.field-small {
+        max-width: 80px;
+        min-width: 70px;
+        text-align: center;
+    }
+    .dynamic-field-item .field-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        background: var(--accent-color, #4f46e5);
+        color: #fff;
+        border-radius: 50%;
+        font-size: 0.75rem;
+        font-weight: 600;
+        flex-shrink: 0;
+        margin-top: 0.4rem;
+    }
+    .btn-remove-field {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        background: rgba(239, 68, 68, 0.08);
+        color: #ef4444;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+        margin-top: 0.25rem;
+        transition: all 0.2s;
+    }
+    .btn-remove-field:hover {
+        background: rgba(239, 68, 68, 0.2);
+        border-color: rgba(239, 68, 68, 0.5);
+    }
+    .btn-add-field {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 1rem;
+        margin-top: 0.5rem;
+        border: 1px dashed rgba(79, 70, 229, 0.4);
+        background: rgba(79, 70, 229, 0.05);
+        color: var(--accent-color, #4f46e5);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    .btn-add-field:hover {
+        background: rgba(79, 70, 229, 0.12);
+        border-color: rgba(79, 70, 229, 0.6);
+    }
+    .dynamic-field-item .field-inputs input::placeholder,
+    .dynamic-field-item .field-inputs textarea::placeholder {
+        color: var(--text-secondary, #94a3b8);
+        opacity: 0.7;
+    }
+</style>
 
 <script>
     // Auto-generate slug from title
@@ -560,6 +683,7 @@
         initImagePreview('image');
         initImagePreview('instructor_image');
         initImagePreview('hero_image');
+        initDynamicFields();
     });
 
     function initImagePreview(fieldId) {
@@ -687,13 +811,200 @@
         });
     });
 
-    // Form validation for required image field
+    // ===== Dynamic Field Builder Functions =====
+    let detailStatCount = 0;
+    let moduleDetailCount = 0;
+    let learningPathCount = 0;
+    let faqCount = 0;
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&').replace(/"/g, '"').replace(/</g, '<').replace(/>/g, '>');
+    }
+
+    function addDetailStat(number, label) {
+        detailStatCount++;
+        const container = document.getElementById('detail_stats_container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field-item';
+        item.innerHTML = `
+            <span class="field-number">${detailStatCount}</span>
+            <div class="field-inputs">
+                <input type="text" placeholder="Number (e.g. 12,500+)" value="${escapeHtml(number || '')}" data-field="number">
+                <input type="text" placeholder="Label (e.g. Learners)" value="${escapeHtml(label || '')}" data-field="label">
+            </div>
+            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    }
+
+    function addModuleDetail(title, description) {
+        moduleDetailCount++;
+        const container = document.getElementById('modules_detail_container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field-item';
+        item.innerHTML = `
+            <span class="field-number">${moduleDetailCount}</span>
+            <div class="field-inputs">
+                <input type="text" placeholder="Module title (e.g. Python for Data Science)" value="${escapeHtml(title || '')}" data-field="title">
+                <textarea placeholder="Module description..." data-field="description">${escapeHtml(description || '')}</textarea>
+            </div>
+            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    }
+
+    function addLearningPath(step, title, description) {
+        learningPathCount++;
+        const container = document.getElementById('learning_path_container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field-item';
+        item.innerHTML = `
+            <span class="field-number">${step || learningPathCount}</span>
+            <div class="field-inputs">
+                <input type="number" class="field-small" placeholder="Step" value="${step || learningPathCount}" data-field="step" min="1">
+                <input type="text" placeholder="Step title (e.g. Python & Statistics)" value="${escapeHtml(title || '')}" data-field="title">
+                <textarea placeholder="Step description..." data-field="description">${escapeHtml(description || '')}</textarea>
+            </div>
+            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    }
+
+    function addFaq(question, answer) {
+        faqCount++;
+        const container = document.getElementById('faq_container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field-item';
+        item.innerHTML = `
+            <span class="field-number">${faqCount}</span>
+            <div class="field-inputs">
+                <input type="text" placeholder="Question (e.g. Do I need prior experience?)" value="${escapeHtml(question || '')}" data-field="question">
+                <textarea placeholder="Answer..." data-field="answer">${escapeHtml(answer || '')}</textarea>
+            </div>
+            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    }
+
+    function removeFieldItem(btn) {
+        const item = btn.closest('.dynamic-field-item');
+        const container = item.parentElement;
+        item.remove();
+        renumberFields(container);
+    }
+
+    function renumberFields(container) {
+        const items = container.querySelectorAll('.dynamic-field-item');
+        items.forEach((item, index) => {
+            const numEl = item.querySelector('.field-number');
+            if (numEl) numEl.textContent = index + 1;
+        });
+    }
+
+    function initDynamicFields() {
+        // Parse existing JSON from hidden textareas and render friendly fields
+        try {
+            const statsVal = document.getElementById('detail_stats').value.trim();
+            if (statsVal) {
+                const stats = JSON.parse(statsVal);
+                if (Array.isArray(stats)) {
+                    stats.forEach(s => addDetailStat(s.number || '', s.label || ''));
+                }
+            }
+        } catch(e) { console.warn('Could not parse detail_stats:', e); }
+
+        try {
+            const modulesVal = document.getElementById('modules_detail').value.trim();
+            if (modulesVal) {
+                const modules = JSON.parse(modulesVal);
+                if (Array.isArray(modules)) {
+                    modules.forEach(m => addModuleDetail(m.title || '', m.description || ''));
+                }
+            }
+        } catch(e) { console.warn('Could not parse modules_detail:', e); }
+
+        try {
+            const pathVal = document.getElementById('learning_path').value.trim();
+            if (pathVal) {
+                const paths = JSON.parse(pathVal);
+                if (Array.isArray(paths)) {
+                    paths.forEach(p => addLearningPath(p.step || '', p.title || '', p.description || ''));
+                }
+            }
+        } catch(e) { console.warn('Could not parse learning_path:', e); }
+
+        try {
+            const faqVal = document.getElementById('faq').value.trim();
+            if (faqVal) {
+                const faqs = JSON.parse(faqVal);
+                if (Array.isArray(faqs)) {
+                    faqs.forEach(f => addFaq(f.question || '', f.answer || ''));
+                }
+            }
+        } catch(e) { console.warn('Could not parse faq:', e); }
+    }
+
+    function serializeDynamicFields() {
+        // Serialize Detail Stats
+        const statsItems = document.querySelectorAll('#detail_stats_container .dynamic-field-item');
+        const statsArr = [];
+        statsItems.forEach(item => {
+            const number = item.querySelector('[data-field="number"]').value.trim();
+            const label = item.querySelector('[data-field="label"]').value.trim();
+            if (number || label) statsArr.push({ number, label });
+        });
+        document.getElementById('detail_stats').value = statsArr.length > 0 ? JSON.stringify(statsArr) : '';
+
+        // Serialize Modules Detail
+        const moduleItems = document.querySelectorAll('#modules_detail_container .dynamic-field-item');
+        const modulesArr = [];
+        moduleItems.forEach(item => {
+            const title = item.querySelector('[data-field="title"]').value.trim();
+            const description = item.querySelector('[data-field="description"]').value.trim();
+            if (title || description) modulesArr.push({ title, description });
+        });
+        document.getElementById('modules_detail').value = modulesArr.length > 0 ? JSON.stringify(modulesArr) : '';
+
+        // Serialize Learning Path
+        const pathItems = document.querySelectorAll('#learning_path_container .dynamic-field-item');
+        const pathArr = [];
+        pathItems.forEach((item, index) => {
+            const step = parseInt(item.querySelector('[data-field="step"]').value) || (index + 1);
+            const title = item.querySelector('[data-field="title"]').value.trim();
+            const description = item.querySelector('[data-field="description"]').value.trim();
+            if (title || description) pathArr.push({ step, title, description });
+        });
+        document.getElementById('learning_path').value = pathArr.length > 0 ? JSON.stringify(pathArr) : '';
+
+        // Serialize FAQ
+        const faqItems = document.querySelectorAll('#faq_container .dynamic-field-item');
+        const faqArr = [];
+        faqItems.forEach(item => {
+            const question = item.querySelector('[data-field="question"]').value.trim();
+            const answer = item.querySelector('[data-field="answer"]').value.trim();
+            if (question || answer) faqArr.push({ question, answer });
+        });
+        document.getElementById('faq').value = faqArr.length > 0 ? JSON.stringify(faqArr) : '';
+    }
+
+    // Form validation for required image field + serialize dynamic fields
     function validateCourseForm() {
         const imageField = document.getElementById('image');
         if (!imageField.value.trim()) {
             alert('Please provide a Course Image (upload or enter URL)');
             return false;
         }
+        // Serialize dynamic fields into hidden textareas before submit
+        serializeDynamicFields();
         return true;
     }
 </script>

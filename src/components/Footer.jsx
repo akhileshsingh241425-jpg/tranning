@@ -12,7 +12,6 @@ import {
 import logo from '../assets/fevicon.png';
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
 
   const handleNewsletterSubmit = (e) => {
@@ -55,7 +54,7 @@ const Footer = () => {
             through live instructor-led courses, hands-on projects, and certification support.
           </p>
           <div className="footer-contact-info">
-            <div><FaEnvelope /> support@trainingprotec.com</div>
+            <div><FaEnvelope /> contact@trainingprotec.com</div>
           </div>
           <div className="footer-social">
             <a href="#" className="social-link" aria-label="Facebook"><FaFacebook /></a>
@@ -93,36 +92,24 @@ const Footer = () => {
         </div>
 
         <div className="footer-links">
-          <h4>Interview Prep</h4>
-          <ul>
-            <li><a href="#blog">Python Interview Questions</a></li>
-            <li><a href="#blog">SQL Interview Questions</a></li>
-            <li><a href="#blog">React Interview Questions</a></li>
-            <li><a href="#blog">Data Science Interview Prep</a></li>
-            <li><a href="#blog">AWS Interview Questions</a></li>
-            <li><a href="#blog">DevOps Interview Questions</a></li>
-          </ul>
-        </div>
-
-        <div className="footer-links">
           <h4>Company</h4>
           <ul>
             <li><a href="#about">About Us</a></li>
             <li><a href="#contact">Contact Us</a></li>
-            <li><a href="#contact">Become an Instructor</a></li>
-            <li><a href="#contact">Partnerships</a></li>
-            <li><a href="#contact">Careers at TrainingProtec</a></li>
+            <li><Link to="/enquiry/instructor">Become an Instructor</Link></li>
+            <li><Link to="/enquiry/partnership">Partnerships</Link></li>
+            <li><Link to="/enquiry/career">Careers at TrainingProtec</Link></li>
             <li><a href="#">Sitemap</a></li>
           </ul>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; {currentYear} TrainingProtec. All rights reserved. | Global Professional Training Platform</p>
+        <p>&copy; 2020 TrainingProtec. All rights reserved. | Global Professional Training Platform</p>
         <div className="footer-bottom-links">
-          <Link to="/terms">Privacy Policy</Link>
-          <Link to="/terms">Terms of Service</Link>
-          <a href="#">Refund Policy</a>
+          <Link to="/terms#privacy">Privacy Policy</Link>
+          <Link to="/terms#terms">Terms and Conditions</Link>
+          <Link to="/terms#refund">Refund Policy</Link>
         </div>
       </div>
     </footer>

@@ -58,8 +58,8 @@ const fallbackCourses = [
     description: "Master Python, Machine Learning, Deep Learning & AI with hands-on projects. Build real-world models using TensorFlow, scikit-learn & pandas. Includes capstone project with industry dataset.",
     image: courseDataAnalytics,
     slug: "data-science-ai",
-    price: "₹16,999",
-    originalPrice: "₹49,999",
+    price: "$199",
+    originalPrice: "$599",
     rating: 4.8,
     reviews: 2840,
     learners: "12,500+",
@@ -68,12 +68,6 @@ const fallbackCourses = [
     tag: "Bestseller",
     modules: 12,
     projects: 15,
-    instructor: {
-      name: "Dr. Amit Sharma",
-      role: "Ex-Google AI Engineer | IIT Delhi",
-      image: person2,
-      experience: "14+ years"
-    },
     curriculum: ["Python & Statistics", "Machine Learning", "Deep Learning & NLP", "AI with TensorFlow"]
   },
   {
@@ -82,8 +76,8 @@ const fallbackCourses = [
     description: "Learn AWS, Azure, Docker, Kubernetes & CI/CD pipelines. Deploy real applications to the cloud. Includes AWS Solutions Architect certification prep.",
     image: courseNetworkSecurity,
     slug: "cloud-computing-devops",
-    price: "₹14,999",
-    originalPrice: "₹39,999",
+    price: "$179",
+    originalPrice: "$479",
     rating: 4.7,
     reviews: 1950,
     learners: "9,800+",
@@ -92,12 +86,6 @@ const fallbackCourses = [
     tag: "Trending",
     modules: 10,
     projects: 12,
-    instructor: {
-      name: "Rajesh Menon",
-      role: "AWS Certified Solutions Architect | Ex-Amazon",
-      image: person4,
-      experience: "12+ years"
-    },
     curriculum: ["AWS Core Services", "Docker & Kubernetes", "CI/CD Pipelines", "Infrastructure as Code"]
   },
   {
@@ -106,8 +94,8 @@ const fallbackCourses = [
     description: "Learn ethical hacking, penetration testing, network security & compliance. Hands-on labs with Kali Linux, Metasploit & Burp Suite. CEH certification prep included.",
     image: courseCybersecurity,
     slug: "cyber-security",
-    price: "₹15,999",
-    originalPrice: "₹44,999",
+    price: "$189",
+    originalPrice: "$539",
     rating: 4.8,
     reviews: 1620,
     learners: "7,200+",
@@ -116,12 +104,6 @@ const fallbackCourses = [
     tag: "Hot",
     modules: 11,
     projects: 10,
-    instructor: {
-      name: "Vikash Kumar",
-      role: "CISO | CEH, OSCP Certified | IIT Bombay",
-      image: person6,
-      experience: "16+ years"
-    },
     curriculum: ["Network Security Basics", "Ethical Hacking", "Penetration Testing", "Compliance & Forensics"]
   },
   {
@@ -130,8 +112,8 @@ const fallbackCourses = [
     description: "Master MERN Stack — React, Node.js, MongoDB, Express. Build 10+ real-world projects including an e-commerce platform, social media app & REST APIs.",
     image: courseWebDev,
     slug: "web-development",
-    price: "₹12,999",
-    originalPrice: "₹39,999",
+    price: "$149",
+    originalPrice: "$479",
     rating: 4.9,
     reviews: 3200,
     learners: "15,000+",
@@ -140,12 +122,6 @@ const fallbackCourses = [
     tag: "Bestseller",
     modules: 14,
     projects: 12,
-    instructor: {
-      name: "Priya Nair",
-      role: "Senior Developer | Ex-Flipkart | NIT Trichy",
-      image: person1,
-      experience: "10+ years"
-    },
     curriculum: ["HTML, CSS & JavaScript", "React & Redux", "Node.js & Express", "MongoDB & Deployment"]
   },
   {
@@ -154,8 +130,8 @@ const fallbackCourses = [
     description: "Master SEO, Google Ads, Social Media Marketing, Analytics & Content Strategy. Run real campaigns with Google Ad credits. Google certified program.",
     image: courseDigitalMarketing,
     slug: "digital-marketing",
-    price: "₹9,999",
-    originalPrice: "₹29,999",
+    price: "$119",
+    originalPrice: "$359",
     rating: 4.7,
     reviews: 2100,
     learners: "18,000+",
@@ -164,12 +140,6 @@ const fallbackCourses = [
     tag: "Popular",
     modules: 8,
     projects: 6,
-    instructor: {
-      name: "Sneha Patel",
-      role: "CMO | Ex-HubSpot | Google Certified Trainer",
-      image: person5,
-      experience: "11+ years"
-    },
     curriculum: ["SEO & Content Marketing", "Google Ads & PPC", "Social Media Strategy", "Analytics & Reporting"]
   },
   {
@@ -178,8 +148,8 @@ const fallbackCourses = [
     description: "Learn Excel, SQL, Tableau, Power BI & statistical analysis. Work on real business datasets from top companies. Make data-driven decisions like a pro.",
     image: courseDataAnalytics,
     slug: "business-analytics",
-    price: "₹11,999",
-    originalPrice: "₹34,999",
+    price: "$139",
+    originalPrice: "$419",
     rating: 4.6,
     reviews: 1450,
     learners: "8,500+",
@@ -188,12 +158,6 @@ const fallbackCourses = [
     tag: "New",
     modules: 9,
     projects: 8,
-    instructor: {
-      name: "Dr. Sanjay Mehta",
-      role: "Analytics Lead | Ex-Deloitte | ISB Hyderabad",
-      image: person2,
-      experience: "15+ years"
-    },
     curriculum: ["Excel Advanced", "SQL for Analytics", "Tableau & Power BI", "Statistical Modeling"]
   },
   {
@@ -202,8 +166,8 @@ const fallbackCourses = [
     description: "Master Figma, wireframing, prototyping & user research. Build a professional 10+ piece design portfolio. Includes real client projects & design sprints.",
     image: courseGraphicDesign,
     slug: "ui-ux-design",
-    price: "₹10,999",
-    originalPrice: "₹32,999",
+    price: "$129",
+    originalPrice: "$395",
     rating: 4.8,
     reviews: 1180,
     learners: "6,200+",
@@ -212,12 +176,6 @@ const fallbackCourses = [
     tag: "Trending",
     modules: 8,
     projects: 10,
-    instructor: {
-      name: "Anita Desai",
-      role: "Design Lead | Ex-Swiggy | NID Ahmedabad",
-      image: person3,
-      experience: "9+ years"
-    },
     curriculum: ["Design Thinking", "Figma & Prototyping", "User Research", "Design Systems"]
   },
   {
@@ -226,8 +184,8 @@ const fallbackCourses = [
     description: "Build iOS & Android apps with React Native & Flutter. Publish to App Store & Google Play. Includes backend integration with Firebase & real-time features.",
     image: courseMobileApp,
     slug: "mobile-app-development",
-    price: "₹14,999",
-    originalPrice: "₹39,999",
+    price: "$179",
+    originalPrice: "$479",
     rating: 4.7,
     reviews: 980,
     learners: "5,400+",
@@ -236,12 +194,6 @@ const fallbackCourses = [
     tag: "Popular",
     modules: 10,
     projects: 8,
-    instructor: {
-      name: "Karan Singh",
-      role: "Mobile Lead | Ex-Paytm | BITS Pilani",
-      image: person4,
-      experience: "10+ years"
-    },
     curriculum: ["React Native Basics", "Flutter Development", "Firebase & APIs", "App Store Deployment"]
   }
 ];
@@ -270,8 +222,8 @@ const Courses = () => {
             description: c.description,
             image: c.image,
             slug: c.slug,
-            price: `₹${c.price}`,
-            originalPrice: `₹${c.originalPrice}`,
+            price: `$${c.price}`,
+            originalPrice: `$${c.originalPrice}`,
             rating: c.rating,
             reviews: c.reviews,
             learners: c.learners,
@@ -381,11 +333,6 @@ const Courses = () => {
                 <h3 className="tp-course-title">{course.title}</h3>
                 <p className="tp-course-desc">{course.description}</p>
                 
-                <div className="tp-course-instructor">
-                  <img src={course.instructor.image} alt={course.instructor.name} />
-                  <span>{course.instructor.name}</span>
-                </div>
-
                 <div className="tp-course-bottom">
                   <div className="tp-course-rating">
                     <FaStar className="tp-star" />

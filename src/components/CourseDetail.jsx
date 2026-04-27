@@ -32,7 +32,7 @@ const CourseDetail = () => {
           title: data.title,
           tagline: data.tagline || (localCourse && localCourse.tagline) || data.description,
           heroImage: data.heroImage || data.image || (localCourse && localCourse.heroImage),
-          price: data.price ? `₹${data.price}` : (localCourse && localCourse.price),
+          price: data.price ? `$${data.price}` : (localCourse && localCourse.price),
           duration: data.duration || (localCourse && localCourse.duration),
           level: data.level || (localCourse && localCourse.level),
           overview: data.overview || (localCourse && localCourse.overview) || data.description,
@@ -282,7 +282,7 @@ const CourseDetail = () => {
             <p>Enroll in {course.title} today and take the first step toward mastering new skills. Join thousands of successful students.</p>
             <div className="sd-cta-buttons">
               <a
-                href={`mailto:support@trainingprotec.com?subject=${encodeURIComponent(`Enrollment Inquiry: ${course.title}`)}&body=${encodeURIComponent(`Hi! I want to enroll in the ${course.title} course.\n\nCourse Details:\n- Course: ${course.title}\n- Price: ${course.price}\n- Duration: ${course.duration}\n- Level: ${course.level}\n\nPlease share enrollment details. Thank you!`)}`}
+                href={`mailto:contact@trainingprotec.com?subject=${encodeURIComponent(`Enrollment Inquiry: ${course.title}`)}&body=${encodeURIComponent(`Hi! I want to enroll in the ${course.title} course.\n\nCourse Details:\n- Course: ${course.title}\n- Price: ${course.price}\n- Duration: ${course.duration}\n- Level: ${course.level}\n\nPlease share enrollment details. Thank you!`)}`}
                 className="sd-btn-primary"
               >
                 <FaEnvelope /> Enroll Now — {course.price}

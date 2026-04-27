@@ -104,11 +104,8 @@ const Navbar = () => {
     <>
       {/* Top Bar */}
       <div className="nav-top-bar">
-        <div className="nav-top-content">
-          <span className="nav-top-text">Upskill with industry-recognized certifications</span>
-          <div className="nav-top-right">
-            <a href="mailto:support@trainingprotec.com" className="nav-top-phone"><FaEnvelope /> support@trainingprotec.com</a>
-          </div>
+        <div className="nav-top-content" style={{ justifyContent: 'center' }}>
+          <a href="mailto:contact@trainingprotec.com" className="nav-top-phone"><FaEnvelope /> contact@trainingprotec.com</a>
         </div>
       </div>
 

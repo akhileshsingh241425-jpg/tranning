@@ -15,6 +15,9 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Chatbot from './components/Chatbot';
 import TermsAndConditions from './components/TermsAndConditions';
+import EnquiryInstructor from './components/EnquiryInstructor';
+import EnquiryPartnership from './components/EnquiryPartnership';
+import EnquiryCareer from './components/EnquiryCareer';
 import './App.css';
 
 function HomePage() {
@@ -69,6 +72,9 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/courses/:slug" element={<CourseDetail />} />
           <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/enquiry/instructor" element={<EnquiryInstructor />} />
+          <Route path="/enquiry/partnership" element={<EnquiryPartnership />} />
+          <Route path="/enquiry/career" element={<EnquiryCareer />} />
         </Routes>
         <Footer />
         <Chatbot />

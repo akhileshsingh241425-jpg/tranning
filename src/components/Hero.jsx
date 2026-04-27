@@ -128,7 +128,7 @@ const Hero = () => {
           </div>
 
           <div className="hero-partners">
-            <span className="partner-label">Trusted by learners at:</span>
+            <span className="partner-label">By learners at leading global tech companies</span>
             <div className="partner-logos">
               {partnerLogos.map((logo, index) => (
                 <span key={index} className="partner-logo-text">{logo}</span>

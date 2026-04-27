@@ -467,6 +467,20 @@ def admin_courses():
     courses = Course.query.order_by(Course.sort_order, Course.created_at.desc()).all()
     return render_template('admin/courses.html', courses=courses)
 
+def safe_int(value, default=0):
+    """Safely convert form value to int, returning default for empty/invalid values."""
+    try:
+        return int(value) if value and value.strip() else default
+    except (ValueError, TypeError, AttributeError):
+        return default
+
+def safe_float(value, default=4.5):
+    """Safely convert form value to float, returning default for empty/invalid values."""
+    try:
+        return float(value) if value and value.strip() else default
+    except (ValueError, TypeError, AttributeError):
+        return default
+
 @app.route('/admin/courses/new', methods=['GET', 'POST'])
 @login_required
 def admin_course_new():
@@ -479,23 +493,23 @@ def admin_course_new():
             description=request.form.get('description', ''),
             image=request.form.get('image', ''),
             icon=request.form.get('icon', 'FaBookOpen'),
-            price=int(request.form.get('price', 0)),
-            original_price=int(request.form.get('original_price', 0)),
-            rating=float(request.form.get('rating', 4.5)),
-            reviews=int(request.form.get('reviews', 0)),
+            price=safe_int(request.form.get('price', ''), 0),
+            original_price=safe_int(request.form.get('original_price', ''), 0),
+            rating=safe_float(request.form.get('rating', ''), 4.5),
+            reviews=safe_int(request.form.get('reviews', ''), 0),
             learners=request.form.get('learners', '0'),
             duration=request.form.get('duration', ''),
             level=request.form.get('level', 'Beginner'),
             tag=request.form.get('tag', ''),
-            modules=int(request.form.get('modules', 0)),
-            projects=int(request.form.get('projects', 0)),
+            modules=safe_int(request.form.get('modules', ''), 0),
+            projects=safe_int(request.form.get('projects', ''), 0),
             instructor_name=request.form.get('instructor_name', ''),
             instructor_role=request.form.get('instructor_role', ''),
             instructor_image=request.form.get('instructor_image', ''),
             instructor_experience=request.form.get('instructor_experience', ''),
             curriculum=request.form.get('curriculum', ''),
             is_published=request.form.get('is_published') == 'on',
-            sort_order=int(request.form.get('sort_order', 0)),
+            sort_order=safe_int(request.form.get('sort_order', ''), 0),
             tagline=request.form.get('tagline', ''),
             hero_image=request.form.get('hero_image', ''),
             overview=request.form.get('overview', ''),
@@ -506,9 +520,14 @@ def admin_course_new():
             faq=request.form.get('faq', ''),
             detail_stats=request.form.get('detail_stats', '')
         )
-        db.session.add(course)
-        db.session.commit()
-        flash('Course created successfully!', 'success')
+        try:
+            db.session.add(course)
+            db.session.commit()
+            flash('Course created successfully!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error creating course: {str(e)}', 'error')
+            return render_template('admin/course_form.html', course=course)
         return redirect(url_for('admin_courses'))
 
     return render_template('admin/course_form.html', course=None)
@@ -524,23 +543,23 @@ def admin_course_edit(id):
         course.description = request.form.get('description', '')
         course.image = request.form.get('image', '')
         course.icon = request.form.get('icon', 'FaBookOpen')
-        course.price = int(request.form.get('price', 0))
-        course.original_price = int(request.form.get('original_price', 0))
-        course.rating = float(request.form.get('rating', 4.5))
-        course.reviews = int(request.form.get('reviews', 0))
+        course.price = safe_int(request.form.get('price', ''), 0)
+        course.original_price = safe_int(request.form.get('original_price', ''), 0)
+        course.rating = safe_float(request.form.get('rating', ''), 4.5)
+        course.reviews = safe_int(request.form.get('reviews', ''), 0)
         course.learners = request.form.get('learners', '0')
         course.duration = request.form.get('duration', '')
         course.level = request.form.get('level', 'Beginner')
         course.tag = request.form.get('tag', '')
-        course.modules = int(request.form.get('modules', 0))
-        course.projects = int(request.form.get('projects', 0))
+        course.modules = safe_int(request.form.get('modules', ''), 0)
+        course.projects = safe_int(request.form.get('projects', ''), 0)
         course.instructor_name = request.form.get('instructor_name', '')
         course.instructor_role = request.form.get('instructor_role', '')
         course.instructor_image = request.form.get('instructor_image', '')
         course.instructor_experience = request.form.get('instructor_experience', '')
         course.curriculum = request.form.get('curriculum', '')
         course.is_published = request.form.get('is_published') == 'on'
-        course.sort_order = int(request.form.get('sort_order', 0))
+        course.sort_order = safe_int(request.form.get('sort_order', ''), 0)
         course.tagline = request.form.get('tagline', '')
         course.hero_image = request.form.get('hero_image', '')
         course.overview = request.form.get('overview', '')
@@ -550,8 +569,13 @@ def admin_course_edit(id):
         course.technologies_list = request.form.get('technologies_list', '')
         course.faq = request.form.get('faq', '')
         course.detail_stats = request.form.get('detail_stats', '')
-        db.session.commit()
-        flash('Course updated successfully!', 'success')
+        try:
+            db.session.commit()
+            flash('Course updated successfully!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating course: {str(e)}', 'error')
+            return render_template('admin/course_form.html', course=course)
         return redirect(url_for('admin_courses'))
 
     return render_template('admin/course_form.html', course=course)

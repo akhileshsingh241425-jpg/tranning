@@ -656,13 +656,20 @@ def admin_testimonial_delete(id):
 # ==================== INITIALIZE ====================
 
 def create_admin():
-    admin = Admin.query.filter_by(username='admin').first()
+    admin = Admin.query.first()
     if not admin:
-        admin = Admin(username='admin', email='admin@eduhub.com')
-        admin.set_password('admin123')
+        admin = Admin(username='vishalsharma1104@gmail.com', email='vishalsharma1104@gmail.com')
+        admin.set_password('Vishal@1*sharma')
         db.session.add(admin)
         db.session.commit()
-        print('Admin user created: admin / admin123')
+        print('Admin user created: vishalsharma1104@gmail.com / Vishal@1*sharma')
+    else:
+        # Update existing admin credentials
+        admin.username = 'vishalsharma1104@gmail.com'
+        admin.email = 'vishalsharma1104@gmail.com'
+        admin.set_password('Vishal@1*sharma')
+        db.session.commit()
+        print('Admin credentials updated: vishalsharma1104@gmail.com / Vishal@1*sharma')
 
 def create_sample_blogs():
     if Blog.query.count() == 0:

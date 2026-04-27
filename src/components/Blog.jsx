@@ -100,7 +100,7 @@ const Blog = () => {
 
   const fetchBlogs = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://147.93.19.87'}/api/blogs`);
+      const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/blogs`);
       if (response.ok) {
         const data = await response.json();
         setBlogs(data);

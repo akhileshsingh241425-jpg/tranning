@@ -17,7 +17,7 @@ const CourseDetail = () => {
     setActiveAccordion(null);
 
     // Try API first, fallback to local data
-    fetch(`${process.env.REACT_APP_API_URL || 'http://147.93.19.87'}/api/courses/${slug}`)
+    fetch(`${process.env.REACT_APP_API_URL || ''}/api/courses/${slug}`)
       .then(res => {
         if (!res.ok) throw new Error('Not found');
         return res.json();
@@ -62,7 +62,7 @@ const CourseDetail = () => {
       });
 
     // Get all course slugs for navigation
-    fetch(`${process.env.REACT_APP_API_URL || 'http://147.93.19.87'}/api/courses`)
+    fetch(`${process.env.REACT_APP_API_URL || ''}/api/courses`)
       .then(res => res.ok ? res.json() : Promise.reject())
       .then(data => {
         if (data && data.length > 0) {

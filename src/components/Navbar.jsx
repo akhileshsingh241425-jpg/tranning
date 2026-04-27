@@ -38,7 +38,7 @@ const Navbar = () => {
 
   // Fetch courses for search
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL || 'http://147.93.19.87'}/api/courses`)
+    fetch(`${process.env.REACT_APP_API_URL || ''}/api/courses`)
       .then(res => res.ok ? res.json() : Promise.reject())
       .then(data => {
         if (data && data.length > 0) {

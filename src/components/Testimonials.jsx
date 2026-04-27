@@ -76,7 +76,7 @@ const Testimonials = () => {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const API_URL = process.env.REACT_APP_API_URL || 'http://147.93.19.87';
+        const API_URL = process.env.REACT_APP_API_URL || '';
         const response = await fetch(`${API_URL}/api/testimonials`);
         if (response.ok) {
           const data = await response.json();

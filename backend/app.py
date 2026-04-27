@@ -20,7 +20,12 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'}
 # Ensure upload folder exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-CORS(app, origins=['http://localhost:3000', 'http://localhost:3005', 'http://147.93.19.87', 'http://147.93.19.87:5050'], supports_credentials=True)
+CORS(app, origins=[
+    'http://localhost:3000', 'http://localhost:3005',
+    'http://147.93.19.87', 'http://147.93.19.87:5050',
+    'https://trainingprotec.com', 'https://www.trainingprotec.com',
+    'http://trainingprotec.com', 'http://www.trainingprotec.com'
+], supports_credentials=True)
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'admin_login'

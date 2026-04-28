@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   FaTwitter,
   FaLinkedinIn,
@@ -13,12 +13,26 @@ import logo from '../assets/fevicon.png';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
     if (email) {
       alert('Thank you for subscribing!');
       setEmail('');
+    }
+  };
+
+  const scrollToSection = (e, sectionId) => {
+    e.preventDefault();
+    if (location.pathname === '/') {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      window.location.href = '/#' + sectionId;
     }
   };
 
@@ -82,24 +96,24 @@ const Footer = () => {
         <div className="footer-links">
           <h4>Resources</h4>
           <ul>
-            <li><a href="#blog">Blog & Articles</a></li>
-            <li><a href="#about">About TrainingProtec</a></li>
-            <li><a href="#testimonials">Success Stories</a></li>
-            <li><a href="#features">Why TrainingProtec</a></li>
-            <li><a href="#contact">Free Career Counselling</a></li>
-            <li><a href="#contact">Corporate Training</a></li>
+            <li><a href="/#blog" onClick={(e) => scrollToSection(e, 'blog')}>Blog & Articles</a></li>
+            <li><a href="/#about" onClick={(e) => scrollToSection(e, 'about')}>About TrainingProtec</a></li>
+            <li><a href="/#testimonials" onClick={(e) => scrollToSection(e, 'testimonials')}>Success Stories</a></li>
+            <li><a href="/#features" onClick={(e) => scrollToSection(e, 'features')}>Why TrainingProtec</a></li>
+            <li><a href="/#contact" onClick={(e) => scrollToSection(e, 'contact')}>Free Career Counselling</a></li>
+            <li><a href="/#contact" onClick={(e) => scrollToSection(e, 'contact')}>Corporate Training</a></li>
           </ul>
         </div>
 
         <div className="footer-links">
           <h4>Company</h4>
           <ul>
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#contact">Contact Us</a></li>
+            <li><a href="/#about" onClick={(e) => scrollToSection(e, 'about')}>About Us</a></li>
+            <li><a href="/#contact" onClick={(e) => scrollToSection(e, 'contact')}>Contact Us</a></li>
             <li><Link to="/enquiry/instructor">Become an Instructor</Link></li>
             <li><Link to="/enquiry/partnership">Partnerships</Link></li>
             <li><Link to="/enquiry/career">Careers at TrainingProtec</Link></li>
-            <li><a href="#">Sitemap</a></li>
+            <li><a href="/sitemap.xml" target="_blank" rel="noopener noreferrer">Sitemap</a></li>
           </ul>
         </div>
       </div>

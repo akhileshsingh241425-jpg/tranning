@@ -50,6 +50,21 @@ function App() {
     }, 2000);
   }, []);
 
+  // Handle hash scroll after loading completes
+  useEffect(() => {
+    if (!loading) {
+      const hash = window.location.hash;
+      if (hash) {
+        setTimeout(() => {
+          const element = document.getElementById(hash.replace('#', ''));
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 300);
+      }
+    }
+  }, [loading]);
+
   if (loading) {
     return (
       <div className="loader-container">

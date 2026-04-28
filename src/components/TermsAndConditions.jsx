@@ -163,13 +163,13 @@ const TermsAndConditions = ({ section }) => {
   const getHeroContent = () => {
     switch (activeSection) {
       case 'terms':
-        return { title: 'Terms & Conditions', desc: 'Effective Date: April 2026  |  Training Protec' };
+        return { title: 'Terms & Conditions', desc: 'Effective Date: August 2020  |  Training Protec' };
       case 'privacy':
-        return { title: 'Privacy Policy', desc: 'Effective Date: April 2026  |  Training Protec' };
+        return { title: 'Privacy Policy', desc: 'Effective Date: August 2020  |  Training Protec' };
       case 'refund':
-        return { title: 'Refund Policy', desc: 'Effective Date: April 2026  |  Training Protec' };
+        return { title: 'Refund Policy', desc: 'Effective Date: August 2020  |  Training Protec' };
       default:
-        return { title: 'Terms, Privacy & Refund Policy', desc: 'Effective Date: April 2026  |  Training Protec' };
+        return { title: 'Terms, Privacy & Refund Policy', desc: 'Effective Date: August 2020  |  Training Protec' };
     }
   };
 

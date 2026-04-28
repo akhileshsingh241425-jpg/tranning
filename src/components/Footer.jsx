@@ -68,14 +68,14 @@ const Footer = () => {
         <div className="footer-links">
           <h4>Popular Courses</h4>
           <ul>
-            <li><a href="#courses">Data Science & AI</a></li>
-            <li><a href="#courses">Cloud Computing & DevOps</a></li>
-            <li><a href="#courses">Cyber Security</a></li>
-            <li><a href="#courses">Full Stack Web Development</a></li>
-            <li><a href="#courses">Digital Marketing</a></li>
-            <li><a href="#courses">Business Analytics</a></li>
-            <li><a href="#courses">UI/UX Design</a></li>
-            <li><a href="#courses">Mobile App Development</a></li>
+            <li><Link to="/courses/data-science-ai">Data Science & AI</Link></li>
+            <li><Link to="/courses/cloud-computing-devops">Cloud Computing & DevOps</Link></li>
+            <li><Link to="/courses/cyber-security">Cyber Security</Link></li>
+            <li><Link to="/courses/web-development">Full Stack Web Development</Link></li>
+            <li><Link to="/courses/digital-marketing">Digital Marketing</Link></li>
+            <li><Link to="/courses/business-analytics">Business Analytics</Link></li>
+            <li><Link to="/courses/ui-ux-design">UI/UX Design</Link></li>
+            <li><Link to="/courses/mobile-app-development">Mobile App Development</Link></li>
           </ul>
         </div>
 

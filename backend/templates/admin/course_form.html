@@ -623,8 +623,7 @@
         
         if (price > 0 && original > 0) {
             const discount = Math.round(((original - price) / original) * 100);
-            const emi = Math.round(price / 6);
-            text.innerHTML = `$${price.toLocaleString()} <del style="color:var(--text-secondary)">$${original.toLocaleString()}</del> — <strong>${discount}% OFF</strong> — EMI from $${emi.toLocaleString()}/mo`;
+            text.innerHTML = `$${price.toLocaleString()} <del style="color:var(--text-secondary)">$${original.toLocaleString()}</del> — <strong>${discount}% OFF</strong>`;
             preview.style.display = 'block';
         } else {
             preview.style.display = 'none';

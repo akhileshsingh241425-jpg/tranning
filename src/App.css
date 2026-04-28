@@ -3088,7 +3088,7 @@ section {
 
 .footer-content {
   display: grid;
-  grid-template-columns: 1.5fr repeat(4, 1fr);
+  grid-template-columns: 1.5fr repeat(3, 1fr);
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;

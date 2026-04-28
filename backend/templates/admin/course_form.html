@@ -125,7 +125,7 @@
                                     <div class="upload-error" id="image-upload-error"></div>
                                 </div>
                                 <div class="image-input-panel" data-panel="url">
-                                    <input type="url" id="image_url_input" class="form-control"
+                                    <input type="text" id="image_url_input" class="form-control"
                                            value="{{ course.image if course else '' }}"
                                            placeholder="https://example.com/image.jpg"
                                            oninput="document.getElementById('image').value = this.value; updateImagePreview('image')">
@@ -349,7 +349,7 @@
                                 <div class="upload-error" id="hero_image-upload-error"></div>
                             </div>
                             <div class="image-input-panel" data-panel="url">
-                                <input type="url" id="hero_image_url_input" class="form-control"
+                                <input type="text" id="hero_image_url_input" class="form-control"
                                        value="{{ course.hero_image if course else '' }}"
                                        placeholder="https://example.com/banner.jpg (leave blank to use course image)"
                                        oninput="document.getElementById('hero_image').value = this.value; updateImagePreview('hero_image')">

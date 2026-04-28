@@ -125,7 +125,7 @@
                                 <div class="upload-error" id="image_url-upload-error"></div>
                             </div>
                             <div class="image-input-panel" data-panel="url">
-                                <input type="url" id="image_url_url_input" class="form-control"
+                                <input type="text" id="image_url_url_input" class="form-control"
                                        value="{{ blog.image_url if blog else '' }}"
                                        placeholder="https://example.com/image.jpg"
                                        oninput="document.getElementById('image_url').value = this.value; updateImagePreview('image_url')">

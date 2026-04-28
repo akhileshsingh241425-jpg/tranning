@@ -123,7 +123,7 @@
                                     <div class="upload-error" id="image-upload-error"></div>
                                 </div>
                                 <div class="image-input-panel" data-panel="url">
-                                    <input type="url" id="image_url_input" class="form-control"
+                                    <input type="text" id="image_url_input" class="form-control"
                                            value="{{ testimonial.image if testimonial else '' }}"
                                            placeholder="https://example.com/photo.jpg"
                                            oninput="document.getElementById('image').value = this.value; updateImagePreview('image')">

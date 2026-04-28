@@ -15,6 +15,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Chatbot from './components/Chatbot';
 import TermsAndConditions from './components/TermsAndConditions';
+import Sitemap from './components/Sitemap';
 import EnquiryInstructor from './components/EnquiryInstructor';
 import EnquiryPartnership from './components/EnquiryPartnership';
 import EnquiryCareer from './components/EnquiryCareer';
@@ -92,6 +93,7 @@ function App() {
           <Route path="/enquiry/instructor" element={<EnquiryInstructor />} />
           <Route path="/enquiry/partnership" element={<EnquiryPartnership />} />
           <Route path="/enquiry/career" element={<EnquiryCareer />} />
+          <Route path="/sitemap" element={<Sitemap />} />
         </Routes>
         <Footer />
         <Chatbot />

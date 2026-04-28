@@ -113,7 +113,7 @@ const Footer = () => {
             <li><Link to="/enquiry/instructor">Become an Instructor</Link></li>
             <li><Link to="/enquiry/partnership">Partnerships</Link></li>
             <li><Link to="/enquiry/career">Careers at TrainingProtec</Link></li>
-            <li><a href="/sitemap.xml" target="_blank" rel="noopener noreferrer">Sitemap</a></li>
+            <li><Link to="/sitemap">Sitemap</Link></li>
           </ul>
         </div>
       </div>

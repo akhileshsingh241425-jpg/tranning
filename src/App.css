@@ -1000,17 +1000,27 @@ section {
   align-items: center;
 }
 
-.partner-logo-text {
-  color: rgba(255,255,255,0.4);
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+.partner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.9rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   transition: var(--transition);
+  backdrop-filter: blur(4px);
 }
 
-.partner-logo-text:hover {
-  color: rgba(255,255,255,0.7);
+.partner-badge:hover {
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
 }
 
 /* ========================================
@@ -3306,6 +3316,12 @@ section {
 .terms-nav-pill:hover {
   background: var(--primary);
   color: #fff;
+}
+
+.terms-nav-pill.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
 }
 
 .terms-container {

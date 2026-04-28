@@ -71,7 +71,9 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/courses/:slug" element={<CourseDetail />} />
-          <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/terms" element={<TermsAndConditions section="terms" />} />
+          <Route path="/privacy" element={<TermsAndConditions section="privacy" />} />
+          <Route path="/refund" element={<TermsAndConditions section="refund" />} />
           <Route path="/enquiry/instructor" element={<EnquiryInstructor />} />
           <Route path="/enquiry/partnership" element={<EnquiryPartnership />} />
           <Route path="/enquiry/career" element={<EnquiryCareer />} />

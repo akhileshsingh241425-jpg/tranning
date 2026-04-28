@@ -30,7 +30,12 @@ const heroSlides = [
 ];
 
 const partnerLogos = [
-  'IBM', 'Microsoft', 'Google', 'AWS', 'Meta', 'Coursera'
+  { name: 'IBM', icon: '💻' },
+  { name: 'Microsoft', icon: '🪟' },
+  { name: 'Google', icon: '🔍' },
+  { name: 'AWS', icon: '☁️' },
+  { name: 'Meta', icon: '🌐' },
+  { name: 'Coursera', icon: '🎓' }
 ];
 
 const Hero = () => {
@@ -128,10 +133,10 @@ const Hero = () => {
           </div>
 
           <div className="hero-partners">
-            <span className="partner-label">By learners at leading global tech companies</span>
+            <span className="partner-label">Trusted by learners at leading global tech companies</span>
             <div className="partner-logos">
               {partnerLogos.map((logo, index) => (
-                <span key={index} className="partner-logo-text">{logo}</span>
+                <span key={index} className="partner-badge">{logo.icon} {logo.name}</span>
               ))}
             </div>
           </div>

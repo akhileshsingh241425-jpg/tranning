@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaChevronDown, FaEnvelope, FaSearch, FaTimes, FaClock, FaStar, FaArrowRight } from 'react-icons/fa';
+import { FaChevronDown, FaSearch, FaTimes, FaClock, FaStar, FaArrowRight } from 'react-icons/fa';
 import logo from '../assets/fevicon.png';
 
 const courseCategories = [
@@ -102,13 +102,6 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Top Bar */}
-      <div className="nav-top-bar">
-        <div className="nav-top-content" style={{ justifyContent: 'center' }}>
-          <a href="mailto:contact@trainingprotec.com" className="nav-top-phone"><FaEnvelope /> contact@trainingprotec.com</a>
-        </div>
-      </div>
-
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
         <Link to="/" className="nav-logo">
           <img src={logo} alt="TrainingProtec" className="logo-img" />

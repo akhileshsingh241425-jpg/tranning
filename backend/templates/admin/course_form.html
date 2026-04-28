@@ -72,7 +72,7 @@
         </div>
 
         <div class="card">
-            <form method="POST" onsubmit="return validateCourseForm()">
+            <form method="POST" enctype="multipart/form-data" onsubmit="return validateCourseForm()">
                 <!-- Basic Info -->
                 <h3 style="color: var(--accent-color); margin-bottom: 1.5rem;">
                     <i class="fas fa-info-circle"></i> Basic Information
@@ -80,9 +80,9 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="title">Course Title *</label>
-                        <input type="text" id="title" name="title" class="form-control" 
-                               value="{{ course.title if course else '' }}" placeholder="e.g. Data Science & AI" required>
+                        <label for="title">Course Title</label>
+                        <input type="text" id="title" name="title" class="form-control"
+                               value="{{ course.title if course else '' }}" placeholder="e.g. Data Science & AI">
                     </div>
                     
                     <div class="form-group">
@@ -93,14 +93,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description *</label>
-                    <textarea id="description" name="description" class="form-control" 
-                              placeholder="Detailed course description..." required style="min-height: 120px;">{{ course.description if course else '' }}</textarea>
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" class="form-control"
+                              placeholder="Detailed course description..." style="min-height: 120px;">{{ course.description if course else '' }}</textarea>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Course Image *</label>
+                        <label>Course Image</label>
                         <div class="image-input-group">
                             <div class="image-input-tabs">
                                 <button type="button" class="image-input-tab active" onclick="switchImageTab(this, 'upload')">
@@ -170,15 +170,15 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="price">Sale Price ($) *</label>
-                        <input type="number" id="price" name="price" class="form-control" 
-                               value="{{ course.price if course else '' }}" placeholder="e.g. 199" required min="0">
+                        <label for="price">Sale Price ($)</label>
+                        <input type="number" id="price" name="price" class="form-control"
+                               value="{{ course.price if course else '' }}" placeholder="e.g. 199" min="0">
                     </div>
                     
                     <div class="form-group">
-                        <label for="original_price">Original Price ($) *</label>
-                        <input type="number" id="original_price" name="original_price" class="form-control" 
-                               value="{{ course.original_price if course else '' }}" placeholder="e.g. 599" required min="0">
+                        <label for="original_price">Original Price ($)</label>
+                        <input type="number" id="original_price" name="original_price" class="form-control"
+                               value="{{ course.original_price if course else '' }}" placeholder="e.g. 599" min="0">
                     </div>
                 </div>
 
@@ -189,9 +189,9 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="duration">Duration *</label>
-                        <input type="text" id="duration" name="duration" class="form-control" 
-                               value="{{ course.duration if course else '' }}" placeholder="e.g. 6 Months" required>
+                        <label for="duration">Duration</label>
+                        <input type="text" id="duration" name="duration" class="form-control"
+                               value="{{ course.duration if course else '' }}" placeholder="e.g. 6 Months">
                     </div>
                     
                     <div class="form-group">
@@ -285,69 +285,25 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="instructor_name">Instructor Name *</label>
-                        <input type="text" id="instructor_name" name="instructor_name" class="form-control" 
-                               value="{{ course.instructor_name if course else '' }}" placeholder="e.g. Dr. Amit Sharma" required>
+                        <label for="instructor_name">Instructor Name</label>
+                        <input type="text" id="instructor_name" name="instructor_name" class="form-control"
+                               value="{{ course.instructor_name if course else '' }}" placeholder="e.g. Dr. Amit Sharma">
                     </div>
                     
                     <div class="form-group">
                         <label for="instructor_experience">Experience</label>
-                        <input type="text" id="instructor_experience" name="instructor_experience" class="form-control" 
+                        <input type="text" id="instructor_experience" name="instructor_experience" class="form-control"
                                value="{{ course.instructor_experience if course else '' }}" placeholder="e.g. 14+ years">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="instructor_role">Instructor Role / Credentials *</label>
-                    <input type="text" id="instructor_role" name="instructor_role" class="form-control" 
-                           value="{{ course.instructor_role if course else '' }}" placeholder="e.g. Ex-Google AI Engineer | IIT Delhi" required>
+                    <label for="instructor_role">Instructor Role / Credentials</label>
+                    <input type="text" id="instructor_role" name="instructor_role" class="form-control"
+                           value="{{ course.instructor_role if course else '' }}" placeholder="e.g. Ex-Google AI Engineer | IIT Delhi">
                 </div>
 
-                <div class="form-group">
-                    <label>Instructor Photo</label>
-                    <div class="image-input-group">
-                        <div class="image-input-tabs">
-                            <button type="button" class="image-input-tab active" onclick="switchImageTab(this, 'upload')">
-                                <i class="fas fa-upload"></i> Upload
-                            </button>
-                            <button type="button" class="image-input-tab" onclick="switchImageTab(this, 'url')">
-                                <i class="fas fa-link"></i> URL
-                            </button>
-                        </div>
-                        <div class="image-input-content">
-                            <div class="image-input-panel active" data-panel="upload">
-                                <div class="image-drop-zone" onclick="this.querySelector('input').click()">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <p>Drag & drop image here or <span class="browse-link">Browse</span></p>
-                                    <p style="font-size: 0.75rem;">PNG, JPG, GIF, WebP (max 5MB)</p>
-                                    <input type="file" accept="image/*" onchange="handleImageUpload(this, 'instructor_image')">
-                                </div>
-                                <div class="upload-progress" id="instructor_image-upload-progress">
-                                    <div class="upload-progress-bar"><div style="width: 0%"></div></div>
-                                    <div class="upload-progress-text">Uploading...</div>
-                                </div>
-                                <div class="upload-error" id="instructor_image-upload-error"></div>
-                            </div>
-                            <div class="image-input-panel" data-panel="url">
-                                <input type="url" id="instructor_image_url_input" class="form-control"
-                                       value="{{ course.instructor_image if course else '' }}"
-                                       placeholder="https://example.com/photo.jpg"
-                                       oninput="document.getElementById('instructor_image').value = this.value; updateImagePreview('instructor_image')">
-                            </div>
-                        </div>
-                        <div class="image-preview-container" id="instructor_image-preview">
-                            <img src="{{ course.instructor_image if course and course.instructor_image else '' }}" alt="Preview" onerror="this.parentElement.classList.remove('has-image')">
-                            <div class="image-preview-info">
-                                <div class="filename" id="instructor_image-filename"></div>
-                                <div class="size" id="instructor_image-size"></div>
-                            </div>
-                            <button type="button" class="image-preview-remove" onclick="removeImage('instructor_image')">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <input type="hidden" id="instructor_image" name="instructor_image" value="{{ course.instructor_image if course else '' }}">
-                </div>
+                <input type="hidden" id="instructor_image" name="instructor_image" value="{{ course.instructor_image if course else '' }}">
 
                 <!-- Publish -->
                 <hr style="border: none; border-top: 2px solid rgba(79, 70, 229, 0.1); margin: 2.5rem 0;">
@@ -681,7 +637,6 @@
     // ===== Image Upload Functions =====
     document.addEventListener('DOMContentLoaded', function() {
         initImagePreview('image');
-        initImagePreview('instructor_image');
         initImagePreview('hero_image');
         initDynamicFields();
     });
@@ -725,6 +680,7 @@
         
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/api/upload');
+        xhr.withCredentials = true;
         
         xhr.upload.onprogress = function(e) {
             if (e.lengthComputable) {
@@ -996,13 +952,8 @@
         document.getElementById('faq').value = faqArr.length > 0 ? JSON.stringify(faqArr) : '';
     }
 
-    // Form validation for required image field + serialize dynamic fields
+    // Form validation + serialize dynamic fields
     function validateCourseForm() {
-        const imageField = document.getElementById('image');
-        if (!imageField.value.trim()) {
-            alert('Please provide a Course Image (upload or enter URL)');
-            return false;
-        }
         // Serialize dynamic fields into hidden textareas before submit
         serializeDynamicFields();
         return true;

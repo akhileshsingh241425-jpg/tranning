@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FaArrowLeft, FaShieldAlt, FaLock, FaUndo, FaEnvelope, FaGlobe } from 'react-icons/fa';
 import SEO from './SEO';
 
@@ -142,17 +142,60 @@ const refundSections = [
   }
 ];
 
-const TermsAndConditions = () => {
+const TermsAndConditions = ({ section }) => {
+  const location = useLocation();
+
+  // Determine which section to display based on prop or URL path
+  const activeSection = section || 
+    (location.pathname === '/privacy' ? 'privacy' : 
+     location.pathname === '/refund' ? 'refund' : 
+     'terms');
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [location]);
+
+  const showTerms = activeSection === 'terms';
+  const showPrivacy = activeSection === 'privacy';
+  const showRefund = activeSection === 'refund';
+
+  // Dynamic hero title and description based on active section
+  const getHeroContent = () => {
+    switch (activeSection) {
+      case 'terms':
+        return { title: 'Terms & Conditions', desc: 'Effective Date: April 2026  |  Training Protec' };
+      case 'privacy':
+        return { title: 'Privacy Policy', desc: 'Effective Date: April 2026  |  Training Protec' };
+      case 'refund':
+        return { title: 'Refund Policy', desc: 'Effective Date: April 2026  |  Training Protec' };
+      default:
+        return { title: 'Terms, Privacy & Refund Policy', desc: 'Effective Date: April 2026  |  Training Protec' };
+    }
+  };
+
+  const heroContent = getHeroContent();
+
+  const getSeoContent = () => {
+    switch (activeSection) {
+      case 'terms':
+        return { title: 'Terms & Conditions', description: "Read TrainingProtec's Terms & Conditions. Understand the guidelines governing the use of our website and services.", canonical: '/terms' };
+      case 'privacy':
+        return { title: 'Privacy Policy', description: "Read TrainingProtec's Privacy Policy. Learn how we collect, use, and protect your personal information.", canonical: '/privacy' };
+      case 'refund':
+        return { title: 'Refund Policy', description: "Read TrainingProtec's Refund Policy. Understand our fair and transparent refund practices and eligibility.", canonical: '/refund' };
+      default:
+        return { title: 'Terms, Privacy & Refund Policy', description: "Read TrainingProtec's Terms & Conditions, Privacy Policy, and Refund Policy. Understand your rights, data protection practices, and refund eligibility.", canonical: '/terms' };
+    }
+  };
+
+  const seoContent = getSeoContent();
 
   return (
     <div className="terms-page">
       <SEO
-        title="Terms, Privacy & Refund Policy"
-        description="Read TrainingProtec's Terms & Conditions, Privacy Policy, and Refund Policy. Understand your rights, data protection practices, and refund eligibility."
-        canonical="/terms"
+        title={seoContent.title}
+        description={seoContent.description}
+        canonical={seoContent.canonical}
         noIndex={false}
       />
       {/* Hero */}
@@ -162,28 +205,29 @@ const TermsAndConditions = () => {
           <Link to="/" className="terms-back-link">
             <FaArrowLeft /> Back to Home
           </Link>
-          <h1>Terms, Privacy &amp; Refund Policy</h1>
-          <p>Effective Date: April 2026 &nbsp;|&nbsp; Training Protec</p>
+          <h1>{heroContent.title}</h1>
+          <p>{heroContent.desc}</p>
         </div>
       </section>
 
       {/* Quick Nav */}
       <div className="terms-quick-nav">
         <div className="terms-container">
-          <a href="#terms" className="terms-nav-pill"><FaShieldAlt /> Terms &amp; Conditions</a>
-          <a href="#privacy" className="terms-nav-pill"><FaLock /> Privacy Policy</a>
-          <a href="#refund" className="terms-nav-pill"><FaUndo /> Refund Policy</a>
+          <Link to="/terms" className={`terms-nav-pill ${activeSection === 'terms' ? 'active' : ''}`}><FaShieldAlt /> Terms & Conditions</Link>
+          <Link to="/privacy" className={`terms-nav-pill ${activeSection === 'privacy' ? 'active' : ''}`}><FaLock /> Privacy Policy</Link>
+          <Link to="/refund" className={`terms-nav-pill ${activeSection === 'refund' ? 'active' : ''}`}><FaUndo /> Refund Policy</Link>
         </div>
       </div>
 
       <div className="terms-container terms-body">
 
         {/* Terms & Conditions */}
+        {showTerms && (
         <section id="terms" className="terms-group">
           <div className="terms-group-header">
             <div className="terms-group-icon"><FaShieldAlt /></div>
             <div>
-              <h2>Terms &amp; Conditions</h2>
+              <h2>Terms & Conditions</h2>
               <p>Guidelines governing the use of our website and services.</p>
             </div>
           </div>
@@ -199,8 +243,10 @@ const TermsAndConditions = () => {
             ))}
           </div>
         </section>
+        )}
 
         {/* Privacy Policy */}
+        {showPrivacy && (
         <section id="privacy" className="terms-group">
           <div className="terms-group-header">
             <div className="terms-group-icon"><FaLock /></div>
@@ -221,8 +267,10 @@ const TermsAndConditions = () => {
             ))}
           </div>
         </section>
+        )}
 
         {/* Refund Policy */}
+        {showRefund && (
         <section id="refund" className="terms-group">
           <div className="terms-group-header">
             <div className="terms-group-icon"><FaUndo /></div>
@@ -243,6 +291,7 @@ const TermsAndConditions = () => {
             ))}
           </div>
         </section>
+        )}
 
         {/* Contact */}
         <section className="terms-contact-box">

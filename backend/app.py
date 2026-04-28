@@ -8,6 +8,10 @@ from datetime import datetime
 import os
 import json
 import uuid
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'trainingprotec-secret-key-2026'
@@ -311,24 +315,53 @@ def allowed_file(filename):
 @app.route('/api/upload', methods=['POST'])
 @login_required
 def upload_image():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file provided'}), 400
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
-    if not allowed_file(file.filename):
-        return jsonify({'error': f'File type not allowed. Allowed types: {", ".join(ALLOWED_EXTENSIONS)}'}), 400
+    try:
+        logger.info(f"Upload request received. Files: {list(request.files.keys())}, Content-Type: {request.content_type}")
+        
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        if not allowed_file(file.filename):
+            return jsonify({'error': f'File type not allowed. Allowed types: {", ".join(ALLOWED_EXTENSIONS)}'}), 400
+        
+        # Ensure upload folder exists and is writable
+        upload_folder = app.config['UPLOAD_FOLDER']
+        os.makedirs(upload_folder, exist_ok=True)
+        if not os.access(upload_folder, os.W_OK):
+            logger.error(f"Upload folder not writable: {upload_folder}")
+            # Try to fix permissions
+            try:
+                os.chmod(upload_folder, 0o755)
+            except Exception as e:
+                logger.error(f"Cannot fix upload folder permissions: {e}")
+            return jsonify({'error': 'Server upload directory not writable. Contact admin.'}), 500
+        
+        # Generate unique filename using secure_filename
+        original_filename = secure_filename(file.filename)
+        ext = original_filename.rsplit('.', 1)[1].lower() if '.' in original_filename else 'png'
+        unique_name = f"{uuid.uuid4().hex[:12]}_{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"
+        
+        filepath = os.path.join(upload_folder, unique_name)
+        logger.info(f"Saving upload to: {filepath}")
+        file.save(filepath)
+        
+        # Verify file was saved
+        if not os.path.exists(filepath):
+            logger.error(f"File was not saved: {filepath}")
+            return jsonify({'error': 'Failed to save file'}), 500
+        
+        file_size = os.path.getsize(filepath)
+        logger.info(f"Upload successful: {unique_name} ({file_size} bytes)")
+        
+        # Return the URL path that can be used as the image value
+        image_url = f"/static/uploads/{unique_name}"
+        return jsonify({'url': image_url, 'filename': unique_name})
     
-    # Generate unique filename
-    ext = file.filename.rsplit('.', 1)[1].lower()
-    unique_name = f"{uuid.uuid4().hex[:12]}_{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"
-    
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_name)
-    file.save(filepath)
-    
-    # Return the URL path that can be used as the image value
-    image_url = f"/static/uploads/{unique_name}"
-    return jsonify({'url': image_url, 'filename': unique_name})
+    except Exception as e:
+        logger.error(f"Upload error: {str(e)}", exc_info=True)
+        return jsonify({'error': f'Upload failed: {str(e)}'}), 500
 
 @app.route('/static/uploads/<filename>')
 def uploaded_file(filename):
@@ -1146,6 +1179,17 @@ def migrate_db():
                     print(f'Column "{col_name}" may already exist: {e}')
 
         print('Database migration completed!')
+
+# Error handler for file too large
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    return jsonify({'error': 'File too large. Maximum size is 5MB.'}), 413
+
+# Global error handler for 500 errors
+@app.errorhandler(500)
+def internal_server_error(error):
+    logger.error(f"Internal server error: {str(error)}", exc_info=True)
+    return jsonify({'error': 'Internal server error. Please try again.'}), 500
 
 if __name__ == '__main__':
     with app.app_context():

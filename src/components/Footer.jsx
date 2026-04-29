@@ -163,7 +163,7 @@ const Footer = () => {
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2020 TrainingProtec. All rights reserved. | Global Professional Training Platform</p>
+        <p>&copy; 2020-2026 TrainingProtec. All rights reserved. | Global Professional Training Platform</p>
         <div className="footer-bottom-links">
           <Link to="/privacy">Privacy Policy</Link>
           <Link to="/terms">Terms and Conditions</Link>

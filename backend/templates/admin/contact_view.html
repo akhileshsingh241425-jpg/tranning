@@ -46,6 +46,18 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ url_for('admin_users') }}">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_subscribers') }}">
+                        <i class="fas fa-bell"></i>
+                        <span>Subscribers</span>
+                    </a>
+                </li>
+                <li>
                     <a href="http://localhost:3005" target="_blank">
                         <i class="fas fa-globe"></i>
                         <span>View Website</span>
@@ -97,7 +109,65 @@
                 </div>
             </div>
 
-            <div style="border-top: 1px solid rgba(0, 212, 255, 0.1); padding-top: 2rem;">
+            <!-- Email Status Section -->
+            <div style="border-top: 1px solid rgba(0, 212, 255, 0.1); padding-top: 2rem; margin-top: 1rem;">
+                <label style="color: var(--text-secondary); font-size: 0.9rem; display: block; margin-bottom: 1rem;">
+                    <i class="fas fa-envelope-open-text"></i> Email Status
+                </label>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div style="background: rgba(10, 14, 23, 0.5); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(0, 212, 255, 0.1);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <span style="font-weight: 600; font-size: 1rem;"><i class="fas fa-reply-all" style="color: var(--primary-color); margin-right: 8px;"></i>Auto-Reply</span>
+                            {% if contact.auto_reply_sent %}
+                                <span class="badge badge-success"><i class="fas fa-check"></i> Sent</span>
+                            {% else %}
+                                <span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span>
+                            {% endif %}
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0;">
+                            {% if contact.auto_reply_sent %}
+                                Confirmation email was sent to {{ contact.email }}
+                            {% else %}
+                                No confirmation email has been sent yet
+                            {% endif %}
+                        </p>
+                        {% if not contact.auto_reply_sent %}
+                        <form method="POST" action="{{ url_for('admin_send_auto_reply', id=contact.id) }}" style="margin-top: 1rem;">
+                            <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('Send auto-reply confirmation email to {{ contact.email }}?')">
+                                <i class="fas fa-paper-plane"></i> Send Auto-Reply
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    <div style="background: rgba(10, 14, 23, 0.5); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(0, 212, 255, 0.1);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <span style="font-weight: 600; font-size: 1rem;"><i class="fas fa-bell" style="color: #f59e0b; margin-right: 8px;"></i>10-Day Reminder</span>
+                            {% if contact.reminder_sent %}
+                                <span class="badge badge-success"><i class="fas fa-check"></i> Sent</span>
+                            {% else %}
+                                <span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span>
+                            {% endif %}
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0;">
+                            {% if contact.reminder_sent %}
+                                Reminder was sent on {{ contact.reminder_sent_at.strftime('%B %d, %Y at %H:%M') if contact.reminder_sent_at else 'N/A' }}
+                            {% else %}
+                                {% set days_since = (contact.created_at|abs).days if contact.created_at else 0 %}
+                                No reminder sent yet (enquiry from {{ contact.created_at.strftime('%B %d') }})
+                            {% endif %}
+                        </p>
+                        {% if not contact.reminder_sent %}
+                        <form method="POST" action="{{ url_for('admin_send_reminder', id=contact.id) }}" style="margin-top: 1rem;">
+                            <button type="submit" class="btn btn-sm" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; cursor: pointer; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.85rem;" onclick="return confirm('Send follow-up reminder email to {{ contact.email }}?')">
+                                <i class="fas fa-bell"></i> Send Reminder
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(0, 212, 255, 0.1); padding-top: 2rem; margin-top: 2rem;">
                 <label style="color: var(--text-secondary); font-size: 0.9rem; display: block; margin-bottom: 1rem;">Message</label>
                 <div style="background: rgba(10, 14, 23, 0.5); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(0, 212, 255, 0.1); line-height: 1.8;">
                     {{ contact.message }}

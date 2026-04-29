@@ -4,11 +4,20 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from datetime import datetime
+from dotenv import load_dotenv
+from datetime import datetime, timedelta
 import os
 import json
 import uuid
 import logging
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
+
+# Load environment variables from .env file (in same directory as app.py)
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -20,6 +29,494 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max upload
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'}
+
+# ==================== EMAIL CONFIGURATION ====================
+SMTP_SERVER = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
+SMTP_PORT = int(os.environ.get('SMTP_PORT', 587))
+SMTP_USERNAME = os.environ.get('SMTP_USERNAME', '')
+SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
+SMTP_USE_TLS = os.environ.get('SMTP_USE_TLS', 'true').lower() == 'true'
+NOTIFICATION_EMAIL = os.environ.get('NOTIFICATION_EMAIL', 'contact@trainingprotec.com')
+SENDER_EMAIL = os.environ.get('SENDER_EMAIL', SMTP_USERNAME)
+REMINDER_DAYS = int(os.environ.get('REMINDER_DAYS', '10'))
+CRON_SECRET = os.environ.get('CRON_SECRET', '')
+
+# SMTP configuration status (available in all templates)
+SMTP_CONFIGURED = bool(SMTP_USERNAME and SMTP_PASSWORD)
+
+@app.context_processor
+def inject_smtp_status():
+    return {'smtp_configured': SMTP_CONFIGURED}
+
+def send_enquiry_email(data):
+    """Send email notification when a new enquiry is submitted."""
+    if not SMTP_USERNAME or not SMTP_PASSWORD:
+        logger.warning('SMTP credentials not configured. Email notification skipped.')
+        return False
+
+    try:
+        service_type = data.get('service', 'General Enquiry')
+
+        # Build HTML email body based on enquiry type
+        html_body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 20px 30px; border-radius: 10px 10px 0 0;">
+                <h2 style="color: #fff; margin: 0;">New {service_type}</h2>
+                <p style="color: #e0e7ff; margin: 5px 0 0 0;">TrainingProtec Website Enquiry</p>
+            </div>
+            <div style="border: 1px solid #e5e7eb; border-top: none; padding: 25px 30px; border-radius: 0 0 10px 10px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5; width: 140px;">Name:</td>
+                        <td style="padding: 8px 0;">{data.get('name', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5;">Email:</td>
+                        <td style="padding: 8px 0;"><a href="mailto:{data.get('email', '')}" style="color: #4f46e5;">{data.get('email', 'N/A')}</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5;">Phone:</td>
+                        <td style="padding: 8px 0;">{data.get('phone', 'N/A')}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5;">Enquiry Type:</td>
+                        <td style="padding: 8px 0;">{service_type}</td>
+                    </tr>"""
+
+        # Add extra fields based on enquiry type
+        if data.get('organization'):
+            html_body += f"""
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5;">Organization:</td>
+                        <td style="padding: 8px 0;">{data.get('organization')}</td>
+                    </tr>"""
+        if data.get('partnershipType'):
+            html_body += f"""
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5;">Partnership Type:</td>
+                        <td style="padding: 8px 0;">{data.get('partnershipType')}</td>
+                    </tr>"""
+        if data.get('position'):
+            html_body += f"""
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5;">Position:</td>
+                        <td style="padding: 8px 0;">{data.get('position')}</td>
+                    </tr>"""
+        if data.get('experience'):
+            html_body += f"""
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5;">Experience:</td>
+                        <td style="padding: 8px 0;">{data.get('experience')}</td>
+                    </tr>"""
+        if data.get('expertise'):
+            html_body += f"""
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5;">Expertise:</td>
+                        <td style="padding: 8px 0;">{data.get('expertise')}</td>
+                    </tr>"""
+        if data.get('linkedin'):
+            html_body += f"""
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5;">LinkedIn:</td>
+                        <td style="padding: 8px 0;"><a href="{data.get('linkedin')}" style="color: #4f46e5;">{data.get('linkedin')}</a></td>
+                    </tr>"""
+        if data.get('resumeLink'):
+            html_body += f"""
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5;">Resume Link:</td>
+                        <td style="padding: 8px 0;"><a href="{data.get('resumeLink')}" style="color: #4f46e5;">{data.get('resumeLink')}</a></td>
+                    </tr>"""
+
+        html_body += f"""
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; color: #4f46e5; vertical-align: top;">Message:</td>
+                        <td style="padding: 8px 0;">{data.get('message', 'N/A')}</td>
+                    </tr>
+                </table>
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">
+                    <p>This enquiry was submitted on {datetime.now().strftime('%B %d, %Y at %I:%M %p')} via the TrainingProtec website.</p>
+                </div>
+            </div>
+        </body>
+        </html>"""
+
+        # Build plain text fallback
+        text_body = f"""New {service_type}
+
+Name: {data.get('name', 'N/A')}
+Email: {data.get('email', 'N/A')}
+Phone: {data.get('phone', 'N/A')}
+Enquiry Type: {service_type}"""
+        if data.get('organization'):
+            text_body += f"\nOrganization: {data.get('organization')}"
+        if data.get('partnershipType'):
+            text_body += f"\nPartnership Type: {data.get('partnershipType')}"
+        if data.get('position'):
+            text_body += f"\nPosition: {data.get('position')}"
+        if data.get('experience'):
+            text_body += f"\nExperience: {data.get('experience')}"
+        if data.get('expertise'):
+            text_body += f"\nExpertise: {data.get('expertise')}"
+        if data.get('linkedin'):
+            text_body += f"\nLinkedIn: {data.get('linkedin')}"
+        if data.get('resumeLink'):
+            text_body += f"\nResume Link: {data.get('resumeLink')}"
+        text_body += f"\nMessage: {data.get('message', 'N/A')}"
+        text_body += f"\n\nSubmitted on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}"
+
+        msg = MIMEMultipart('alternative')
+        msg['From'] = f'TrainingProtec Website <{SENDER_EMAIL}>'
+        msg['To'] = NOTIFICATION_EMAIL
+        msg['Subject'] = f'New {service_type} - {data.get("name", "Unknown")}'
+
+        msg.attach(MIMEText(text_body, 'plain'))
+        msg.attach(MIMEText(html_body, 'html'))
+
+        # Send email
+        if SMTP_USE_TLS:
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+        else:
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+
+        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        server.sendmail(SENDER_EMAIL, NOTIFICATION_EMAIL, msg.as_string())
+        server.quit()
+
+        logger.info(f'Email notification sent to {NOTIFICATION_EMAIL} for {service_type}')
+        return True
+
+    except Exception as e:
+        logger.error(f'Failed to send email notification: {str(e)}')
+        return False
+
+def send_auto_reply_email(data):
+    """Send an automatic confirmation email to the person who submitted the enquiry."""
+    if not SMTP_USERNAME or not SMTP_PASSWORD:
+        logger.warning('SMTP credentials not configured. Auto-reply email skipped.')
+        return False
+
+    try:
+        service_type = data.get('service', 'General Enquiry')
+        customer_name = data.get('name', 'there')
+
+        # Customize message based on enquiry type
+        if service_type == 'Become an Instructor':
+            subject_line = 'Thank You for Your Instructor Application'
+            hero_text = 'We Received Your Instructor Application!'
+            intro_text = f"Dear {customer_name}, thank you for your interest in becoming an instructor at TrainingProtec. We have received your application and our team will review it carefully."
+            cta_text = 'Explore Our Courses'
+            cta_url = 'https://trainingprotec.com/courses'
+        elif service_type == 'Partnership Enquiry':
+            subject_line = 'Thank You for Your Partnership Interest'
+            hero_text = 'Partnership Enquiry Received!'
+            intro_text = f"Dear {customer_name}, thank you for your interest in partnering with TrainingProtec. We are excited about the possibility of working together and will review your proposal promptly."
+            cta_text = 'Learn About Us'
+            cta_url = 'https://trainingprotec.com/about'
+        elif service_type == 'Career Enquiry':
+            subject_line = 'Thank You for Your Career Enquiry'
+            hero_text = 'Career Enquiry Received!'
+            intro_text = f"Dear {customer_name}, thank you for your interest in career opportunities at TrainingProtec. We have received your enquiry and will get back to you soon."
+            cta_text = 'View Open Positions'
+            cta_url = 'https://trainingprotec.com/careers'
+        else:
+            subject_line = 'Thank You for Your Enquiry'
+            hero_text = 'We Received Your Enquiry!'
+            intro_text = f"Dear {customer_name}, thank you for reaching out to TrainingProtec. We have received your enquiry and our team will get back to you shortly."
+            cta_text = 'Explore Our Courses'
+            cta_url = 'https://trainingprotec.com/courses'
+
+        html_body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+                <h1 style="color: #fff; margin: 0; font-size: 24px;">{hero_text}</h1>
+                <p style="color: #e0e7ff; margin: 10px 0 0 0; font-size: 14px;">TrainingProtec - Cyber Security Training Institute</p>
+            </div>
+            <div style="border: 1px solid #e5e7eb; border-top: none; padding: 30px; border-radius: 0 0 10px 10px;">
+                <p style="font-size: 16px;">{intro_text}</p>
+
+                <div style="background: #f3f4f6; border-radius: 8px; padding: 15px 20px; margin: 20px 0;">
+                    <p style="margin: 0; font-size: 14px; color: #4b5563;"><strong>Your Enquiry Details:</strong></p>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                        <tr>
+                            <td style="padding: 5px 0; color: #6b7280; width: 120px;">Name:</td>
+                            <td style="padding: 5px 0; font-weight: 600;">{data.get('name', 'N/A')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 0; color: #6b7280;">Enquiry Type:</td>
+                            <td style="padding: 5px 0; font-weight: 600;">{service_type}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="text-align: center; margin: 25px 0;">
+                    <a href="{cta_url}" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">{cta_text}</a>
+                </div>
+
+                <p style="font-size: 14px; color: #6b7280;">Our team typically responds within <strong>24-48 hours</strong>. If your enquiry is urgent, feel free to call us at <strong>+91-XXXXXXXXXX</strong>.</p>
+
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e5e7eb;">
+                    <p style="margin: 0; font-size: 14px; color: #4b5563;">Best regards,</p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; font-weight: 600; color: #4f46e5;">TrainingProtec Team</p>
+                    <p style="margin: 2px 0 0 0; font-size: 12px; color: #9ca3af;">contact@trainingprotec.com | https://trainingprotec.com</p>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 15px; color: #9ca3af; font-size: 11px;">
+                <p style="margin: 0;">This is an automated message. Please do not reply directly to this email.</p>
+                <p style="margin: 5px 0 0 0;">© {datetime.now().year} TrainingProtec. All rights reserved.</p>
+            </div>
+        </body>
+        </html>"""
+
+        text_body = f"""{hero_text}
+
+Dear {customer_name},
+
+{intro_text}
+
+Your Enquiry Details:
+- Name: {data.get('name', 'N/A')}
+- Enquiry Type: {service_type}
+
+Our team typically responds within 24-48 hours.
+
+Best regards,
+TrainingProtec Team
+contact@trainingprotec.com | https://trainingprotec.com
+
+This is an automated message. Please do not reply directly to this email.
+© {datetime.now().year} TrainingProtec. All rights reserved."""
+
+        msg = MIMEMultipart('alternative')
+        msg['From'] = f'TrainingProtec <{SENDER_EMAIL}>'
+        msg['To'] = data.get('email', '')
+        msg['Subject'] = subject_line
+
+        msg.attach(MIMEText(text_body, 'plain'))
+        msg.attach(MIMEText(html_body, 'html'))
+
+        # Send email
+        if SMTP_USE_TLS:
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+        else:
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+
+        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        server.sendmail(SENDER_EMAIL, data.get('email', ''), msg.as_string())
+        server.quit()
+
+        logger.info(f'Auto-reply email sent to {data.get("email")} for {service_type}')
+        return True
+
+    except Exception as e:
+        logger.error(f'Failed to send auto-reply email: {str(e)}')
+        return False
+
+def send_reminder_email(contact):
+    """Send a follow-up reminder email to the enquirer after REMINDER_DAYS."""
+    if not SMTP_USERNAME or not SMTP_PASSWORD:
+        logger.warning('SMTP credentials not configured. Reminder email skipped.')
+        return False
+
+    try:
+        service_type = contact.service or 'General Enquiry'
+        customer_name = contact.name or 'there'
+
+        # Customize reminder based on enquiry type
+        if service_type == 'Become an Instructor':
+            subject_line = f'Still Interested in Teaching at TrainingProtec?'
+            reminder_text = f"Dear {customer_name}, we noticed you applied to become an instructor at TrainingProtec a while ago. We'd love to hear from you again and discuss how your expertise can help shape the next generation of cybersecurity professionals."
+            cta_text = 'Continue Your Application'
+            cta_url = 'https://trainingprotec.com/courses'
+        elif service_type == 'Partnership Enquiry':
+            subject_line = f'Let\'s Continue Our Partnership Discussion'
+            reminder_text = f"Dear {customer_name}, we're still very interested in exploring a partnership with you. Let's reconnect and discuss how we can create value together."
+            cta_text = 'Reconnect With Us'
+            cta_url = 'https://trainingprotec.com/contact'
+        elif service_type == 'Career Enquiry':
+            subject_line = f'Still Looking for Career Opportunities?'
+            reminder_text = f"Dear {customer_name}, we wanted to follow up on your career enquiry at TrainingProtec. New opportunities may have opened up since we last heard from you."
+            cta_text = 'Explore Opportunities'
+            cta_url = 'https://trainingprotec.com/courses'
+        else:
+            subject_line = f'Still Interested in {service_type}?'
+            reminder_text = f"Dear {customer_name}, we noticed you enquired about our services at TrainingProtec a while ago. We wanted to check in and see if you still need assistance or have any questions we can help with."
+            cta_text = 'Get in Touch'
+            cta_url = 'https://trainingprotec.com/contact'
+
+        html_body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+                <h1 style="color: #fff; margin: 0; font-size: 22px;">We'd Love to Hear From You!</h1>
+                <p style="color: #fef3c7; margin: 10px 0 0 0; font-size: 14px;">TrainingProtec - Follow Up</p>
+            </div>
+            <div style="border: 1px solid #e5e7eb; border-top: none; padding: 30px; border-radius: 0 0 10px 10px;">
+                <p style="font-size: 16px;">{reminder_text}</p>
+
+                <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+                    <p style="margin: 0; font-size: 14px; color: #92400e;"><strong>💡 Did you know?</strong> TrainingProtec has helped 1000+ professionals advance their careers in cybersecurity with industry-recognized certifications and hands-on training.</p>
+                </div>
+
+                <div style="text-align: center; margin: 25px 0;">
+                    <a href="{cta_url}" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">{cta_text}</a>
+                </div>
+
+                <p style="font-size: 14px; color: #6b7280;">If you have any questions or would like to discuss your options, don't hesitate to reach out. You can reply to this email or call us at <strong>+91-XXXXXXXXXX</strong>.</p>
+
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e5e7eb;">
+                    <p style="margin: 0; font-size: 14px; color: #4b5563;">Best regards,</p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; font-weight: 600; color: #4f46e5;">TrainingProtec Team</p>
+                    <p style="margin: 2px 0 0 0; font-size: 12px; color: #9ca3af;">contact@trainingprotec.com | https://trainingprotec.com</p>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 15px; color: #9ca3af; font-size: 11px;">
+                <p style="margin: 0;">This is a follow-up to your enquiry submitted on {contact.created_at.strftime('%B %d, %Y')}.</p>
+                <p style="margin: 5px 0 0 0;">© {datetime.now().year} TrainingProtec. All rights reserved.</p>
+            </div>
+        </body>
+        </html>"""
+
+        text_body = f"""We'd Love to Hear From You!
+
+Dear {customer_name},
+
+{reminder_text}
+
+Did you know? TrainingProtec has helped 1000+ professionals advance their careers in cybersecurity.
+
+{cta_text}: {cta_url}
+
+If you have any questions, don't hesitate to reach out.
+Email: contact@trainingprotec.com
+
+Best regards,
+TrainingProtec Team
+
+This is a follow-up to your enquiry submitted on {contact.created_at.strftime('%B %d, %Y')}.
+© {datetime.now().year} TrainingProtec. All rights reserved."""
+
+        msg = MIMEMultipart('alternative')
+        msg['From'] = f'TrainingProtec <{SENDER_EMAIL}>'
+        msg['To'] = contact.email
+        msg['Subject'] = subject_line
+
+        msg.attach(MIMEText(text_body, 'plain'))
+        msg.attach(MIMEText(html_body, 'html'))
+
+        # Send email
+        if SMTP_USE_TLS:
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+        else:
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+
+        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        server.sendmail(SENDER_EMAIL, contact.email, msg.as_string())
+        server.quit()
+
+        logger.info(f'Reminder email sent to {contact.email} for {service_type} (enquiry #{contact.id})')
+        return True
+
+    except Exception as e:
+        logger.error(f'Failed to send reminder email to {contact.email}: {str(e)}')
+        return False
+
+def check_and_send_reminders():
+    """Check for enquiries older than REMINDER_DAYS that haven't received a reminder yet."""
+    with app.app_context():
+        try:
+            reminder_cutoff = datetime.utcnow() - timedelta(days=REMINDER_DAYS)
+            contacts = Contact.query.filter(
+                Contact.created_at <= reminder_cutoff,
+                Contact.reminder_sent == False
+            ).all()
+
+            if not contacts:
+                logger.info('No pending reminders to send.')
+                return
+
+            sent_count = 0
+            for contact in contacts:
+                if send_reminder_email(contact):
+                    contact.reminder_sent = True
+                    contact.reminder_sent_at = datetime.utcnow()
+                    db.session.commit()
+                    sent_count += 1
+                else:
+                    logger.warning(f'Reminder email failed for enquiry #{contact.id}')
+
+            logger.info(f'Reminder check complete: {sent_count}/{len(contacts)} reminders sent.')
+
+        except Exception as e:
+            logger.error(f'Error in reminder check: {str(e)}')
+
+def send_welcome_email(email):
+    """Send a welcome email to a new newsletter subscriber."""
+    if not SMTP_USERNAME or not SMTP_PASSWORD:
+        logger.warning('SMTP not configured. Skipping welcome email.')
+        return False
+    
+    try:
+        msg = MIMEMultipart('alternative')
+        msg['From'] = SMTP_USERNAME
+        msg['To'] = email
+        msg['Subject'] = 'Welcome to TrainingProtec Newsletter!'
+        
+        html_content = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0e17; color: #e2e8f0; padding: 30px; border-radius: 10px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #00d4ff; margin: 0;">Welcome to TrainingProtec!</h1>
+            </div>
+            <div style="background: rgba(0, 212, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(0, 212, 255, 0.1); margin-bottom: 20px;">
+                <p style="color: #e2e8f0; font-size: 16px; line-height: 1.6;">Thank you for subscribing to our newsletter! 🎉</p>
+                <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">You'll now receive:</p>
+                <ul style="color: #94a3b8; font-size: 14px; line-height: 1.8;">
+                    <li>Free career guides and industry insights</li>
+                    <li>Course updates and exclusive offers</li>
+                    <li>Expert tips for professional growth</li>
+                </ul>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="https://trainingprotec.com" style="background: linear-gradient(135deg, #4f46e5, #00d4ff); color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">Explore Our Courses</a>
+            </div>
+            <p style="color: #64748b; font-size: 12px; text-align: center; margin-top: 30px;">TrainingProtec - Global Professional Training Platform</p>
+        </div>
+        """
+        
+        text_content = f"""Welcome to TrainingProtec Newsletter!
+
+Thank you for subscribing! You'll now receive:
+- Free career guides and industry insights
+- Course updates and exclusive offers
+- Expert tips for professional growth
+
+Visit us at https://trainingprotec.com"""
+        
+        part1 = MIMEText(text_content, 'plain')
+        part2 = MIMEText(html_content, 'html')
+        msg.attach(part1)
+        msg.attach(part2)
+        
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.sendmail(SMTP_USERNAME, email, msg.as_string())
+        
+        logger.info(f'Welcome email sent to {email}')
+        return True
+    except Exception as e:
+        logger.error(f'Failed to send welcome email to {email}: {str(e)}')
+        return False
 
 # Ensure upload folder exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -41,6 +538,8 @@ class Admin(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    role = db.Column(db.String(20), default='admin')  # 'superadmin' or 'admin'
+    is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def set_password(self, password):
@@ -89,6 +588,9 @@ class Contact(db.Model):
     service = db.Column(db.String(100))
     message = db.Column(db.Text, nullable=False)
     is_read = db.Column(db.Boolean, default=False)
+    reminder_sent = db.Column(db.Boolean, default=False)
+    reminder_sent_at = db.Column(db.DateTime, nullable=True)
+    auto_reply_sent = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
@@ -100,6 +602,9 @@ class Contact(db.Model):
             'service': self.service,
             'message': self.message,
             'is_read': self.is_read,
+            'reminder_sent': self.reminder_sent,
+            'reminder_sent_at': self.reminder_sent_at.strftime('%Y-%m-%d %H:%M:%S') if self.reminder_sent_at else None,
+            'auto_reply_sent': self.auto_reply_sent,
             'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S')
         }
 
@@ -216,6 +721,22 @@ class Course(db.Model):
         base['detailStats'] = json.loads(self.detail_stats) if self.detail_stats else []
         return base
 
+class Subscriber(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
+    welcome_email_sent = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'is_active': self.is_active,
+            'welcome_email_sent': self.welcome_email_sent,
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        }
+
 @login_manager.user_loader
 def load_user(user_id):
     return Admin.query.get(int(user_id))
@@ -251,7 +772,89 @@ def submit_contact():
     )
     db.session.add(contact)
     db.session.commit()
+
+    # Send admin notification email (non-blocking - won't fail the request if email fails)
+    try:
+        email_sent = send_enquiry_email(data)
+        if email_sent:
+            logger.info(f'Admin notification sent for enquiry from {data.get("email")}')
+        else:
+            logger.warning(f'Admin notification skipped for enquiry from {data.get("email")}')
+    except Exception as e:
+        logger.error(f'Admin notification error (enquiry still saved): {str(e)}')
+
+    # Send auto-reply email to the enquirer (non-blocking)
+    try:
+        auto_reply_sent = send_auto_reply_email(data)
+        if auto_reply_sent:
+            contact.auto_reply_sent = True
+            db.session.commit()
+            logger.info(f'Auto-reply sent to {data.get("email")}')
+        else:
+            logger.warning(f'Auto-reply skipped for {data.get("email")}')
+    except Exception as e:
+        logger.error(f'Auto-reply error (enquiry still saved): {str(e)}')
+
     return jsonify({'success': True, 'message': 'Message sent successfully!'})
+
+@app.route('/api/subscribe', methods=['POST'])
+def subscribe_newsletter():
+    """Subscribe an email to the newsletter."""
+    data = request.json
+    email = data.get('email', '').strip().lower() if data.get('email') else ''
+    
+    if not email:
+        return jsonify({'success': False, 'message': 'Email is required.'}), 400
+    
+    # Basic email validation
+    import re
+    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if not re.match(email_regex, email):
+        return jsonify({'success': False, 'message': 'Please enter a valid email address.'}), 400
+    
+    # Check if already subscribed
+    existing = Subscriber.query.filter_by(email=email).first()
+    if existing:
+        if existing.is_active:
+            return jsonify({'success': False, 'message': 'This email is already subscribed!'})
+        else:
+            # Reactivate unsubscribed email
+            existing.is_active = True
+            db.session.commit()
+            return jsonify({'success': True, 'message': 'Welcome back! You have been re-subscribed.'})
+    
+    # Create new subscriber
+    subscriber = Subscriber(email=email, is_active=True)
+    db.session.add(subscriber)
+    db.session.commit()
+    
+    # Send welcome email (non-blocking)
+    try:
+        welcome_sent = send_welcome_email(email)
+        if welcome_sent:
+            subscriber.welcome_email_sent = True
+            db.session.commit()
+            logger.info(f'Welcome email sent to subscriber {email}')
+        else:
+            logger.warning(f'Welcome email skipped for subscriber {email}')
+    except Exception as e:
+        logger.error(f'Welcome email error (subscription still saved): {str(e)}')
+    
+    return jsonify({'success': True, 'message': 'Thank you for subscribing! You will receive our latest updates.'})
+
+@app.route('/api/cron/reminders', methods=['POST'])
+def trigger_reminders():
+    """Cron endpoint to trigger reminder emails. Secured with CRON_SECRET."""
+    provided_secret = request.headers.get('X-Cron-Secret', '') or request.args.get('secret', '')
+    if CRON_SECRET and provided_secret != CRON_SECRET:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
+        check_and_send_reminders()
+        return jsonify({'success': True, 'message': 'Reminder check completed'})
+    except Exception as e:
+        logger.error(f'Cron reminder error: {str(e)}')
+        return jsonify({'error': 'Internal error'}), 500
 
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
@@ -376,19 +979,23 @@ def admin_dashboard():
     contacts_count = Contact.query.filter_by(is_read=False).count()
     courses_count = Course.query.count()
     testimonials_count = Testimonial.query.count()
+    subscribers_count = Subscriber.query.filter_by(is_active=True).count()
     total_views = db.session.query(db.func.sum(Blog.views)).scalar() or 0
     recent_blogs = Blog.query.order_by(Blog.created_at.desc()).limit(5).all()
     recent_contacts = Contact.query.order_by(Contact.created_at.desc()).limit(5).all()
     recent_courses = Course.query.order_by(Course.created_at.desc()).limit(5).all()
+    recent_subscribers = Subscriber.query.filter_by(is_active=True).order_by(Subscriber.created_at.desc()).limit(5).all()
     return render_template('admin/dashboard.html',
                          blogs_count=blogs_count,
                          contacts_count=contacts_count,
                          courses_count=courses_count,
                          testimonials_count=testimonials_count,
+                         subscribers_count=subscribers_count,
                          total_views=total_views,
                          recent_blogs=recent_blogs,
                          recent_contacts=recent_contacts,
-                         recent_courses=recent_courses)
+                         recent_courses=recent_courses,
+                         recent_subscribers=recent_subscribers)
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -401,6 +1008,9 @@ def admin_login():
         admin = Admin.query.filter_by(username=username).first()
         
         if admin and admin.check_password(password):
+            if not admin.is_active:
+                flash('Your account has been deactivated. Contact superadmin.', 'error')
+                return render_template('admin/login.html')
             login_user(admin)
             return redirect(url_for('admin_dashboard'))
         flash('Invalid username or password', 'error')
@@ -497,6 +1107,45 @@ def admin_contact_delete(id):
     db.session.commit()
     flash('Contact deleted successfully!', 'success')
     return redirect(url_for('admin_contacts'))
+
+@app.route('/admin/contacts/send-auto-reply/<int:id>', methods=['POST'])
+@login_required
+def admin_send_auto_reply(id):
+    contact = Contact.query.get_or_404(id)
+    if contact.auto_reply_sent:
+        flash('Auto-reply already sent to this contact.', 'warning')
+        return redirect(url_for('admin_contact_view', id=id))
+    data = {
+        'name': contact.name,
+        'email': contact.email,
+        'phone': contact.phone or '',
+        'service': contact.service or 'General',
+        'message': contact.message or '',
+        'enquiry_type': contact.service or 'General'
+    }
+    if send_auto_reply_email(data):
+        contact.auto_reply_sent = True
+        db.session.commit()
+        flash('Auto-reply email sent successfully!', 'success')
+    else:
+        flash('Failed to send auto-reply email. Check SMTP settings.', 'danger')
+    return redirect(url_for('admin_contact_view', id=id))
+
+@app.route('/admin/contacts/send-reminder/<int:id>', methods=['POST'])
+@login_required
+def admin_send_reminder(id):
+    contact = Contact.query.get_or_404(id)
+    if contact.reminder_sent:
+        flash('Reminder already sent to this contact.', 'warning')
+        return redirect(url_for('admin_contact_view', id=id))
+    if send_reminder_email(contact):
+        contact.reminder_sent = True
+        contact.reminder_sent_at = datetime.utcnow()
+        db.session.commit()
+        flash('Reminder email sent successfully!', 'success')
+    else:
+        flash('Failed to send reminder email. Check SMTP settings.', 'danger')
+    return redirect(url_for('admin_contact_view', id=id))
 
 # Course Management
 @app.route('/admin/courses')
@@ -686,21 +1335,215 @@ def admin_testimonial_delete(id):
     flash('Testimonial deleted successfully!', 'success')
     return redirect(url_for('admin_testimonials'))
 
+# ==================== USER MANAGEMENT ====================
+
+@app.route('/admin/users')
+@login_required
+def admin_users():
+    if current_user.role != 'superadmin':
+        flash('Only superadmins can manage users.', 'error')
+        return redirect(url_for('admin_dashboard'))
+    users = Admin.query.order_by(Admin.created_at.desc()).all()
+    return render_template('admin/users.html', users=users)
+
+@app.route('/admin/users/new', methods=['GET', 'POST'])
+@login_required
+def admin_user_new():
+    if current_user.role != 'superadmin':
+        flash('Only superadmins can manage users.', 'error')
+        return redirect(url_for('admin_dashboard'))
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        role = request.form.get('role', 'admin')
+        is_active = 'is_active' in request.form
+
+        if not username or not email or not password:
+            flash('Username, email, and password are required.', 'error')
+            return render_template('admin/user_form.html', user=None)
+
+        if Admin.query.filter_by(username=username).first():
+            flash('Username already exists.', 'error')
+            return render_template('admin/user_form.html', user=None)
+
+        if Admin.query.filter_by(email=email).first():
+            flash('Email already exists.', 'error')
+            return render_template('admin/user_form.html', user=None)
+
+        user = Admin(username=username, email=email, role=role, is_active=is_active)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        flash('User created successfully!', 'success')
+        return redirect(url_for('admin_users'))
+
+    return render_template('admin/user_form.html', user=None)
+
+@app.route('/admin/users/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def admin_user_edit(id):
+    if current_user.role != 'superadmin':
+        flash('Only superadmins can manage users.', 'error')
+        return redirect(url_for('admin_dashboard'))
+    user = Admin.query.get_or_404(id)
+
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        role = request.form.get('role', 'admin')
+        is_active = 'is_active' in request.form
+
+        if not username or not email:
+            flash('Username and email are required.', 'error')
+            return render_template('admin/user_form.html', user=user)
+
+        # Check uniqueness (exclude current user)
+        existing = Admin.query.filter_by(username=username).first()
+        if existing and existing.id != id:
+            flash('Username already exists.', 'error')
+            return render_template('admin/user_form.html', user=user)
+
+        existing = Admin.query.filter_by(email=email).first()
+        if existing and existing.id != id:
+            flash('Email already exists.', 'error')
+            return render_template('admin/user_form.html', user=user)
+
+        user.username = username
+        user.email = email
+        user.role = role
+        user.is_active = is_active
+        db.session.commit()
+        flash('User updated successfully!', 'success')
+        return redirect(url_for('admin_users'))
+
+    return render_template('admin/user_form.html', user=user)
+
+@app.route('/admin/users/delete/<int:id>', methods=['POST'])
+@login_required
+def admin_user_delete(id):
+    if current_user.role != 'superadmin':
+        flash('Only superadmins can manage users.', 'error')
+        return redirect(url_for('admin_dashboard'))
+    if id == current_user.id:
+        flash('You cannot delete your own account.', 'error')
+        return redirect(url_for('admin_users'))
+    user = Admin.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('User deleted successfully!', 'success')
+    return redirect(url_for('admin_users'))
+
+@app.route('/admin/users/change-password/<int:id>', methods=['GET', 'POST'])
+@login_required
+def admin_user_change_password(id):
+    if current_user.role != 'superadmin' and id != current_user.id:
+        flash('You do not have permission to change this password.', 'error')
+        return redirect(url_for('admin_users'))
+    user = Admin.query.get_or_404(id)
+
+    if request.method == 'POST':
+        new_password = request.form.get('new_password', '')
+        confirm_password = request.form.get('confirm_password', '')
+
+        if not new_password or len(new_password) < 6:
+            flash('Password must be at least 6 characters.', 'error')
+            return render_template('admin/change_password.html', target_user=user)
+
+        if new_password != confirm_password:
+            flash('Passwords do not match.', 'error')
+            return render_template('admin/change_password.html', target_user=user)
+
+        user.set_password(new_password)
+        db.session.commit()
+        flash('Password changed successfully!', 'success')
+        return redirect(url_for('admin_users'))
+
+    return render_template('admin/change_password.html', target_user=user)
+
+@app.route('/admin/users/toggle-active/<int:id>', methods=['POST'])
+@login_required
+def admin_user_toggle_active(id):
+    if current_user.role != 'superadmin':
+        flash('Only superadmins can manage users.', 'error')
+        return redirect(url_for('admin_dashboard'))
+    if id == current_user.id:
+        flash('You cannot deactivate your own account.', 'error')
+        return redirect(url_for('admin_users'))
+    user = Admin.query.get_or_404(id)
+    user.is_active = not user.is_active
+    db.session.commit()
+    status = 'activated' if user.is_active else 'deactivated'
+    flash(f'User {status} successfully!', 'success')
+    return redirect(url_for('admin_users'))
+
+# ==================== SUBSCRIBER MANAGEMENT ====================
+
+@app.route('/admin/subscribers')
+@login_required
+def admin_subscribers():
+    subscribers = Subscriber.query.order_by(Subscriber.created_at.desc()).all()
+    active_count = Subscriber.query.filter_by(is_active=True).count()
+    total_count = Subscriber.query.count()
+    return render_template('admin/subscribers.html',
+                         subscribers=subscribers,
+                         active_count=active_count,
+                         total_count=total_count)
+
+@app.route('/admin/subscribers/delete/<int:id>', methods=['POST'])
+@login_required
+def admin_subscriber_delete(id):
+    subscriber = Subscriber.query.get_or_404(id)
+    db.session.delete(subscriber)
+    db.session.commit()
+    flash('Subscriber deleted successfully!', 'success')
+    return redirect(url_for('admin_subscribers'))
+
+@app.route('/admin/subscribers/toggle-active/<int:id>', methods=['POST'])
+@login_required
+def admin_subscriber_toggle_active(id):
+    subscriber = Subscriber.query.get_or_404(id)
+    subscriber.is_active = not subscriber.is_active
+    db.session.commit()
+    status = 'activated' if subscriber.is_active else 'deactivated'
+    flash(f'Subscriber {status} successfully!', 'success')
+    return redirect(url_for('admin_subscribers'))
+
+@app.route('/admin/subscribers/export')
+@login_required
+def admin_subscribers_export():
+    """Export all active subscriber emails as CSV."""
+    subscribers = Subscriber.query.filter_by(is_active=True).order_by(Subscriber.created_at.desc()).all()
+    
+    import io
+    output = io.StringIO()
+    output.write('Email,Subscribed Date,Welcome Email Sent\n')
+    for sub in subscribers:
+        welcome_status = 'Yes' if sub.welcome_email_sent else 'No'
+        output.write(f'{sub.email},{sub.created_at.strftime("%Y-%m-%d %H:%M")},{welcome_status}\n')
+    
+    from flask import make_response
+    response = make_response(output.getvalue())
+    response.headers['Content-Type'] = 'text/csv'
+    response.headers['Content-Disposition'] = 'attachment; filename=newsletter_subscribers.csv'
+    return response
+
 # ==================== INITIALIZE ====================
 
 def create_admin():
     admin = Admin.query.first()
     if not admin:
-        admin = Admin(username='vishalsharma1104@gmail.com', email='vishalsharma1104@gmail.com')
+        admin = Admin(username='vishalsharma1104@gmail.com', email='vishalsharma1104@gmail.com', role='superadmin')
         admin.set_password('Vishal@1*sharma')
         db.session.add(admin)
         db.session.commit()
         print('Admin user created: vishalsharma1104@gmail.com / Vishal@1*sharma')
     else:
-        # Update existing admin credentials
+        # Update existing admin credentials and ensure superadmin role
         admin.username = 'vishalsharma1104@gmail.com'
         admin.email = 'vishalsharma1104@gmail.com'
         admin.set_password('Vishal@1*sharma')
+        admin.role = 'superadmin'
         db.session.commit()
         print('Admin credentials updated: vishalsharma1104@gmail.com / Vishal@1*sharma')
 
@@ -1178,6 +2021,39 @@ def migrate_db():
                     db.session.rollback()
                     print(f'Column "{col_name}" may already exist: {e}')
 
+        # Migrate Contact table (email tracking fields)
+        contact_columns = [col['name'] for col in inspector.get_columns('contact')]
+        contact_new_columns = {
+            'reminder_sent': "ALTER TABLE contact ADD COLUMN reminder_sent BOOLEAN DEFAULT 0",
+            'reminder_sent_at': "ALTER TABLE contact ADD COLUMN reminder_sent_at DATETIME DEFAULT NULL",
+            'auto_reply_sent': "ALTER TABLE contact ADD COLUMN auto_reply_sent BOOLEAN DEFAULT 0",
+        }
+        for col_name, sql in contact_new_columns.items():
+            if col_name not in contact_columns:
+                try:
+                    db.session.execute(db.text(sql))
+                    db.session.commit()
+                    print(f'Added column "{col_name}" to contact table')
+                except Exception as e:
+                    db.session.rollback()
+                    print(f'Column "{col_name}" may already exist: {e}')
+
+        # Migrate Admin table (role & is_active fields)
+        admin_columns = [col['name'] for col in inspector.get_columns('admin')]
+        admin_new_columns = {
+            'role': "ALTER TABLE admin ADD COLUMN role VARCHAR(20) DEFAULT 'admin'",
+            'is_active': "ALTER TABLE admin ADD COLUMN is_active BOOLEAN DEFAULT 1",
+        }
+        for col_name, sql in admin_new_columns.items():
+            if col_name not in admin_columns:
+                try:
+                    db.session.execute(db.text(sql))
+                    db.session.commit()
+                    print(f'Added column "{col_name}" to admin table')
+                except Exception as e:
+                    db.session.rollback()
+                    print(f'Column "{col_name}" may already exist: {e}')
+
         print('Database migration completed!')
 
 # Error handler for file too large
@@ -1190,6 +2066,22 @@ def request_entity_too_large(error):
 def internal_server_error(error):
     logger.error(f"Internal server error: {str(error)}", exc_info=True)
     return jsonify({'error': 'Internal server error. Please try again.'}), 500
+
+# ==================== APSCHEDULER SETUP ====================
+scheduler = BackgroundScheduler()
+scheduler.add_job(
+    func=check_and_send_reminders,
+    trigger='cron',
+    hour=9,
+    minute=0,
+    id='reminder_check',
+    name='Send 10-day reminder emails',
+    replace_existing=True
+)
+scheduler.start()
+
+# Shut down scheduler on app exit
+atexit.register(lambda: scheduler.shutdown(wait=False))
 
 if __name__ == '__main__':
     with app.app_context():

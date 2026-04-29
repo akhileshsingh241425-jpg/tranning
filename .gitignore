@@ -46,3 +46,6 @@ Thumbs.db
 .cache/
 *.bak
 
+# Uploaded files
+backend/static/uploads/
+

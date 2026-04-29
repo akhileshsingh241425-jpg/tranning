@@ -263,6 +263,28 @@
             font-size: 0.8rem;
         }
 
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            background: rgba(79, 70, 229, 0.05);
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon:hover {
+            background: rgba(79, 70, 229, 0.15);
+            border-color: rgba(79, 70, 229, 0.4);
+            transform: translateY(-1px);
+        }
+
         /* Tables */
         .table-container {
             overflow-x: auto;
@@ -391,6 +413,16 @@
         .badge-danger {
             background: rgba(255, 71, 87, 0.2);
             color: var(--danger-color);
+        }
+
+        .badge-info {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .badge-primary {
+            background: rgba(79, 70, 229, 0.2);
+            color: #4f46e5;
         }
 
         /* Actions */

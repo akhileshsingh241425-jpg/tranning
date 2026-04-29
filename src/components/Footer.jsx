@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   FaTwitter,
   FaLinkedinIn,
@@ -13,15 +13,40 @@ import logo from '../assets/fevicon.png';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
-  const navigate = useNavigate();
+  const [subscribeStatus, setSubscribeStatus] = useState(null); // 'success' | 'error' | null
+  const [subscribeLoading, setSubscribeLoading] = useState(false);
   const location = useLocation();
 
-  const handleNewsletterSubmit = (e) => {
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    if (email) {
-      alert('Thank you for subscribing!');
-      setEmail('');
+    if (!email) return;
+    
+    setSubscribeLoading(true);
+    setSubscribeStatus(null);
+    
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setSubscribeStatus('success');
+        setEmail('');
+      } else {
+        setSubscribeStatus(data.message || 'Something went wrong');
+      }
+    } catch (err) {
+      setSubscribeStatus('Network error. Please try again.');
     }
+    
+    setSubscribeLoading(false);
+    
+    // Auto-hide status message after 5 seconds
+    setTimeout(() => setSubscribeStatus(null), 5000);
   };
 
   const scrollToSection = (e, sectionId) => {
@@ -44,15 +69,34 @@ const Footer = () => {
           <h3>Stay Ahead in Your Career</h3>
           <p>Get free career guides, course updates, and industry insights delivered to your inbox.</p>
           <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
-            <input 
-              type="email" 
-              placeholder="Enter your email address" 
+            <input
+              type="email"
+              placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={subscribeLoading}
             />
-            <button type="submit"><FaPaperPlane /> Subscribe</button>
+            <button type="submit" disabled={subscribeLoading}>
+              {subscribeLoading ? (
+                <>
+                  <span className="newsletter-spinner"></span> Subscribing...
+                </>
+              ) : (
+                <>
+                  <FaPaperPlane /> Subscribe
+                </>
+              )}
+            </button>
           </form>
+          {subscribeStatus && (
+            <div className={`newsletter-status newsletter-${subscribeStatus === 'success' ? 'success' : 'error'}`}>
+              {subscribeStatus === 'success'
+                ? '🎉 Successfully subscribed! Check your inbox for a welcome email.'
+                : subscribeStatus
+              }
+            </div>
+          )}
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 {% extends 'admin/base.html' %}
 
-{% block title %}Messages{% endblock %}
+{% block title %}Newsletter Subscribers{% endblock %}
 
 {% block body %}
 <div class="admin-container">
@@ -40,7 +40,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('admin_contacts') }}" class="active">
+                    <a href="{{ url_for('admin_contacts') }}">
                         <i class="fas fa-envelope"></i>
                         <span>Messages</span>
                     </a>
@@ -52,7 +52,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('admin_subscribers') }}">
+                    <a href="{{ url_for('admin_subscribers') }}" class="active">
                         <i class="fas fa-bell"></i>
                         <span>Subscribers</span>
                     </a>
@@ -75,75 +75,98 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="page-header">
-            <h1 class="page-title">Messages</h1>
-        </div>
-
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
                     <div class="alert alert-{{ category }}">
-                        <i class="fas {% if category == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
                         {{ message }}
                     </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
 
+        <div class="page-header">
+            <h1>Newsletter Subscribers</h1>
+            <a href="{{ url_for('admin_subscribers_export') }}" class="btn btn-secondary">
+                <i class="fas fa-download"></i> Export CSV
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 500px;">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ active_count }}</h3>
+                    <p>Active Subscribers</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_count }}</h3>
+                    <p>Total Subscribers</p>
+                </div>
+            </div>
+        </div>
+
         <div class="card">
-            {% if contacts %}
+            <div class="card-header">
+                <h2>All Subscribers ({{ subscribers|length }})</h2>
+            </div>
+            {% if subscribers %}
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>#</th>
                             <th>Email</th>
-                            <th>Phone</th>
-                            <th>Service</th>
                             <th>Status</th>
-                            <th>Auto-Reply</th>
-                            <th>Reminder</th>
-                            <th>Date</th>
+                            <th>Welcome Email</th>
+                            <th>Subscribed On</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for contact in contacts %}
+                        {% for subscriber in subscribers %}
                         <tr>
-                            <td>{{ contact.name }}</td>
-                            <td>{{ contact.email }}</td>
-                            <td>{{ contact.phone or '-' }}</td>
-                            <td>{{ contact.service or 'General' }}</td>
+                            <td>{{ loop.index }}</td>
+                            <td><strong>{{ subscriber.email }}</strong></td>
                             <td>
-                                {% if contact.is_read %}
-                                    <span class="badge badge-success">Read</span>
+                                {% if subscriber.is_active %}
+                                    <span class="badge badge-success">Active</span>
                                 {% else %}
-                                    <span class="badge badge-danger">New</span>
+                                    <span class="badge badge-danger">Inactive</span>
                                 {% endif %}
                             </td>
                             <td>
-                                {% if contact.auto_reply_sent %}
-                                    <span class="badge badge-success" title="Auto-reply sent"><i class="fas fa-check"></i> Sent</span>
+                                {% if subscriber.welcome_email_sent %}
+                                    <span class="badge badge-success"><i class="fas fa-check"></i> Sent</span>
                                 {% else %}
-                                    <span class="badge badge-warning" title="Auto-reply not sent"><i class="fas fa-times"></i> Pending</span>
+                                    <span class="badge badge-warning"><i class="fas fa-times"></i> Not Sent</span>
                                 {% endif %}
                             </td>
-                            <td>
-                                {% if contact.reminder_sent %}
-                                    <span class="badge badge-success" title="Reminder sent {{ contact.reminder_sent_at.strftime('%Y-%m-%d') if contact.reminder_sent_at else '' }}"><i class="fas fa-check"></i> Sent</span>
-                                {% else %}
-                                    <span class="badge badge-warning" title="Reminder not sent yet"><i class="fas fa-clock"></i> Pending</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ contact.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ subscriber.created_at.strftime('%d %b %Y %H:%M') if subscriber.created_at else 'N/A' }}</td>
                             <td>
                                 <div class="actions">
-                                    <a href="{{ url_for('admin_contact_view', id=contact.id) }}" class="btn btn-secondary btn-sm" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ url_for('admin_contact_delete', id=contact.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this message?')" title="Delete">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                                    <form method="POST" action="{{ url_for('admin_subscriber_toggle_active', id=subscriber.id) }}" style="display:inline;">
+                                        <button type="submit" class="btn-icon" title="{% if subscriber.is_active %}Deactivate{% else %}Activate{% endif %}" onclick="return confirm('Are you sure you want to {% if subscriber.is_active %}deactivate{% else %}activate{% endif %} this subscriber?')">
+                                            {% if subscriber.is_active %}
+                                                <i class="fas fa-bell-slash" style="color: #ef4444;"></i>
+                                            {% else %}
+                                                <i class="fas fa-bell" style="color: #22c55e;"></i>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('admin_subscriber_delete', id=subscriber.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this subscriber?')">
+                                        <button type="submit" class="btn-icon" title="Delete Subscriber">
+                                            <i class="fas fa-trash" style="color: #ef4444;"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -153,9 +176,8 @@
             </div>
             {% else %}
             <div class="empty-state">
-                <i class="fas fa-envelope"></i>
-                <h3>No Messages Yet</h3>
-                <p>Messages from the contact form will appear here</p>
+                <i class="fas fa-bell"></i>
+                <p>No subscribers yet</p>
             </div>
             {% endif %}
         </div>

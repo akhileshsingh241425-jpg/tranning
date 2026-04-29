@@ -8,7 +8,7 @@ User=www-data
 Group=www-data
 WorkingDirectory=/var/www/tranning/backend
 Environment="PATH=/var/www/tranning/backend/venv/bin"
-EnvironmentFile=/var/www/tranning/backend/.env
+EnvironmentFile=-/var/www/tranning/backend/.env
 ExecStart=/var/www/tranning/backend/venv/bin/gunicorn --config /var/www/tranning/backend/gunicorn.conf.py app:app
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed

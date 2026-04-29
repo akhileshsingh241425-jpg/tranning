@@ -1681,8 +1681,8 @@ def create_sample_courses():
                 description='Master Python, Machine Learning, Deep Learning & AI with hands-on projects. Build real-world models using TensorFlow, scikit-learn & pandas. Includes capstone project with industry dataset.',
                 image='https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
                 icon='FaDatabase',
-                price=15999,
-                original_price=45999,
+                price=199,
+                original_price=569,
                 rating=4.8,
                 reviews=2840,
                 learners='12,500+',
@@ -1705,8 +1705,8 @@ def create_sample_courses():
                 description='Learn AWS, Azure, Docker, Kubernetes & CI/CD pipelines. Deploy real applications to the cloud. Includes AWS Solutions Architect certification prep.',
                 image='https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
                 icon='FaCloud',
-                price=13999,
-                original_price=39999,
+                price=179,
+                original_price=499,
                 rating=4.7,
                 reviews=1950,
                 learners='9,800+',
@@ -1729,8 +1729,8 @@ def create_sample_courses():
                 description='Learn ethical hacking, penetration testing, network security & compliance. Hands-on labs with Kali Linux, Metasploit & Burp Suite. CEH certification prep included.',
                 image='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
                 icon='FaShieldAlt',
-                price=14999,
-                original_price=42999,
+                price=189,
+                original_price=549,
                 rating=4.8,
                 reviews=1620,
                 learners='7,200+',
@@ -1753,8 +1753,8 @@ def create_sample_courses():
                 description='Master MERN Stack — React, Node.js, MongoDB, Express. Build 10+ real-world projects including an e-commerce platform, social media app & REST APIs.',
                 image='https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
                 icon='FaCode',
-                price=12999,
-                original_price=37999,
+                price=149,
+                original_price=449,
                 rating=4.9,
                 reviews=3200,
                 learners='15,000+',
@@ -1774,11 +1774,11 @@ def create_sample_courses():
             Course(
                 title='Digital Marketing',
                 slug='digital-marketing',
-                description='Master SEO, Google Ads, Social Media Marketing, Analytics & Content Strategy. Run real campaigns with Rs 10000 Google Ad credits. Google certified program.',
+                description='Master SEO, Google Ads, Social Media Marketing, Analytics & Content Strategy. Run real campaigns with $100 Google Ad credits. Google certified program.',
                 image='https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
                 icon='FaBullhorn',
-                price=9999,
-                original_price=29999,
+                price=119,
+                original_price=349,
                 rating=4.7,
                 reviews=2100,
                 learners='18,000+',
@@ -1801,8 +1801,8 @@ def create_sample_courses():
                 description='Learn Excel, SQL, Tableau, Power BI & statistical analysis. Work on real business datasets from top companies. Make data-driven decisions like a pro.',
                 image='https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
                 icon='FaChartBar',
-                price=11999,
-                original_price=34999,
+                price=139,
+                original_price=399,
                 rating=4.6,
                 reviews=1450,
                 learners='8,500+',
@@ -1825,8 +1825,8 @@ def create_sample_courses():
                 description='Master Figma, wireframing, prototyping & user research. Build a professional 10+ piece design portfolio. Includes real client projects & design sprints.',
                 image='https://images.unsplash.com/photo-1626785774573-4b799315345d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
                 icon='FaPaintBrush',
-                price=10999,
-                original_price=32999,
+                price=129,
+                original_price=389,
                 rating=4.8,
                 reviews=1180,
                 learners='6,200+',
@@ -1849,8 +1849,8 @@ def create_sample_courses():
                 description='Build iOS & Android apps with React Native & Flutter. Publish to App Store & Google Play. Includes backend integration with Firebase & real-time features.',
                 image='https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
                 icon='FaMobileAlt',
-                price=13999,
-                original_price=38999,
+                price=179,
+                original_price=499,
                 rating=4.7,
                 reviews=980,
                 learners='5,400+',
@@ -2053,6 +2053,30 @@ def migrate_db():
                 except Exception as e:
                     db.session.rollback()
                     print(f'Column "{col_name}" may already exist: {e}')
+
+        # Migrate course prices from INR to USD (one-time update)
+        # Only update if prices are still in INR range (>1000)
+        usd_prices = {
+            'data-science-ai': (199, 569),
+            'cloud-computing-devops': (179, 499),
+            'cyber-security': (189, 549),
+            'web-development': (149, 449),
+            'digital-marketing': (119, 349),
+            'business-analytics': (139, 399),
+            'ui-ux-design': (129, 389),
+            'mobile-app-development': (179, 499),
+        }
+        courses_to_update = Course.query.filter(Course.price > 1000).all()
+        if courses_to_update:
+            for course in courses_to_update:
+                if course.slug in usd_prices:
+                    course.price, course.original_price = usd_prices[course.slug]
+                else:
+                    # Fallback: rough INR→USD conversion for custom courses
+                    course.price = round(course.price / 80)
+                    course.original_price = round(course.original_price / 80)
+            db.session.commit()
+            print(f'Updated {len(courses_to_update)} course prices from INR to USD')
 
         print('Database migration completed!')
 

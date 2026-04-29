@@ -124,9 +124,9 @@
                                 <small style="color: var(--text-secondary);">{{ course.slug }}</small>
                             </td>
                             <td>
-                                <strong style="color: var(--success-color);">₹{{ '{:,}'.format(course.price) }}</strong>
+                                <strong style="color: var(--success-color);">${{ '{:,}'.format(course.price) }}</strong>
                                 <br>
-                                <small style="color: var(--text-secondary); text-decoration: line-through;">₹{{ '{:,}'.format(course.original_price) }}</small>
+                                <small style="color: var(--text-secondary); text-decoration: line-through;">${{ '{:,}'.format(course.original_price) }}</small>
                             </td>
                             <td>
                                 <small>{{ course.instructor_name }}</small>

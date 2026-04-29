@@ -178,7 +178,7 @@
                         {% for course in recent_courses %}
                         <tr>
                             <td>{{ course.title }}</td>
-                            <td style="color: var(--success-color);">₹{{ '{:,}'.format(course.price) }}</td>
+                            <td style="color: var(--success-color);">${{ '{:,}'.format(course.price) }}</td>
                             <td>{{ course.instructor_name }}</td>
                             <td>
                                 {% if course.is_published %}

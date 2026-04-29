@@ -3,10 +3,9 @@ Description=Gunicorn daemon for TrainingProtec Backend
 After=network.target
 
 [Service]
-Type=notify
+Type=exec
 User=www-data
 Group=www-data
-RuntimeDirectory=gunicorn
 WorkingDirectory=/var/www/tranning/backend
 Environment="PATH=/var/www/tranning/backend/venv/bin"
 EnvironmentFile=/var/www/tranning/backend/.env

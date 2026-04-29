@@ -152,8 +152,7 @@
                             {% if contact.reminder_sent %}
                                 Reminder was sent on {{ contact.reminder_sent_at.strftime('%B %d, %Y at %H:%M') if contact.reminder_sent_at else 'N/A' }}
                             {% else %}
-                                {% set days_since = (contact.created_at|abs).days if contact.created_at else 0 %}
-                                No reminder sent yet (enquiry from {{ contact.created_at.strftime('%B %d') }})
+                                No reminder sent yet (enquiry from {{ contact.created_at.strftime('%B %d') if contact.created_at else 'N/A' }})
                             {% endif %}
                         </p>
                         {% if not contact.reminder_sent %}

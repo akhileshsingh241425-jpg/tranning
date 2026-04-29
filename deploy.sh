@@ -18,7 +18,7 @@ NC='\033[0m' # No Color
 # Step 1: Pull latest code
 echo -e "\n${YELLOW}[1/6] Pulling latest code from Git...${NC}"
 cd /var/www/tranning
-git pull origin main
+git pull origin master
 echo -e "${GREEN}✓ Code pulled successfully${NC}"
 
 # Step 2: Install/update Python dependencies

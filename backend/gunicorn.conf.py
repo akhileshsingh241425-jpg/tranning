@@ -35,8 +35,9 @@ loglevel = "info"
 # Process naming
 proc_name = "trainingprotec"
 
-# PID file
-pidfile = "/var/run/gunicorn/trainingprotec.pid"
+# PID file - Not needed when using systemd (systemd tracks the PID automatically).
+# The /var/run/gunicorn/ directory may not exist on some systems, causing crashes.
+# pidfile = "/var/run/gunicorn/trainingprotec.pid"
 
 # Daemon mode - OFF (systemd manages the process)
 daemon = False

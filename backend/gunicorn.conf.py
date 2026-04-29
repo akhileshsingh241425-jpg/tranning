@@ -17,34 +17,23 @@ timeout = 120
 max_requests = 1000
 max_requests_jitter = 50
 
-# Preload app for faster worker boot
-preload_app = True
+# Do NOT use preload_app — it causes issues with APScheduler, SQLAlchemy,
+# and background threads when Gunicorn forks workers.
+preload_app = False
 
-# Post-worker init: dispose SQLAlchemy engine after fork so each worker
-# gets its own fresh DB connections (prevents "SQLite objects created in
-# a thread can only be used in that same thread" errors).
-def post_worker_init(worker):
-    from app import db
-    db.engine.dispose()
-
-# Logging
-accesslog = "/var/log/gunicorn/access.log"
-errorlog = "/var/log/gunicorn/error.log"
+# Logging — use "-" for stdout/stderr (systemd captures these automatically)
+accesslog = "-"
+errorlog = "-"
 loglevel = "info"
 
 # Process naming
 proc_name = "trainingprotec"
 
-# PID file - Not needed when using systemd (systemd tracks the PID automatically).
-# The /var/run/gunicorn/ directory may not exist on some systems, causing crashes.
+# No PID file needed — systemd tracks the process
 # pidfile = "/var/run/gunicorn/trainingprotec.pid"
 
 # Daemon mode - OFF (systemd manages the process)
 daemon = False
-
-# User and group
-user = "www-data"
-group = "www-data"
 
 # Working directory
 chdir = "/var/www/tranning/backend"

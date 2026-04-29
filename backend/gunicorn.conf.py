@@ -20,6 +20,13 @@ max_requests_jitter = 50
 # Preload app for faster worker boot
 preload_app = True
 
+# Post-worker init: dispose SQLAlchemy engine after fork so each worker
+# gets its own fresh DB connections (prevents "SQLite objects created in
+# a thread can only be used in that same thread" errors).
+def post_worker_init(worker):
+    from app import db
+    db.engine.dispose()
+
 # Logging
 accesslog = "/var/log/gunicorn/access.log"
 errorlog = "/var/log/gunicorn/error.log"

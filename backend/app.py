@@ -2068,27 +2068,40 @@ def internal_server_error(error):
     return jsonify({'error': 'Internal server error. Please try again.'}), 500
 
 # ==================== APSCHEDULER SETUP ====================
-scheduler = BackgroundScheduler()
-scheduler.add_job(
-    func=check_and_send_reminders,
-    trigger='cron',
-    hour=9,
-    minute=0,
-    id='reminder_check',
-    name='Send 10-day reminder emails',
-    replace_existing=True
-)
-scheduler.start()
+# Only start scheduler when running directly (not under Gunicorn).
+# In production, use system cron to hit /api/cron/reminders instead:
+#   0 9 * * * curl -s -X POST https://trainingprotec.com/api/cron/reminders -H "X-Cron-Secret: YOUR_SECRET"
+scheduler = None
 
-# Shut down scheduler on app exit
-atexit.register(lambda: scheduler.shutdown(wait=False))
+def start_scheduler():
+    """Start the APScheduler (only for direct `python app.py` usage)."""
+    global scheduler
+    if scheduler is not None:
+        return
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(
+        func=check_and_send_reminders,
+        trigger='cron',
+        hour=9,
+        minute=0,
+        id='reminder_check',
+        name='Send 10-day reminder emails',
+        replace_existing=True
+    )
+    scheduler.start()
+    atexit.register(lambda: scheduler.shutdown(wait=False))
+
+# ==================== APP INITIALIZATION ====================
+# Initialize database and seed data when the app is loaded (works with both
+# `python app.py` and Gunicorn `gunicorn app:app`).
+with app.app_context():
+    db.create_all()
+    migrate_db()
+    create_admin()
+    create_sample_blogs()
+    create_sample_courses()
+    create_sample_testimonials()
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        migrate_db()
-        create_admin()
-        create_sample_blogs()
-        create_sample_courses()
-        create_sample_testimonials()
+    start_scheduler()
     app.run(debug=False, host='0.0.0.0', port=5050)

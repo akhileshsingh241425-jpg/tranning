@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FaArrowLeft, FaArrowRight, FaCheckCircle, FaQuoteLeft, FaChevronDown, FaChevronUp, FaClock, FaGraduationCap, FaTag, FaSpinner, FaEnvelope } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaCheckCircle, FaQuoteLeft, FaChevronDown, FaChevronUp, FaClock, FaGraduationCap, FaTag, FaSpinner, FaEnvelope, FaBookOpen, FaListUl } from 'react-icons/fa';
 import coursesDetailData from './courseData';
 import SEO from './SEO';
 
 const CourseDetail = () => {
   const { slug } = useParams();
   const [activeAccordion, setActiveAccordion] = useState(null);
+  const [expandedModule, setExpandedModule] = useState(null);
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [allSlugs, setAllSlugs] = useState([]);
+
+  const toggleModule = (index) => {
+    setExpandedModule(expandedModule === index ? null : index);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -38,14 +43,19 @@ const CourseDetail = () => {
           overview: data.overview || (localCourse && localCourse.overview) || data.description,
           keyBenefits: (data.keyBenefits && data.keyBenefits.length > 0) ? data.keyBenefits : (localCourse && localCourse.keyBenefits) || [],
           subServices: (data.modulesDetail && data.modulesDetail.length > 0)
-            ? data.modulesDetail.map(m => ({ title: m.title, description: m.description }))
+            ? data.modulesDetail.map((m, i) => ({
+                title: m.title,
+                description: m.description,
+                topics: m.topics || (localCourse && localCourse.subServices && localCourse.subServices[i] && localCourse.subServices[i].topics) || []
+              }))
             : (localCourse && localCourse.subServices) || [],
           process: (data.learningPath && data.learningPath.length > 0)
             ? data.learningPath.map(s => ({ step: s.step, title: s.title, description: s.description }))
             : (localCourse && localCourse.process) || [],
           technologies: (data.technologies && data.technologies.length > 0) ? data.technologies : (localCourse && localCourse.technologies) || [],
           faq: (data.faq && data.faq.length > 0) ? data.faq : (localCourse && localCourse.faq) || [],
-          stats: (data.detailStats && data.detailStats.length > 0) ? data.detailStats : (localCourse && localCourse.stats) || []
+          stats: (data.detailStats && data.detailStats.length > 0) ? data.detailStats : (localCourse && localCourse.stats) || [],
+          topicWiseContent: (data.topicWiseContent && data.topicWiseContent.length > 0) ? data.topicWiseContent : (localCourse && localCourse.topicWiseContent) || []
         });
         setLoading(false);
       })
@@ -189,11 +199,69 @@ const CourseDetail = () => {
                   <div className="sd-sub-icon">
                     <FaCheckCircle />
                   </div>
-                  <h3>{module.title}</h3>
+                  <div className="sd-sub-header" onClick={() => toggleModule(index)}>
+                    <h3>{module.title}</h3>
+                    {expandedModule === index ? <FaChevronUp /> : <FaChevronDown />}
+                  </div>
                   <p>{module.description}</p>
+                  
+                  {expandedModule === index && module.topics && (
+                    <div className="sd-module-topics">
+                      <h4>Topics Covered:</h4>
+                      <ul>
+                        {module.topics.map((topic, idx) => (
+                          <li key={idx}>{topic}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* Topic-wise Content Distribution Section */}
+      {course.topicWiseContent && course.topicWiseContent.length > 0 && (
+      <section className="sd-topic-wise">
+        <div className="sd-container">
+          <div className="sd-section-header">
+            <span className="sd-badge">Syllabus</span>
+            <h2>Topic-wise Content Distribution</h2>
+            <p>Detailed breakdown of topics covered in this course</p>
+          </div>
+          <div className="sd-topic-wise-groups">
+            {course.topicWiseContent.map((group, gIndex) => (
+              <div key={gIndex} className="sd-topic-group">
+                <div className="sd-topic-group-heading">
+                  <FaBookOpen className="sd-topic-group-icon" />
+                  <h3>{group.heading}</h3>
+                </div>
+                <div className="sd-topic-group-items">
+                  {group.items && group.items.map((item, iIndex) => (
+                    <div key={iIndex} className="sd-topic-item">
+                      <div className="sd-topic-item-header">
+                        <FaListUl className="sd-topic-item-icon" />
+                        <h4>{item.title}</h4>
+                      </div>
+                      {item.description && <p className="sd-topic-item-desc">{item.description}</p>}
+                      {item.subtopics && item.subtopics.length > 0 && (
+                        <ul className="sd-topic-subtopics">
+                          {item.subtopics.map((st, stIndex) => (
+                            <li key={stIndex}>
+                              <FaCheckCircle className="sd-topic-subtopic-check" />
+                              <span>{st}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

@@ -675,6 +675,7 @@ class Course(db.Model):
     technologies_list = db.Column(db.Text, default='')     # comma-separated
     faq = db.Column(db.Text, default='')                   # JSON: [{question, answer}]
     detail_stats = db.Column(db.Text, default='')          # JSON: [{number, label}]
+    topic_wise_content = db.Column(db.Text, default='')    # JSON: [{heading, items: [{title, description, subtopics: []}]}]
 
     def to_dict(self):
         return {
@@ -719,6 +720,7 @@ class Course(db.Model):
         base['technologies'] = [t.strip() for t in self.technologies_list.split(',')] if self.technologies_list else []
         base['faq'] = json.loads(self.faq) if self.faq else []
         base['detailStats'] = json.loads(self.detail_stats) if self.detail_stats else []
+        base['topicWiseContent'] = json.loads(self.topic_wise_content) if self.topic_wise_content else []
         return base
 
 class Subscriber(db.Model):
@@ -1205,7 +1207,8 @@ def admin_course_new():
             learning_path=request.form.get('learning_path', ''),
             technologies_list=request.form.get('technologies_list', ''),
             faq=request.form.get('faq', ''),
-            detail_stats=request.form.get('detail_stats', '')
+            detail_stats=request.form.get('detail_stats', ''),
+            topic_wise_content=request.form.get('topic_wise_content', '')
         )
         try:
             db.session.add(course)
@@ -1256,6 +1259,7 @@ def admin_course_edit(id):
         course.technologies_list = request.form.get('technologies_list', '')
         course.faq = request.form.get('faq', '')
         course.detail_stats = request.form.get('detail_stats', '')
+        course.topic_wise_content = request.form.get('topic_wise_content', '')
         try:
             db.session.commit()
             flash('Course updated successfully!', 'success')
@@ -1972,6 +1976,7 @@ def migrate_db():
             'technologies_list': "ALTER TABLE course ADD COLUMN technologies_list TEXT DEFAULT ''",
             'faq': "ALTER TABLE course ADD COLUMN faq TEXT DEFAULT ''",
             'detail_stats': "ALTER TABLE course ADD COLUMN detail_stats TEXT DEFAULT ''",
+            'topic_wise_content': "ALTER TABLE course ADD COLUMN topic_wise_content TEXT DEFAULT ''",
         }
         for col_name, sql in course_new_columns.items():
             if col_name not in course_columns:

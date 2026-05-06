@@ -464,6 +464,20 @@
                     <small style="color: var(--text-secondary);">Add each question and its answer.</small>
                 </div>
 
+                <!-- Topic-wise Content Distribution -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-sitemap"></i> Topic-wise Content Distribution
+                </h3>
+                <div class="form-group">
+                    <label>Topic Groups</label>
+                    <div id="topic_wise_content_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addTopicWiseGroup()">
+                        <i class="fas fa-plus"></i> Add Topic Group
+                    </button>
+                    <textarea id="topic_wise_content" name="topic_wise_content" style="display:none;">{{ course.topic_wise_content if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add topic groups with a heading, items (title, description), and subtopics under each item.</small>
+                </div>
+
                 <hr style="border: none; border-top: 2px solid rgba(79, 70, 229, 0.1); margin: 2.5rem 0;">
 
                 <!-- Publish -->
@@ -607,6 +621,139 @@
     .dynamic-field-item .field-inputs textarea::placeholder {
         color: var(--text-secondary, #94a3b8);
         opacity: 0.7;
+    }
+
+    /* Topic-wise Content Distribution Styles */
+    .topic-wise-group {
+        flex-direction: column;
+        padding: 1rem;
+        background: rgba(79, 70, 229, 0.04);
+        border: 1px solid rgba(79, 70, 229, 0.18);
+        border-radius: 10px;
+    }
+    .topic-wise-group-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .topic-wise-heading-input {
+        flex: 1;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid rgba(79, 70, 229, 0.15);
+        border-radius: 6px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        background: var(--bg-primary, #fff);
+        color: var(--text-primary, #1a1a2e);
+    }
+    .topic-wise-heading-input:focus {
+        outline: none;
+        border-color: var(--accent-color, #4f46e5);
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+    }
+    .topic-wise-items-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-left: 1.5rem;
+        padding-left: 1rem;
+        border-left: 2px solid rgba(79, 70, 229, 0.15);
+    }
+    .topic-wise-item {
+        padding: 0.75rem;
+        background: rgba(79, 70, 229, 0.03);
+        border: 1px solid rgba(79, 70, 229, 0.1);
+        border-radius: 8px;
+    }
+    .topic-wise-item-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.4rem;
+    }
+    .topic-wise-item-header input {
+        flex: 1;
+        padding: 0.4rem 0.7rem;
+        border: 1px solid rgba(79, 70, 229, 0.15);
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        background: var(--bg-primary, #fff);
+        color: var(--text-primary, #1a1a2e);
+    }
+    .topic-wise-item-header input:focus {
+        outline: none;
+        border-color: var(--accent-color, #4f46e5);
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+    }
+    .topic-wise-item textarea {
+        width: 100%;
+        min-height: 45px;
+        padding: 0.4rem 0.7rem;
+        border: 1px solid rgba(79, 70, 229, 0.15);
+        border-radius: 6px;
+        font-size: 0.85rem;
+        resize: vertical;
+        margin-bottom: 0.4rem;
+        background: var(--bg-primary, #fff);
+        color: var(--text-primary, #1a1a2e);
+    }
+    .topic-wise-item textarea:focus {
+        outline: none;
+        border-color: var(--accent-color, #4f46e5);
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+    }
+    .topic-wise-subtopics-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        margin-left: 1rem;
+        padding-left: 0.75rem;
+        border-left: 2px solid rgba(16, 185, 129, 0.2);
+    }
+    .topic-wise-subtopic {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .topic-wise-subtopic input {
+        flex: 1;
+        padding: 0.35rem 0.6rem;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 5px;
+        font-size: 0.82rem;
+        background: var(--bg-primary, #fff);
+        color: var(--text-primary, #1a1a2e);
+    }
+    .topic-wise-subtopic input:focus {
+        outline: none;
+        border-color: rgba(16, 185, 129, 0.5);
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+    }
+    .btn-remove-sm {
+        width: 26px;
+        height: 26px;
+        font-size: 0.7rem;
+    }
+    .btn-add-item {
+        margin-left: 1.5rem;
+        margin-top: 0.5rem;
+        font-size: 0.82rem;
+        padding: 0.4rem 0.8rem;
+        border-color: rgba(79, 70, 229, 0.3);
+    }
+    .btn-add-subtopic {
+        font-size: 0.78rem;
+        padding: 0.3rem 0.7rem;
+        margin-top: 0.35rem;
+        border-color: rgba(16, 185, 129, 0.3);
+        background: rgba(16, 185, 129, 0.05);
+        color: #10b981;
+    }
+    .btn-add-subtopic:hover {
+        background: rgba(16, 185, 129, 0.12);
+        border-color: rgba(16, 185, 129, 0.5);
     }
 </style>
 
@@ -783,6 +930,7 @@
     let moduleDetailCount = 0;
     let learningPathCount = 0;
     let faqCount = 0;
+    let topicWiseGroupCount = 0;
 
     function escapeHtml(str) {
         if (!str) return '';
@@ -877,6 +1025,112 @@
         });
     }
 
+    // ===== Topic-wise Content Distribution Functions =====
+    function addTopicWiseGroup(heading, items) {
+        topicWiseGroupCount++;
+        const container = document.getElementById('topic_wise_content_container');
+        const group = document.createElement('div');
+        group.className = 'dynamic-field-item topic-wise-group';
+        group.innerHTML = `
+            <div class="topic-wise-group-header">
+                <span class="field-number">${topicWiseGroupCount}</span>
+                <input type="text" placeholder="Group heading (e.g. Salesforce CRM Introduction)" value="${escapeHtml(heading || '')}" data-field="heading" class="topic-wise-heading-input">
+                <button type="button" class="btn-remove-field" onclick="removeTopicWiseGroup(this)" title="Remove Group">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+            <div class="topic-wise-items-container"></div>
+            <button type="button" class="btn-add-field btn-add-item" onclick="addTopicWiseItem(this)">
+                <i class="fas fa-plus"></i> Add Item
+            </button>
+        `;
+        container.appendChild(group);
+
+        // Add existing items if provided
+        if (items && Array.isArray(items)) {
+            items.forEach(item => {
+                addTopicWiseItem(group.querySelector('.btn-add-item'), item.title || '', item.description || '', item.subtopics || []);
+            });
+        }
+    }
+
+    function addTopicWiseItem(btn, title, description, subtopics) {
+        const group = btn.closest('.topic-wise-group');
+        const itemsContainer = group.querySelector('.topic-wise-items-container');
+        const itemCount = itemsContainer.querySelectorAll('.topic-wise-item').length + 1;
+        const item = document.createElement('div');
+        item.className = 'topic-wise-item';
+        item.innerHTML = `
+            <div class="topic-wise-item-header">
+                <span class="field-number">${itemCount}</span>
+                <input type="text" placeholder="Item title (e.g. Quote Templates)" value="${escapeHtml(title || '')}" data-field="title">
+                <button type="button" class="btn-remove-field btn-remove-sm" onclick="removeTopicWiseItem(this)" title="Remove Item">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <textarea placeholder="Item description (optional)..." data-field="description">${escapeHtml(description || '')}</textarea>
+            <div class="topic-wise-subtopics-container"></div>
+            <button type="button" class="btn-add-field btn-add-subtopic" onclick="addTopicWiseSubtopic(this)">
+                <i class="fas fa-plus"></i> Add Subtopic
+            </button>
+        `;
+        itemsContainer.appendChild(item);
+
+        // Add existing subtopics if provided
+        if (subtopics && Array.isArray(subtopics)) {
+            subtopics.forEach(st => addTopicWiseSubtopic(item.querySelector('.btn-add-subtopic'), st));
+        }
+
+        renumberTopicWiseItems(group);
+    }
+
+    function addTopicWiseSubtopic(btn, subtopic) {
+        const item = btn.closest('.topic-wise-item');
+        const subtopicsContainer = item.querySelector('.topic-wise-subtopics-container');
+        const stEl = document.createElement('div');
+        stEl.className = 'topic-wise-subtopic';
+        stEl.innerHTML = `
+            <input type="text" placeholder="Subtopic name" value="${escapeHtml(subtopic || '')}" data-field="subtopic">
+            <button type="button" class="btn-remove-field btn-remove-sm" onclick="removeTopicWiseSubtopic(this)" title="Remove Subtopic">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        subtopicsContainer.appendChild(stEl);
+    }
+
+    function removeTopicWiseGroup(btn) {
+        const group = btn.closest('.topic-wise-group');
+        group.remove();
+        renumberTopicWiseGroups();
+    }
+
+    function removeTopicWiseItem(btn) {
+        const item = btn.closest('.topic-wise-item');
+        const group = item.closest('.topic-wise-group');
+        item.remove();
+        renumberTopicWiseItems(group);
+    }
+
+    function removeTopicWiseSubtopic(btn) {
+        btn.closest('.topic-wise-subtopic').remove();
+    }
+
+    function renumberTopicWiseGroups() {
+        const groups = document.querySelectorAll('#topic_wise_content_container .topic-wise-group');
+        groups.forEach((g, i) => {
+            g.querySelector('.field-number').textContent = i + 1;
+        });
+        topicWiseGroupCount = groups.length;
+    }
+
+    function renumberTopicWiseItems(group) {
+        if (!group) return;
+        const items = group.querySelectorAll('.topic-wise-item');
+        items.forEach((item, i) => {
+            item.querySelector('.field-number').textContent = i + 1;
+        });
+    }
+
     function initDynamicFields() {
         // Parse existing JSON from hidden textareas and render friendly fields
         try {
@@ -918,6 +1172,16 @@
                 }
             }
         } catch(e) { console.warn('Could not parse faq:', e); }
+
+        try {
+            const twcVal = document.getElementById('topic_wise_content').value.trim();
+            if (twcVal) {
+                const twc = JSON.parse(twcVal);
+                if (Array.isArray(twc)) {
+                    twc.forEach(g => addTopicWiseGroup(g.heading || '', g.items || []));
+                }
+            }
+        } catch(e) { console.warn('Could not parse topic_wise_content:', e); }
     }
 
     function serializeDynamicFields() {
@@ -961,6 +1225,28 @@
             if (question || answer) faqArr.push({ question, answer });
         });
         document.getElementById('faq').value = faqArr.length > 0 ? JSON.stringify(faqArr) : '';
+
+        // Serialize Topic-wise Content Distribution
+        const twcGroups = document.querySelectorAll('#topic_wise_content_container .topic-wise-group');
+        const twcArr = [];
+        twcGroups.forEach(group => {
+            const heading = group.querySelector('[data-field="heading"]').value.trim();
+            const itemEls = group.querySelectorAll('.topic-wise-item');
+            const items = [];
+            itemEls.forEach(itemEl => {
+                const title = itemEl.querySelector('[data-field="title"]').value.trim();
+                const description = itemEl.querySelector('[data-field="description"]').value.trim();
+                const subtopicEls = itemEl.querySelectorAll('.topic-wise-subtopic');
+                const subtopics = [];
+                subtopicEls.forEach(stEl => {
+                    const stVal = stEl.querySelector('[data-field="subtopic"]').value.trim();
+                    if (stVal) subtopics.push(stVal);
+                });
+                if (title || description) items.push({ title, description, subtopics });
+            });
+            if (heading || items.length > 0) twcArr.push({ heading, items });
+        });
+        document.getElementById('topic_wise_content').value = twcArr.length > 0 ? JSON.stringify(twcArr) : '';
     }
 
     // Form validation + serialize dynamic fields

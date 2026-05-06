@@ -36,12 +36,78 @@ const coursesDetailData = [
       'Industry-recognized certification'
     ],
     subServices: [
-      { icon: FaPython, title: 'Python for Data Science', description: 'Master Python programming, Pandas, NumPy, Matplotlib & Seaborn for data manipulation, analysis and visualization.' },
-      { icon: FaBrain, title: 'Machine Learning', description: 'Learn supervised & unsupervised algorithms — regression, classification, clustering, ensemble methods & model evaluation.' },
-      { icon: FaRobot, title: 'Deep Learning & Neural Networks', description: 'Build CNNs, RNNs & transformers with TensorFlow/Keras for image recognition, NLP & generative AI applications.' },
-      { icon: FaChartBar, title: 'Data Analysis & Visualization', description: 'Transform raw data into insights using EDA, statistical methods, interactive dashboards with Plotly & Tableau.' },
-      { icon: FaProjectDiagram, title: 'Natural Language Processing', description: 'Process text data using NLP techniques — sentiment analysis, text classification, chatbots & LLM applications.' },
-      { icon: FaFlask, title: 'ML Model Deployment', description: 'Deploy models using Flask, FastAPI & cloud platforms. Build end-to-end ML pipelines for production.' }
+      {
+        icon: FaPython,
+        title: 'Python for Data Science',
+        description: 'Master Python programming, Pandas, NumPy, Matplotlib & Seaborn for data manipulation, analysis and visualization.',
+        topics: [
+          'Python fundamentals',
+          'Pandas data manipulation',
+          'NumPy arrays',
+          'Matplotlib visualization',
+          'Seaborn advanced plots'
+        ]
+      },
+      {
+        icon: FaBrain,
+        title: 'Machine Learning',
+        description: 'Learn supervised & unsupervised algorithms — regression, classification, clustering, ensemble methods & model evaluation.',
+        topics: [
+          'Regression models',
+          'Classification algorithms',
+          'Clustering techniques',
+          'Ensemble methods',
+          'Model evaluation metrics'
+        ]
+      },
+      {
+        icon: FaRobot,
+        title: 'Deep Learning & Neural Networks',
+        description: 'Build CNNs, RNNs & transformers with TensorFlow/Keras for image recognition, NLP & generative AI applications.',
+        topics: [
+          'Neural network fundamentals',
+          'CNN architectures',
+          'RNN and LSTM networks',
+          'Transformer models',
+          'Generative AI applications'
+        ]
+      },
+      {
+        icon: FaChartBar,
+        title: 'Data Analysis & Visualization',
+        description: 'Transform raw data into insights using EDA, statistical methods, interactive dashboards with Plotly & Tableau.',
+        topics: [
+          'Exploratory Data Analysis',
+          'Statistical methods',
+          'Plotly interactive charts',
+          'Tableau dashboards',
+          'Data storytelling'
+        ]
+      },
+      {
+        icon: FaProjectDiagram,
+        title: 'Natural Language Processing',
+        description: 'Process text data using NLP techniques — sentiment analysis, text classification, chatbots & LLM applications.',
+        topics: [
+          'Text preprocessing',
+          'Sentiment analysis',
+          'Text classification',
+          'Chatbot development',
+          'LLM applications'
+        ]
+      },
+      {
+        icon: FaFlask,
+        title: 'ML Model Deployment',
+        description: 'Deploy models using Flask, FastAPI & cloud platforms. Build end-to-end ML pipelines for production.',
+        topics: [
+          'Flask API development',
+          'FastAPI implementation',
+          'Cloud deployment',
+          'ML pipelines',
+          'Production monitoring'
+        ]
+      }
     ],
     process: [
       { step: 1, title: 'Python & Statistics', description: 'Master Python, statistics & probability — the foundation for all data science work.' },
@@ -63,6 +129,26 @@ const coursesDetailData = [
       { question: 'Is there placement assistance?', answer: 'Yes! We provide dedicated placement assistance including resume reviews, mock interviews, and direct referrals to 200+ hiring partners worldwide.' },
       { question: 'What salary can I expect after completion?', answer: 'Our graduates see an average 70% salary hike. Entry-level data science roles start at $60,000-$90,000/year, with experienced roles going up to $150,000+/year.' },
       { question: 'Are classes live or recorded?', answer: 'Both! You get live instructor-led sessions plus recordings for revision. Live sessions include real-time doubt resolution and hands-on coding.' }
+    ],
+    topicWiseContent: [
+      {
+        heading: 'Python for Data Science',
+        items: [
+          { title: 'Python Fundamentals', description: 'Core Python programming concepts and syntax for data science workflows.', subtopics: ['Variables & Data Types', 'Control Flow & Loops', 'Functions & Modules', 'File Handling & Exceptions'] },
+          { title: 'Data Manipulation with Pandas', subtopics: ['DataFrames & Series', 'Data Cleaning & Preprocessing', 'Merging & Joining Data', 'GroupBy Operations'] },
+          { title: 'NumPy & Mathematical Computing', subtopics: ['Array Operations', 'Linear Algebra', 'Broadcasting', 'Random Number Generation'] },
+          { title: 'Data Visualization', subtopics: ['Matplotlib Basics', 'Seaborn Statistical Plots', 'Plotly Interactive Charts'] }
+        ]
+      },
+      {
+        heading: 'Machine Learning & AI',
+        items: [
+          { title: 'Supervised Learning', description: 'Build predictive models using regression and classification techniques.', subtopics: ['Linear & Logistic Regression', 'Decision Trees & Random Forest', 'SVM & KNN', 'Model Evaluation & Hyperparameter Tuning'] },
+          { title: 'Unsupervised Learning', subtopics: ['K-Means Clustering', 'Hierarchical Clustering', 'PCA & Dimensionality Reduction'] },
+          { title: 'Deep Learning with TensorFlow', subtopics: ['Neural Network Fundamentals', 'CNNs for Image Recognition', 'RNNs & LSTMs', 'Transfer Learning'] },
+          { title: 'Natural Language Processing', subtopics: ['Text Preprocessing', 'Sentiment Analysis', 'Named Entity Recognition', 'Transformers & BERT'] }
+        ]
+      }
     ]
   },
   {
@@ -84,12 +170,78 @@ const coursesDetailData = [
       'Placement support with cloud-focused companies'
     ],
     subServices: [
-      { icon: FaCloud, title: 'AWS Cloud Services', description: 'Master EC2, S3, Lambda, RDS, VPC, IAM & 30+ AWS services. Build scalable, secure cloud architectures.' },
-      { icon: FaServer, title: 'Azure & Multi-Cloud', description: 'Learn Azure VMs, App Service, AKS & multi-cloud strategies. Understand cloud cost optimization & governance.' },
-      { icon: FaDocker, title: 'Docker & Containerization', description: 'Build, ship & run containerized applications. Learn Docker Compose, networking, volumes & registry management.' },
-      { icon: FaCogs, title: 'Kubernetes Orchestration', description: 'Deploy & manage containers at scale with K8s — pods, services, deployments, Helm charts & monitoring.' },
-      { icon: FaTools, title: 'CI/CD & Automation', description: 'Build automated pipelines with Jenkins, GitHub Actions, ArgoCD. Implement GitOps & Infrastructure as Code.' },
-      { icon: FaTerminal, title: 'Linux & Scripting', description: 'Master Linux administration, Bash scripting, Python automation & configuration management with Ansible.' }
+      {
+        icon: FaCloud,
+        title: 'AWS Cloud Services',
+        description: 'Master EC2, S3, Lambda, RDS, VPC, IAM & 30+ AWS services. Build scalable, secure cloud architectures.',
+        topics: [
+          'EC2 instance management and auto-scaling',
+          'S3 storage and lifecycle policies',
+          'Lambda serverless functions',
+          'VPC networking and security groups',
+          'IAM policies and best practices'
+        ]
+      },
+      {
+        icon: FaServer,
+        title: 'Azure & Multi-Cloud',
+        description: 'Learn Azure VMs, App Service, AKS & multi-cloud strategies. Understand cloud cost optimization & governance.',
+        topics: [
+          'Azure Virtual Machines and App Service',
+          'Azure Kubernetes Service (AKS)',
+          'Multi-cloud architecture strategies',
+          'Cloud cost optimization techniques',
+          'Governance and compliance management'
+        ]
+      },
+      {
+        icon: FaDocker,
+        title: 'Docker & Containerization',
+        description: 'Build, ship & run containerized applications. Learn Docker Compose, networking, volumes & registry management.',
+        topics: [
+          'Dockerfile creation and best practices',
+          'Docker Compose multi-container apps',
+          'Container networking and volumes',
+          'Docker registry and image management',
+          'Container security best practices'
+        ]
+      },
+      {
+        icon: FaCogs,
+        title: 'Kubernetes Orchestration',
+        description: 'Deploy & manage containers at scale with K8s — pods, services, deployments, Helm charts & monitoring.',
+        topics: [
+          'Pods, services and deployments',
+          'ConfigMaps and Secrets management',
+          'Helm charts and package management',
+          'Horizontal Pod Autoscaling',
+          'Monitoring with Prometheus and Grafana'
+        ]
+      },
+      {
+        icon: FaTools,
+        title: 'CI/CD & Automation',
+        description: 'Build automated pipelines with Jenkins, GitHub Actions, ArgoCD. Implement GitOps & Infrastructure as Code.',
+        topics: [
+          'Jenkins pipeline creation and management',
+          'GitHub Actions workflows',
+          'ArgoCD and GitOps implementation',
+          'Terraform Infrastructure as Code',
+          'Automated testing in pipelines'
+        ]
+      },
+      {
+        icon: FaTerminal,
+        title: 'Linux & Scripting',
+        description: 'Master Linux administration, Bash scripting, Python automation & configuration management with Ansible.',
+        topics: [
+          'Linux administration essentials',
+          'Bash scripting for automation',
+          'Python scripting for DevOps',
+          'Ansible configuration management',
+          'Cron jobs and task scheduling'
+        ]
+      }
     ],
     process: [
       { step: 1, title: 'Linux & Networking', description: 'Master Linux commands, networking fundamentals, and shell scripting basics.' },
@@ -111,6 +263,25 @@ const coursesDetailData = [
       { question: 'Which cloud certification is included?', answer: 'We prepare you for AWS Solutions Architect Associate and Azure Administrator certifications with practice tests and exam strategies.' },
 { question: 'What job roles can I target?', answer: 'Cloud Engineer, DevOps Engineer, SRE, Cloud Architect, Platform Engineer - all among the highest-paid roles in IT with salaries of $70,000-$180,000/year.' },
       { question: 'Is hands-on lab access provided?', answer: 'Yes! You get free AWS/Azure lab credits to practice on real cloud environments throughout the course.' }
+    ],
+    topicWiseContent: [
+      {
+        heading: 'AWS Cloud Services',
+        items: [
+          { title: 'EC2 & Compute Services', description: 'Launch and manage virtual servers, auto-scaling, and load balancing on AWS.', subtopics: ['EC2 Instance Types & Launching', 'Auto Scaling Groups', 'Elastic Load Balancing', 'AWS Lambda Serverless'] },
+          { title: 'S3 & Storage', subtopics: ['S3 Buckets & Objects', 'EBS Volumes', 'EFS File System', 'Glacier Archive Storage'] },
+          { title: 'VPC & Networking', subtopics: ['VPC Creation & Subnets', 'Security Groups & NACLs', 'Route Tables & Internet Gateways', 'VPN & Direct Connect'] },
+          { title: 'IAM & Security', subtopics: ['Users, Groups & Roles', 'Policies & Permissions', 'MFA & Root Account Protection'] }
+        ]
+      },
+      {
+        heading: 'Docker & Kubernetes',
+        items: [
+          { title: 'Docker Fundamentals', description: 'Containerize applications and build production-ready Docker images.', subtopics: ['Dockerfile Best Practices', 'Docker Compose Multi-Container', 'Image Optimization', 'Docker Networking & Volumes'] },
+          { title: 'Kubernetes Orchestration', subtopics: ['Pods, Deployments & Services', 'ConfigMaps & Secrets', 'Ingress Controllers', 'Helm Charts'] },
+          { title: 'CI/CD Pipelines', subtopics: ['Jenkins Pipeline Creation', 'GitHub Actions Workflows', 'ArgoCD & GitOps', 'Automated Testing in Pipelines'] }
+        ]
+      }
     ]
   },
   {
@@ -132,12 +303,78 @@ const coursesDetailData = [
       'Placement assistance in cybersecurity roles'
     ],
     subServices: [
-      { icon: FaBug, title: 'Ethical Hacking & Pen Testing', description: 'Learn reconnaissance, scanning, exploitation & reporting using Kali Linux, Metasploit, Burp Suite & Nmap.' },
-      { icon: FaNetworkWired, title: 'Network Security', description: 'Master firewalls, IDS/IPS, VPNs, network monitoring & defense against DDoS, MITM & other attacks.' },
-      { icon: FaLock, title: 'Application Security', description: 'Understand OWASP Top 10, web app vulnerabilities, API security, secure coding & security testing tools.' },
-      { icon: FaUserShield, title: 'Security Operations (SOC)', description: 'Learn SIEM tools (Splunk, ELK), log analysis, threat hunting, incident detection & response workflows.' },
-      { icon: FaShieldAlt, title: 'Compliance & Governance', description: 'Understand ISO 27001, GDPR, PCI-DSS, risk assessment frameworks & security audit procedures.' },
-      { icon: FaTerminal, title: 'Digital Forensics', description: 'Investigate security incidents — disk forensics, memory analysis, malware analysis & evidence preservation.' }
+      {
+        icon: FaBug,
+        title: 'Ethical Hacking & Pen Testing',
+        description: 'Learn reconnaissance, scanning, exploitation & reporting using Kali Linux, Metasploit, Burp Suite & Nmap.',
+        topics: [
+          'Reconnaissance techniques',
+          'Scanning networks with Nmap',
+          'Exploitation with Metasploit',
+          'Web app hacking with Burp Suite',
+          'Reporting and documentation'
+        ]
+      },
+      {
+        icon: FaNetworkWired,
+        title: 'Network Security',
+        description: 'Master firewalls, IDS/IPS, VPNs, network monitoring & defense against DDoS, MITM & other attacks.',
+        topics: [
+          'Firewall configuration and management',
+          'Intrusion Detection/Prevention Systems (IDS/IPS)',
+          'VPN technologies and implementation',
+          'Network monitoring and traffic analysis',
+          'Defense against DDoS and MITM attacks'
+        ]
+      },
+      {
+        icon: FaLock,
+        title: 'Application Security',
+        description: 'Understand OWASP Top 10, web app vulnerabilities, API security, secure coding & security testing tools.',
+        topics: [
+          'OWASP Top 10 vulnerabilities',
+          'Web application security testing',
+          'API security best practices',
+          'Secure coding practices',
+          'Security testing tools'
+        ]
+      },
+      {
+        icon: FaUserShield,
+        title: 'Security Operations (SOC)',
+        description: 'Learn SIEM tools (Splunk, ELK), log analysis, threat hunting, incident detection & response workflows.',
+        topics: [
+          'SIEM tools: Splunk and ELK stack',
+          'Log analysis and correlation',
+          'Threat hunting techniques',
+          'Incident detection and response',
+          'Workflow automation'
+        ]
+      },
+      {
+        icon: FaShieldAlt,
+        title: 'Compliance & Governance',
+        description: 'Understand ISO 27001, GDPR, PCI-DSS, risk assessment frameworks & security audit procedures.',
+        topics: [
+          'ISO 27001 standards',
+          'GDPR and data protection',
+          'PCI-DSS compliance',
+          'Risk assessment frameworks',
+          'Security audit procedures'
+        ]
+      },
+      {
+        icon: FaTerminal,
+        title: 'Digital Forensics',
+        description: 'Investigate security incidents — disk forensics, memory analysis, malware analysis & evidence preservation.',
+        topics: [
+          'Disk forensics and data recovery',
+          'Memory analysis',
+          'Malware analysis fundamentals',
+          'Evidence preservation and chain of custody',
+          'Forensic reporting'
+        ]
+      }
     ],
     process: [
       { step: 1, title: 'Security Fundamentals', description: 'Learn networking basics, operating system security & cryptography foundations.' },
@@ -180,12 +417,78 @@ const coursesDetailData = [
       'Job-ready with resume building & mock interviews'
     ],
     subServices: [
-      { icon: FaHtml5, title: 'HTML5, CSS3 & JavaScript', description: 'Build responsive, accessible websites with semantic HTML, modern CSS (Flexbox, Grid, animations) & ES6+ JavaScript.' },
-      { icon: FaReact, title: 'React.js & Frontend', description: 'Master React components, hooks, state management (Redux/Context), React Router & Next.js for SSR applications.' },
-      { icon: FaNodeJs, title: 'Node.js & Express Backend', description: 'Build RESTful APIs, middleware, authentication, file uploads & real-time features with Socket.io.' },
-      { icon: FaDatabase, title: 'MongoDB & SQL Databases', description: 'Design schemas, write queries, implement CRUD operations, aggregation pipelines & database optimization.' },
-      { icon: FaCss3Alt, title: 'Advanced CSS & Frameworks', description: 'Master Tailwind CSS, Bootstrap, CSS-in-JS, Sass preprocessors & design system implementation.' },
-      { icon: FaCode, title: 'Deployment & DevOps Basics', description: 'Deploy on Vercel, Netlify, AWS. Learn Docker basics, CI/CD with GitHub Actions & production monitoring.' }
+      {
+        icon: FaHtml5,
+        title: 'HTML5, CSS3 & JavaScript',
+        description: 'Build responsive, accessible websites with semantic HTML, modern CSS (Flexbox, Grid, animations) & ES6+ JavaScript.',
+        topics: [
+          'Semantic HTML5 elements and accessibility',
+          'CSS Flexbox and Grid layouts',
+          'CSS animations and transitions',
+          'ES6+ JavaScript fundamentals',
+          'DOM manipulation and event handling'
+        ]
+      },
+      {
+        icon: FaReact,
+        title: 'React.js & Frontend',
+        description: 'Master React components, hooks, state management (Redux/Context), React Router & Next.js for SSR applications.',
+        topics: [
+          'React components and JSX',
+          'Hooks: useState, useEffect, useContext',
+          'Redux and Context API state management',
+          'React Router and navigation',
+          'Next.js server-side rendering'
+        ]
+      },
+      {
+        icon: FaNodeJs,
+        title: 'Node.js & Express Backend',
+        description: 'Build RESTful APIs, middleware, authentication, file uploads & real-time features with Socket.io.',
+        topics: [
+          'RESTful API design and development',
+          'Express middleware and error handling',
+          'JWT authentication and authorization',
+          'File uploads and cloud storage',
+          'Real-time features with Socket.io'
+        ]
+      },
+      {
+        icon: FaDatabase,
+        title: 'MongoDB & SQL Databases',
+        description: 'Design schemas, write queries, implement CRUD operations, aggregation pipelines & database optimization.',
+        topics: [
+          'MongoDB schema design and modeling',
+          'CRUD operations and aggregation pipelines',
+          'Mongoose ODM and validation',
+          'SQL fundamentals with PostgreSQL',
+          'Database indexing and optimization'
+        ]
+      },
+      {
+        icon: FaCss3Alt,
+        title: 'Advanced CSS & Frameworks',
+        description: 'Master Tailwind CSS, Bootstrap, CSS-in-JS, Sass preprocessors & design system implementation.',
+        topics: [
+          'Tailwind CSS utility-first approach',
+          'Bootstrap component customization',
+          'CSS-in-JS with styled-components',
+          'Sass preprocessing and mixins',
+          'Design system architecture'
+        ]
+      },
+      {
+        icon: FaCode,
+        title: 'Deployment & DevOps Basics',
+        description: 'Deploy on Vercel, Netlify, AWS. Learn Docker basics, CI/CD with GitHub Actions & production monitoring.',
+        topics: [
+          'Vercel and Netlify deployment',
+          'AWS EC2 and S3 hosting',
+          'Docker containerization basics',
+          'CI/CD with GitHub Actions',
+          'Production monitoring and logging'
+        ]
+      }
     ],
     process: [
       { step: 1, title: 'Web Foundations', description: 'Master HTML, CSS & JavaScript fundamentals with 5+ mini-projects.' },
@@ -228,12 +531,78 @@ const coursesDetailData = [
       'Freelance-ready with client management skills'
     ],
     subServices: [
-      { icon: FaSearchPlus, title: 'SEO & Content Strategy', description: 'Learn keyword research, on-page/off-page SEO, technical SEO, content planning & link building for organic growth.' },
-      { icon: FaBullseye, title: 'Google Ads & PPC', description: 'Master campaign setup, audience targeting, ad copywriting, bidding strategies, conversion tracking & ROAS optimization.' },
-      { icon: FaShareAlt, title: 'Social Media Marketing', description: 'Build strategies for Instagram, LinkedIn, Facebook & YouTube. Learn content creation, ads, analytics & influencer marketing.' },
-      { icon: FaEnvelope, title: 'Email Marketing & CRM', description: 'Create automated sequences, drip campaigns, segmentation & A/B testing with Mailchimp, HubSpot & ConvertKit.' },
-      { icon: FaChartLine2, title: 'Analytics & Performance', description: 'Master Google Analytics 4, Meta Pixel, UTM tracking, attribution modeling & campaign performance reporting.' },
-      { icon: FaHashtag, title: 'Content & Brand Strategy', description: 'Develop content calendars, write compelling copy, create video content plans & build brand authority online.' }
+      {
+        icon: FaSearchPlus,
+        title: 'SEO & Content Strategy',
+        description: 'Learn keyword research, on-page/off-page SEO, technical SEO, content planning & link building for organic growth.',
+        topics: [
+          'Keyword research with Ahrefs and SEMrush',
+          'On-page and off-page SEO techniques',
+          'Technical SEO and site audits',
+          'Content planning and calendar creation',
+          'Link building strategies'
+        ]
+      },
+      {
+        icon: FaBullseye,
+        title: 'Google Ads & PPC',
+        description: 'Master campaign setup, audience targeting, ad copywriting, bidding strategies, conversion tracking & ROAS optimization.',
+        topics: [
+          'Google Ads campaign setup and structure',
+          'Audience targeting and remarketing',
+          'Ad copywriting and A/B testing',
+          'Bidding strategies and budget optimization',
+          'Conversion tracking and ROAS analysis'
+        ]
+      },
+      {
+        icon: FaShareAlt,
+        title: 'Social Media Marketing',
+        description: 'Build strategies for Instagram, LinkedIn, Facebook & YouTube. Learn content creation, ads, analytics & influencer marketing.',
+        topics: [
+          'Platform-specific content strategies',
+          'Social media advertising and paid campaigns',
+          'Influencer marketing and collaborations',
+          'Community management and engagement',
+          'Social media analytics and reporting'
+        ]
+      },
+      {
+        icon: FaEnvelope,
+        title: 'Email Marketing & CRM',
+        description: 'Create automated sequences, drip campaigns, segmentation & A/B testing with Mailchimp, HubSpot & ConvertKit.',
+        topics: [
+          'Email automation and drip campaigns',
+          'List segmentation and personalization',
+          'A/B testing subject lines and content',
+          'Mailchimp and HubSpot workflows',
+          'CRM integration and lead scoring'
+        ]
+      },
+      {
+        icon: FaChartLine2,
+        title: 'Analytics & Performance',
+        description: 'Master Google Analytics 4, Meta Pixel, UTM tracking, attribution modeling & campaign performance reporting.',
+        topics: [
+          'Google Analytics 4 setup and configuration',
+          'Meta Pixel and conversion API',
+          'UTM tracking and attribution modeling',
+          'Custom dashboards and reporting',
+          'Data-driven campaign optimization'
+        ]
+      },
+      {
+        icon: FaHashtag,
+        title: 'Content & Brand Strategy',
+        description: 'Develop content calendars, write compelling copy, create video content plans & build brand authority online.',
+        topics: [
+          'Brand positioning and messaging',
+          'Content calendar development',
+          'Copywriting for digital channels',
+          'Video content strategy and planning',
+          'Brand authority and thought leadership'
+        ]
+      }
     ],
     process: [
       { step: 1, title: 'Marketing Fundamentals', description: 'Learn digital marketing landscape, customer journey & funnel strategies.' },
@@ -276,12 +645,78 @@ const coursesDetailData = [
       'Certification valued by consulting & analytics firms'
     ],
     subServices: [
-      { icon: FaChartBar, title: 'Advanced Excel & VBA', description: 'Master pivot tables, VLOOKUP, Power Query, macros & VBA automation for business data analysis & reporting.' },
-      { icon: FaDatabase, title: 'SQL for Business', description: 'Write complex queries, join tables, aggregate data, create views & stored procedures for business intelligence.' },
-      { icon: FaChartLine, title: 'Tableau & Power BI', description: 'Build interactive dashboards, data visualizations & automated reports for executive-level business insights.' },
-      { icon: FaPython, title: 'Python for Analytics', description: 'Use Python with Pandas & Matplotlib for data analysis, automation & advanced statistical modeling.' },
-      { icon: FaSitemap, title: 'Statistical Analysis', description: 'Learn hypothesis testing, regression analysis, A/B testing, forecasting & predictive analytics for business.' },
-      { icon: FaProjectDiagram, title: 'Business Case Studies', description: 'Solve real-world problems from e-commerce, banking, healthcare & marketing using analytics frameworks & tools.' }
+      {
+        icon: FaChartBar,
+        title: 'Advanced Excel & VBA',
+        description: 'Master pivot tables, VLOOKUP, Power Query, macros & VBA automation for business data analysis & reporting.',
+        topics: [
+          'Pivot tables and data summarization',
+          'VLOOKUP, INDEX-MATCH and XLOOKUP',
+          'Power Query for data transformation',
+          'Macros and VBA automation',
+          'Dashboard creation in Excel'
+        ]
+      },
+      {
+        icon: FaDatabase,
+        title: 'SQL for Business',
+        description: 'Write complex queries, join tables, aggregate data, create views & stored procedures for business intelligence.',
+        topics: [
+          'SQL SELECT, JOIN and subqueries',
+          'Aggregate functions and GROUP BY',
+          'Views and stored procedures',
+          'Window functions for analytics',
+          'Database design fundamentals'
+        ]
+      },
+      {
+        icon: FaChartLine,
+        title: 'Tableau & Power BI',
+        description: 'Build interactive dashboards, data visualizations & automated reports for executive-level business insights.',
+        topics: [
+          'Tableau dashboard design principles',
+          'Power BI data modeling and DAX',
+          'Interactive visualizations and filters',
+          'Automated report scheduling',
+          'Executive-level presentation techniques'
+        ]
+      },
+      {
+        icon: FaPython,
+        title: 'Python for Analytics',
+        description: 'Use Python with Pandas & Matplotlib for data analysis, automation & advanced statistical modeling.',
+        topics: [
+          'Pandas data manipulation and cleaning',
+          'Matplotlib and Seaborn visualization',
+          'Data automation scripts',
+          'Statistical modeling with Python',
+          'Jupyter Notebook workflows'
+        ]
+      },
+      {
+        icon: FaSitemap,
+        title: 'Statistical Analysis',
+        description: 'Learn hypothesis testing, regression analysis, A/B testing, forecasting & predictive analytics for business.',
+        topics: [
+          'Hypothesis testing and p-values',
+          'Linear and logistic regression',
+          'A/B testing methodology',
+          'Time series forecasting',
+          'Predictive analytics frameworks'
+        ]
+      },
+      {
+        icon: FaProjectDiagram,
+        title: 'Business Case Studies',
+        description: 'Solve real-world problems from e-commerce, banking, healthcare & marketing using analytics frameworks & tools.',
+        topics: [
+          'E-commerce analytics and funnel optimization',
+          'Banking risk analysis and fraud detection',
+          'Healthcare data analysis',
+          'Marketing ROI measurement',
+          'Analytics framework application'
+        ]
+      }
     ],
     process: [
       { step: 1, title: 'Excel & Data Basics', description: 'Master advanced Excel, data cleaning & fundamental analytics concepts.' },
@@ -324,12 +759,78 @@ const coursesDetailData = [
       'Placement assistance for product design roles'
     ],
     subServices: [
-      { icon: FaFigma, title: 'Figma Mastery', description: 'Learn auto-layout, components, variants, design tokens, prototyping & collaboration features for professional design workflows.' },
-      { icon: FaUsers, title: 'User Research & Testing', description: 'Conduct user interviews, surveys, usability testing, create personas & journey maps to design user-centered products.' },
-      { icon: FaBezierCurve, title: 'Wireframing & Prototyping', description: 'Create low-fidelity wireframes, high-fidelity mockups & interactive prototypes with micro-interactions & animations.' },
-      { icon: FaPalette, title: 'Visual Design', description: 'Master color theory, typography, spacing, iconography & visual hierarchy for beautiful, functional interfaces.' },
-      { icon: FaLayerGroup, title: 'Design Systems', description: 'Build scalable component libraries, style guides & design tokens for consistent product experiences across platforms.' },
-      { icon: FaPenFancy, title: 'Portfolio & Case Studies', description: 'Document your design process in compelling case studies that showcase your thinking, process & impact to employers.' }
+      {
+        icon: FaFigma,
+        title: 'Figma Mastery',
+        description: 'Learn auto-layout, components, variants, design tokens, prototyping & collaboration features for professional design workflows.',
+        topics: [
+          'Auto-layout and responsive components',
+          'Component variants and properties',
+          'Design tokens and styling',
+          'Interactive prototyping and flows',
+          'Collaboration and developer handoff'
+        ]
+      },
+      {
+        icon: FaUsers,
+        title: 'User Research & Testing',
+        description: 'Conduct user interviews, surveys, usability testing, create personas & journey maps to design user-centered products.',
+        topics: [
+          'User interview techniques',
+          'Survey design and analysis',
+          'Usability testing methods',
+          'Persona creation and journey mapping',
+          'Affinity mapping and insight synthesis'
+        ]
+      },
+      {
+        icon: FaBezierCurve,
+        title: 'Wireframing & Prototyping',
+        description: 'Create low-fidelity wireframes, high-fidelity mockups & interactive prototypes with micro-interactions & animations.',
+        topics: [
+          'Low-fidelity wireframing techniques',
+          'High-fidelity mockup creation',
+          'Interactive prototype flows',
+          'Micro-interactions and animations',
+          'Prototype testing and iteration'
+        ]
+      },
+      {
+        icon: FaPalette,
+        title: 'Visual Design',
+        description: 'Master color theory, typography, spacing, iconography & visual hierarchy for beautiful, functional interfaces.',
+        topics: [
+          'Color theory and palette creation',
+          'Typography selection and pairing',
+          'Spacing systems and grids',
+          'Iconography and illustration',
+          'Visual hierarchy and composition'
+        ]
+      },
+      {
+        icon: FaLayerGroup,
+        title: 'Design Systems',
+        description: 'Build scalable component libraries, style guides & design tokens for consistent product experiences across platforms.',
+        topics: [
+          'Component library architecture',
+          'Style guide documentation',
+          'Design tokens and theming',
+          'Cross-platform consistency',
+          'Design system governance and updates'
+        ]
+      },
+      {
+        icon: FaPenFancy,
+        title: 'Portfolio & Case Studies',
+        description: 'Document your design process in compelling case studies that showcase your thinking, process & impact to employers.',
+        topics: [
+          'Case study structure and storytelling',
+          'Process documentation techniques',
+          'Portfolio website design and build',
+          'Presentation and interview skills',
+          'Personal brand development'
+        ]
+      }
     ],
     process: [
       { step: 1, title: 'Design Fundamentals', description: 'Learn core design principles — balance, contrast, hierarchy, alignment & spacing.' },
@@ -372,12 +873,78 @@ const coursesDetailData = [
       'Placement support for mobile developer roles'
     ],
     subServices: [
-      { icon: FaReact, title: 'React Native Development', description: 'Build cross-platform apps with React Native — components, navigation, Redux state management & native module integration.' },
-      { icon: FaMobileAlt, title: 'Flutter & Dart', description: 'Create beautiful apps with Flutter — widget composition, Provider/Riverpod state management & platform-specific customizations.' },
-      { icon: FaDatabase, title: 'Backend & Firebase', description: 'Integrate REST/GraphQL APIs, Firebase Auth, Firestore, Cloud Functions & real-time database for mobile backends.' },
-      { icon: FaPaintBrush, title: 'Mobile UI/UX Patterns', description: 'Implement iOS Human Interface Guidelines & Material Design. Create smooth animations, transitions & responsive layouts.' },
-      { icon: FaFileCode, title: 'Advanced Features', description: 'Add push notifications, camera, geolocation, maps, payments& social login using native device capabilities.' },
-      { icon: FaAppStore, title: 'App Store Deployment', description: 'Complete deployment process — app signing, store listings, screenshots, review guidelines & post-launch analytics.' }
+      {
+        icon: FaReact,
+        title: 'React Native Development',
+        description: 'Build cross-platform apps with React Native — components, navigation, Redux state management & native module integration.',
+        topics: [
+          'React Native components and styling',
+          'Navigation with React Navigation',
+          'Redux and Context API state management',
+          'Native module integration',
+          'Expo development workflow'
+        ]
+      },
+      {
+        icon: FaMobileAlt,
+        title: 'Flutter & Dart',
+        description: 'Create beautiful apps with Flutter — widget composition, Provider/Riverpod state management & platform-specific customizations.',
+        topics: [
+          'Dart programming fundamentals',
+          'Flutter widget composition',
+          'Provider and Riverpod state management',
+          'Platform-specific customizations',
+          'Flutter animations and gestures'
+        ]
+      },
+      {
+        icon: FaDatabase,
+        title: 'Backend & Firebase',
+        description: 'Integrate REST/GraphQL APIs, Firebase Auth, Firestore, Cloud Functions & real-time database for mobile backends.',
+        topics: [
+          'REST API integration and error handling',
+          'Firebase Authentication setup',
+          'Firestore database operations',
+          'Cloud Functions for backend logic',
+          'Real-time database and listeners'
+        ]
+      },
+      {
+        icon: FaPaintBrush,
+        title: 'Mobile UI/UX Patterns',
+        description: 'Implement iOS Human Interface Guidelines & Material Design. Create smooth animations, transitions & responsive layouts.',
+        topics: [
+          'iOS Human Interface Guidelines',
+          'Material Design for Android',
+          'Smooth animations and transitions',
+          'Responsive layout techniques',
+          'Accessibility implementation'
+        ]
+      },
+      {
+        icon: FaFileCode,
+        title: 'Advanced Features',
+        description: 'Add push notifications, camera, geolocation, maps, payments& social login using native device capabilities.',
+        topics: [
+          'Push notifications (FCM/APNs)',
+          'Camera and image picker integration',
+          'Geolocation and maps',
+          'Payment gateway integration',
+          'Social login (Google, Apple, Facebook)'
+        ]
+      },
+      {
+        icon: FaAppStore,
+        title: 'App Store Deployment',
+        description: 'Complete deployment process — app signing, store listings, screenshots, review guidelines & post-launch analytics.',
+        topics: [
+          'App signing and provisioning profiles',
+          'App Store and Play Store listings',
+          'Screenshot and preview creation',
+          'Review guidelines compliance',
+          'Post-launch analytics and updates'
+        ]
+      }
     ],
     process: [
       { step: 1, title: 'Mobile Fundamentals', description: 'Understand mobile development concepts, React Native or Flutter setup & basics.' },

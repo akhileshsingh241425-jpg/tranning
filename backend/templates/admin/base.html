@@ -328,19 +328,29 @@
         .form-control {
             width: 100%;
             padding: 1rem;
-            background: rgba(10, 14, 23, 0.5);
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(79, 70, 229, 0.2);
             border-radius: 10px;
-            color: var(--text-primary);
+            color: #1a1a2e;
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
             transition: all 0.3s ease;
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 10px rgba(79, 70, 229, 0.2);
+            background: #ffffff;
+        }
+
+        select.form-control option {
+            color: #1a1a2e;
+            background: #ffffff;
         }
 
         textarea.form-control {

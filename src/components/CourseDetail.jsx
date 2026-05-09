@@ -4,17 +4,22 @@ import { FaArrowLeft, FaArrowRight, FaCheckCircle, FaQuoteLeft, FaChevronDown, F
 import coursesDetailData from './courseData';
 import SEO from './SEO';
 
+// Helper to render text with paragraph breaks (splits on \n\n)
+const renderParagraphs = (text, className = '') => {
+  if (!text) return null;
+  const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
+  if (paragraphs.length <= 1) {
+    return <p className={className}>{text}</p>;
+  }
+  return paragraphs.map((p, i) => <p key={i} className={className}>{p.trim()}</p>);
+};
+
 const CourseDetail = () => {
   const { slug } = useParams();
   const [activeAccordion, setActiveAccordion] = useState(null);
-  const [expandedModule, setExpandedModule] = useState(null);
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [allSlugs, setAllSlugs] = useState([]);
-
-  const toggleModule = (index) => {
-    setExpandedModule(expandedModule === index ? null : index);
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -164,7 +169,7 @@ const CourseDetail = () => {
             <h2>About This Course</h2>
           </div>
           <div className="sd-overview-content">
-            <p className="sd-overview-text">{course.overview}</p>
+            {renderParagraphs(course.overview, 'sd-overview-text')}
             {course.keyBenefits && course.keyBenefits.length > 0 && (
             <div className="sd-benefits">
               <h3>What You'll Learn</h3>
@@ -183,53 +188,13 @@ const CourseDetail = () => {
       </section>
       )}
 
-      {/* Modules Section */}
-      {course.subServices && course.subServices.length > 0 && (
-      <section className="sd-sub-services">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Curriculum</span>
-            <h2>Course Modules</h2>
-            <p>Comprehensive modules designed for progressive learning</p>
-          </div>
-          <div className="sd-sub-grid">
-            {course.subServices.map((module, index) => {
-              return (
-                <div key={index} className="sd-sub-card">
-                  <div className="sd-sub-icon">
-                    <FaCheckCircle />
-                  </div>
-                  <div className="sd-sub-header" onClick={() => toggleModule(index)}>
-                    <h3>{module.title}</h3>
-                    {expandedModule === index ? <FaChevronUp /> : <FaChevronDown />}
-                  </div>
-                  <p>{module.description}</p>
-                  
-                  {expandedModule === index && module.topics && (
-                    <div className="sd-module-topics">
-                      <h4>Topics Covered:</h4>
-                      <ul>
-                        {module.topics.map((topic, idx) => (
-                          <li key={idx}>{topic}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-      )}
-
-      {/* Topic-wise Content Distribution Section */}
+      {/* Course Curriculum Section (combined) */}
       {course.topicWiseContent && course.topicWiseContent.length > 0 && (
       <section className="sd-topic-wise">
         <div className="sd-container">
           <div className="sd-section-header">
-            <span className="sd-badge">Syllabus</span>
-            <h2>Topic-wise Content Distribution</h2>
+            <span className="sd-badge">Curriculum</span>
+            <h2>Course Curriculum</h2>
             <p>Detailed breakdown of topics covered in this course</p>
           </div>
           <div className="sd-topic-wise-groups">
@@ -246,7 +211,7 @@ const CourseDetail = () => {
                         <FaListUl className="sd-topic-item-icon" />
                         <h4>{item.title}</h4>
                       </div>
-                      {item.description && <p className="sd-topic-item-desc">{item.description}</p>}
+                      {item.description && renderParagraphs(item.description, 'sd-topic-item-desc')}
                       {item.subtopics && item.subtopics.length > 0 && (
                         <ul className="sd-topic-subtopics">
                           {item.subtopics.map((st, stIndex) => (
@@ -282,7 +247,7 @@ const CourseDetail = () => {
                 <div className="sd-step-number">{step.step}</div>
                 <div className="sd-step-content">
                   <h3>{step.title}</h3>
-                  <p>{step.description}</p>
+                  {renderParagraphs(step.description)}
                 </div>
               </div>
             ))}
@@ -332,7 +297,7 @@ const CourseDetail = () => {
                   {activeAccordion === index ? <FaChevronUp /> : <FaChevronDown />}
                 </button>
                 <div className={`sd-faq-answer ${activeAccordion === index ? 'open' : ''}`}>
-                  <p>{item.answer}</p>
+                  {renderParagraphs(item.answer)}
                 </div>
               </div>
             ))}

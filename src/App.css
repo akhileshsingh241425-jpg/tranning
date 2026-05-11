@@ -5922,6 +5922,84 @@ section {
   font-size: 2.5rem;
   margin-bottom: 1rem;
   display: inline-block;
+}
+
+/* SD Student Reviews / Testimonials Section */
+.sd-testimonials {
+  padding: 5rem 0;
+  background: var(--bg-white);
+}
+
+.sd-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.sd-testimonial-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.sd-testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 102, 204, 0.1);
+  border-color: var(--primary-light);
+}
+
+.sd-testimonial-quote {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  color: var(--primary-light);
+  opacity: 0.3;
+}
+
+.sd-testimonial-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.sd-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sd-author-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.sd-author-info h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.sd-author-info span {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
   padding: 1rem;
   border-radius: 16px;
   transition: all 0.3s ease;

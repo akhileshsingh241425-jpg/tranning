@@ -59,7 +59,8 @@ const CourseDetail = () => {
           topicWiseContent: (data.topicWiseContent && data.topicWiseContent.length > 0) ? data.topicWiseContent : (localCourse && localCourse.topicWiseContent) || [],
           eligibility: data.eligibility || (localCourse && localCourse.eligibility),
           why_join: data.why_join || (localCourse && localCourse.why_join),
-          certification: data.certification || (localCourse && localCourse.certification)
+          certification: data.certification || (localCourse && localCourse.certification),
+          reviewsList: (data.reviewsList && data.reviewsList.length > 0) ? data.reviewsList : (localCourse && localCourse.reviewsList) || []
         });
         setLoading(false);
       })
@@ -369,6 +370,37 @@ const CourseDetail = () => {
           </div>
         </div>
       </section>
+
+      {/* 8b. Student Reviews - What Students Say */}
+      {course.reviewsList && course.reviewsList.length > 0 && (
+      <section className="sd-testimonials">
+        <div className="sd-container">
+          <div className="sd-section-header">
+            <span className="sd-badge">Testimonials</span>
+            <h2>What Our <strong>Students Say</strong></h2>
+          </div>
+          <div className="sd-testimonials-grid">
+            {course.reviewsList.map((review, index) => (
+              <div key={index} className="sd-testimonial-card">
+                <div className="sd-testimonial-quote">
+                  <FaQuoteLeft />
+                </div>
+                <p className="sd-testimonial-text">{review.text}</p>
+                <div className="sd-testimonial-author">
+                  <div className="sd-author-avatar">
+                    {review.name.charAt(0)}
+                  </div>
+                  <div className="sd-author-info">
+                    <h4>{review.name}</h4>
+                    <span>{review.role}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      )}
 
       {/* 9. Technologies */}
       {course.technologies && course.technologies.length > 0 && (

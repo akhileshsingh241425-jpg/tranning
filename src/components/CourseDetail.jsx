@@ -229,25 +229,7 @@ const CourseDetail = () => {
       </section>
       )}
 
-      {/* Skills After Overview */}
-      {course.technologies && course.technologies.length > 0 && (
-      <section className="sd-skills-simple">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Skills</span>
-            <h2>Skills Covered</h2>
-          </div>
-          <div className="sd-skills-simple-grid">
-            {course.technologies.map((tech, index) => (
-              <div key={index} className="sd-skill-simple-item">
-                <FaCheckCircle />
-                <span>{tech}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      )}
+      
 
       {/* 4. Course Curriculum */}
       {course.topicWiseContent && course.topicWiseContent.length > 0 && (

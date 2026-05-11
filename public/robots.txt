@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow admin panel
+Disallow: /admin/
+Disallow: /admin
+
+# Sitemap
+Sitemap: https://www.trainingprotec.com/sitemap.xml

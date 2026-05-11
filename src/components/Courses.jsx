@@ -1,0 +1,386 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  FaDatabase,
+  FaCloud,
+  FaShieldAlt,
+  FaCode,
+  FaBullhorn,
+  FaChartBar,
+  FaPaintBrush,
+  FaMobileAlt,
+  FaArrowRight,
+  FaStar,
+  FaUsers,
+  FaClock,
+  FaBookOpen,
+  FaChalkboardTeacher,
+  FaPercent,
+  FaLaptopCode,
+  FaCertificate,
+  FaRobot,
+  FaSearch,
+  FaTimes,
+  FaFilter
+} from 'react-icons/fa';
+import courseDataAnalytics from '../assets/images/courses/data-analytics.jpg';
+import courseNetworkSecurity from '../assets/images/courses/network-security.jpg';
+import courseCybersecurity from '../assets/images/courses/cybersecurity.jpg';
+import courseWebDev from '../assets/images/courses/web-development.jpg';
+import courseDigitalMarketing from '../assets/images/courses/digital-marketing.jpg';
+import courseGraphicDesign from '../assets/images/courses/graphic-design.jpg';
+import courseMobileApp from '../assets/images/courses/mobile-app.jpg';
+import person1 from '../assets/images/testimonials/person-1.jpg';
+import person2 from '../assets/images/testimonials/person-2.jpg';
+import person3 from '../assets/images/testimonials/person-3.jpg';
+import person4 from '../assets/images/testimonials/person-4.jpg';
+import person5 from '../assets/images/testimonials/person-5.jpg';
+import person6 from '../assets/images/testimonials/person-6.jpg';
+
+const iconMap = {
+  FaDatabase: <FaDatabase />,
+  FaCloud: <FaCloud />,
+  FaShieldAlt: <FaShieldAlt />,
+  FaCode: <FaCode />,
+  FaBullhorn: <FaBullhorn />,
+  FaChartBar: <FaChartBar />,
+  FaPaintBrush: <FaPaintBrush />,
+  FaMobileAlt: <FaMobileAlt />,
+  FaBookOpen: <FaBookOpen />,
+  FaLaptopCode: <FaLaptopCode />,
+  FaRobot: <FaRobot />
+};
+
+const fallbackCourses = [
+  {
+    icon: <FaDatabase />,
+    title: "Data Science & AI",
+    description: "Master Python, Machine Learning, Deep Learning & AI with hands-on projects. Build real-world models using TensorFlow, scikit-learn & pandas. Includes capstone project with industry dataset.",
+    image: courseDataAnalytics,
+    slug: "data-science-ai",
+    price: "$199",
+    originalPrice: "$599",
+    rating: 4.8,
+    reviews: 2840,
+    learners: "12,500+",
+    duration: "6 Months",
+    level: "Beginner to Advanced",
+    tag: "Bestseller",
+    modules: 12,
+    projects: 15,
+    curriculum: ["Python & Statistics", "Machine Learning", "Deep Learning & NLP", "AI with TensorFlow"]
+  },
+  {
+    icon: <FaCloud />,
+    title: "Cloud Computing & DevOps",
+    description: "Learn AWS, Azure, Docker, Kubernetes & CI/CD pipelines. Deploy real applications to the cloud. Includes AWS Solutions Architect certification prep.",
+    image: courseNetworkSecurity,
+    slug: "cloud-computing-devops",
+    price: "$179",
+    originalPrice: "$479",
+    rating: 4.7,
+    reviews: 1950,
+    learners: "9,800+",
+    duration: "5 Months",
+    level: "Intermediate",
+    tag: "Trending",
+    modules: 10,
+    projects: 12,
+    curriculum: ["AWS Core Services", "Docker & Kubernetes", "CI/CD Pipelines", "Infrastructure as Code"]
+  },
+  {
+    icon: <FaShieldAlt />,
+    title: "Cyber Security",
+    description: "Learn ethical hacking, penetration testing, network security & compliance. Hands-on labs with Kali Linux, Metasploit & Burp Suite. CEH certification prep included.",
+    image: courseCybersecurity,
+    slug: "cyber-security",
+    price: "$189",
+    originalPrice: "$539",
+    rating: 4.8,
+    reviews: 1620,
+    learners: "7,200+",
+    duration: "5 Months",
+    level: "Beginner to Advanced",
+    tag: "Hot",
+    modules: 11,
+    projects: 10,
+    curriculum: ["Network Security Basics", "Ethical Hacking", "Penetration Testing", "Compliance & Forensics"]
+  },
+  {
+    icon: <FaCode />,
+    title: "Full Stack Web Development",
+    description: "Master MERN Stack — React, Node.js, MongoDB, Express. Build 10+ real-world projects including an e-commerce platform, social media app & REST APIs.",
+    image: courseWebDev,
+    slug: "web-development",
+    price: "$149",
+    originalPrice: "$479",
+    rating: 4.9,
+    reviews: 3200,
+    learners: "15,000+",
+    duration: "6 Months",
+    level: "Beginner to Advanced",
+    tag: "Bestseller",
+    modules: 14,
+    projects: 12,
+    curriculum: ["HTML, CSS & JavaScript", "React & Redux", "Node.js & Express", "MongoDB & Deployment"]
+  },
+  {
+    icon: <FaBullhorn />,
+    title: "Digital Marketing",
+    description: "Master SEO, Google Ads, Social Media Marketing, Analytics & Content Strategy. Run real campaigns with Google Ad credits. Google certified program.",
+    image: courseDigitalMarketing,
+    slug: "digital-marketing",
+    price: "$119",
+    originalPrice: "$359",
+    rating: 4.7,
+    reviews: 2100,
+    learners: "18,000+",
+    duration: "4 Months",
+    level: "Beginner",
+    tag: "Popular",
+    modules: 8,
+    projects: 6,
+    curriculum: ["SEO & Content Marketing", "Google Ads & PPC", "Social Media Strategy", "Analytics & Reporting"]
+  },
+  {
+    icon: <FaChartBar />,
+    title: "Business Analytics",
+    description: "Learn Excel, SQL, Tableau, Power BI & statistical analysis. Work on real business datasets from top companies. Make data-driven decisions like a pro.",
+    image: courseDataAnalytics,
+    slug: "business-analytics",
+    price: "$139",
+    originalPrice: "$419",
+    rating: 4.6,
+    reviews: 1450,
+    learners: "8,500+",
+    duration: "4 Months",
+    level: "Beginner to Intermediate",
+    tag: "New",
+    modules: 9,
+    projects: 8,
+    curriculum: ["Excel Advanced", "SQL for Analytics", "Tableau & Power BI", "Statistical Modeling"]
+  },
+  {
+    icon: <FaPaintBrush />,
+    title: "UI/UX Design",
+    description: "Master Figma, wireframing, prototyping & user research. Build a professional 10+ piece design portfolio. Includes real client projects & design sprints.",
+    image: courseGraphicDesign,
+    slug: "ui-ux-design",
+    price: "$129",
+    originalPrice: "$395",
+    rating: 4.8,
+    reviews: 1180,
+    learners: "6,200+",
+    duration: "4 Months",
+    level: "Beginner",
+    tag: "Trending",
+    modules: 8,
+    projects: 10,
+    curriculum: ["Design Thinking", "Figma & Prototyping", "User Research", "Design Systems"]
+  },
+  {
+    icon: <FaMobileAlt />,
+    title: "Mobile App Development",
+    description: "Build iOS & Android apps with React Native & Flutter. Publish to App Store & Google Play. Includes backend integration with Firebase & real-time features.",
+    image: courseMobileApp,
+    slug: "mobile-app-development",
+    price: "$179",
+    originalPrice: "$479",
+    rating: 4.7,
+    reviews: 980,
+    learners: "5,400+",
+    duration: "5 Months",
+    level: "Intermediate",
+    tag: "Popular",
+    modules: 10,
+    projects: 8,
+    curriculum: ["React Native Basics", "Flutter Development", "Firebase & APIs", "App Store Deployment"]
+  }
+];
+
+const Courses = () => {
+  const [showAll, setShowAll] = useState(false);
+  const [courses, setCourses] = useState(fallbackCourses);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  const filterOptions = [
+    { key: 'all', label: 'All Courses' },
+    { key: 'Beginner', label: 'Beginner' },
+    { key: 'Intermediate', label: 'Intermediate' },
+    { key: 'Advanced', label: 'Advanced' },
+  ];
+
+  useEffect(() => {
+    const apiUrl = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/api/courses` : '/api/courses';
+    fetch(apiUrl)
+      .then(res => {
+        if (!res.ok) throw new Error('API not available');
+        return res.json();
+      })
+      .then(data => {
+        if (data && data.length > 0) {
+          const mapped = data.map(c => ({
+            icon: iconMap[c.icon] || <FaBookOpen />,
+            title: c.title,
+            description: c.description,
+            image: c.image,
+            slug: c.slug,
+            price: c.price ? `$${c.price}` : '$0',
+            originalPrice: c.originalPrice ? `$${c.originalPrice}` : '$0',
+            rating: c.rating || 4.5,
+            reviews: c.reviews || 0,
+            learners: c.learners || '0',
+            duration: c.duration || '',
+            level: c.level || 'Beginner',
+            tag: c.tag || '',
+            modules: c.modules || 0,
+            projects: c.projects || 0,
+            instructor: c.instructor || {},
+            curriculum: c.curriculum || []
+          }));
+          setCourses(mapped);
+          console.log('Loaded', mapped.length, 'courses from API');
+        }
+      })
+      .catch(err => console.log('Using fallback courses, API error:', err.message));
+  }, []);
+
+  // Filter and search logic
+  const filteredCourses = courses.filter(course => {
+    const matchesSearch = !searchQuery.trim() ||
+      course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.level?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.tag?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.duration?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesFilter = activeFilter === 'all' ||
+      course.level?.toLowerCase().includes(activeFilter.toLowerCase());
+
+    return matchesSearch && matchesFilter;
+  });
+
+  const displayedCourses = showAll ? filteredCourses : filteredCourses.slice(0, 4);
+
+  const getDiscount = (price, original) => {
+    const p = parseInt(price.replace(/[₹$,]/g, ''));
+    const o = parseInt(original.replace(/[₹$,]/g, ''));
+    return Math.round(((o - p) / o) * 100);
+  };
+
+  return (
+    <section className="tp-courses" id="courses">
+      <div className="section-header">
+        <span className="section-badge">Professional Certification Courses</span>
+        <h2 className="section-title">
+          Explore Our <span>Courses</span>
+        </h2>
+        <p className="section-description">
+          Industry-designed courses with placement assistance, live sessions, and
+          certifications recognized worldwide.
+        </p>
+      </div>
+
+      {/* Search & Filter Bar */}
+      <div className="tp-courses-search-bar">
+        <div className="tp-search-input-wrap">
+          <FaSearch className="tp-search-icon" />
+          <input
+            type="text"
+            placeholder="Search courses by name, topic, or level..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="tp-search-input"
+          />
+          {searchQuery && (
+            <button className="tp-search-clear" onClick={() => setSearchQuery('')}>
+              <FaTimes />
+            </button>
+          )}
+        </div>
+        <div className="tp-filter-buttons">
+          <FaFilter className="tp-filter-icon" />
+          {filterOptions.map(opt => (
+            <button
+              key={opt.key}
+              className={`tp-filter-btn ${activeFilter === opt.key ? 'active' : ''}`}
+              onClick={() => setActiveFilter(opt.key)}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Results count */}
+      {searchQuery && (
+        <div className="tp-search-results-count">
+          {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found
+          {searchQuery && <> for "<strong>{searchQuery}</strong>"</>}
+        </div>
+      )}
+
+      {filteredCourses.length > 0 ? (
+        <div className="tp-courses-grid">
+          {displayedCourses.map((course, index) => (
+            <Link to={`/courses/${course.slug}`} className="tp-course-card" key={index}>
+              <div className="tp-course-img">
+                <img src={course.image} alt={course.title} />
+                {course.tag && <span className="tp-course-badge" data-tag={course.tag}>{course.tag}</span>}
+                <span className="tp-course-discount">{getDiscount(course.price, course.originalPrice)}% OFF</span>
+              </div>
+              <div className="tp-course-body">
+                <div className="tp-course-top">
+                  <span className="tp-course-level">{course.level}</span>
+                  <span className="tp-course-duration"><FaClock /> {course.duration}</span>
+                </div>
+                <h3 className="tp-course-title">{course.title}</h3>
+                <p className="tp-course-desc">{course.description}</p>
+                
+                <div className="tp-course-bottom">
+                  <div className="tp-course-rating">
+                    <FaStar className="tp-star" />
+                    <strong>{course.rating}</strong>
+                    <span>({course.reviews.toLocaleString()})</span>
+                  </div>
+                  <div className="tp-course-pricing">
+                    <span className="tp-course-price">{course.price}</span>
+                    <span className="tp-course-original">{course.originalPrice}</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className="tp-no-courses">
+          <FaSearch style={{fontSize: '2.5rem', color: '#ccc', marginBottom: '1rem'}} />
+          <h3>No courses found</h3>
+          <p>Try adjusting your search or filter to find what you're looking for.</p>
+          <button className="btn-primary" onClick={() => { setSearchQuery(''); setActiveFilter('all'); }}>
+            Clear Filters <FaTimes />
+          </button>
+        </div>
+      )}
+
+      {!showAll && filteredCourses.length > 4 && (
+        <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+          <button className="btn-primary" onClick={() => setShowAll(true)}>
+            View All Courses <FaArrowRight />
+          </button>
+        </div>
+      )}
+
+      {showAll && filteredCourses.length > 4 && (
+        <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+          <button className="btn-primary" onClick={() => setShowAll(false)}>
+            Show Less
+          </button>
+        </div>
+      )}
+    </section>
+  );
+};
+
+export default Courses;

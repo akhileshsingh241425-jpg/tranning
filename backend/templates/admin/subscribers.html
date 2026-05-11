@@ -1,0 +1,186 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Newsletter Subscribers{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="logo-text">TrainingProtec</span>
+        </div>
+        
+        <nav>
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_courses') }}">
+                        <i class="fas fa-book-open"></i>
+                        <span>Courses</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_blogs') }}">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Blog Posts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_testimonials') }}">
+                        <i class="fas fa-star"></i>
+                        <span>Testimonials</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_contacts') }}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_users') }}">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_subscribers') }}" class="active">
+                        <i class="fas fa-bell"></i>
+                        <span>Subscribers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/" target="_blank">
+                        <i class="fas fa-globe"></i>
+                        <span>View Website</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="page-header">
+            <h1>Newsletter Subscribers</h1>
+            <a href="{{ url_for('admin_subscribers_export') }}" class="btn btn-secondary">
+                <i class="fas fa-download"></i> Export CSV
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 500px;">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ active_count }}</h3>
+                    <p>Active Subscribers</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_count }}</h3>
+                    <p>Total Subscribers</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>All Subscribers ({{ subscribers|length }})</h2>
+            </div>
+            {% if subscribers %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Welcome Email</th>
+                            <th>Subscribed On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subscriber in subscribers %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td><strong>{{ subscriber.email }}</strong></td>
+                            <td>
+                                {% if subscriber.is_active %}
+                                    <span class="badge badge-success">Active</span>
+                                {% else %}
+                                    <span class="badge badge-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if subscriber.welcome_email_sent %}
+                                    <span class="badge badge-success"><i class="fas fa-check"></i> Sent</span>
+                                {% else %}
+                                    <span class="badge badge-warning"><i class="fas fa-times"></i> Not Sent</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ subscriber.created_at.strftime('%d %b %Y %H:%M') if subscriber.created_at else 'N/A' }}</td>
+                            <td>
+                                <div class="actions">
+                                    <form method="POST" action="{{ url_for('admin_subscriber_toggle_active', id=subscriber.id) }}" style="display:inline;">
+                                        <button type="submit" class="btn-icon" title="{% if subscriber.is_active %}Deactivate{% else %}Activate{% endif %}" onclick="return confirm('Are you sure you want to {% if subscriber.is_active %}deactivate{% else %}activate{% endif %} this subscriber?')">
+                                            {% if subscriber.is_active %}
+                                                <i class="fas fa-bell-slash" style="color: #ef4444;"></i>
+                                            {% else %}
+                                                <i class="fas fa-bell" style="color: #22c55e;"></i>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('admin_subscriber_delete', id=subscriber.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this subscriber?')">
+                                        <button type="submit" class="btn-icon" title="Delete Subscriber">
+                                            <i class="fas fa-trash" style="color: #ef4444;"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-bell"></i>
+                <p>No subscribers yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+{% endblock %}

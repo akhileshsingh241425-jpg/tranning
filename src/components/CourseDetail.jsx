@@ -60,7 +60,8 @@ const CourseDetail = () => {
           eligibility: data.eligibility || (localCourse && localCourse.eligibility),
           why_join: data.why_join || (localCourse && localCourse.why_join),
           certification: data.certification || (localCourse && localCourse.certification),
-          reviewsList: (data.reviewsList && data.reviewsList.length > 0) ? data.reviewsList : (localCourse && localCourse.reviewsList) || []
+          reviewsList: (data.reviewsList && data.reviewsList.length > 0) ? data.reviewsList : (localCourse && localCourse.reviewsList) || [],
+          projectsList: (data.projectsList && data.projectsList.length > 0) ? data.projectsList : (localCourse && localCourse.projectsList) || []
         });
         setLoading(false);
       })
@@ -266,6 +267,33 @@ const CourseDetail = () => {
                     ))}
                   </div>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* 4b. Hands-on Projects */}
+      {course.projectsList && course.projectsList.length > 0 && (
+      <section className="sd-projects">
+        <div className="sd-container">
+          <div className="sd-section-header">
+            <span className="sd-badge">Hands-on</span>
+            <h2>Industry <strong>Projects</strong></h2>
+            <p>Build real-world projects to gain practical experience</p>
+          </div>
+          <div className="sd-projects-grid">
+            {course.projectsList.map((project, index) => (
+              <div key={index} className="sd-project-card">
+                <div className="sd-project-icon">
+                  <FaBriefcase />
+                </div>
+                <div className="sd-project-content">
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                </div>
+                <div className="sd-project-number">{index + 1}</div>
               </div>
             ))}
           </div>

@@ -4109,57 +4109,52 @@ section {
 }
 
 .sd-overview-content {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 1.5rem;
-  align-items: stretch;
-}
-
-.sd-benefits {
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
 }
 
-.sd-benefits h3 {
+.sd-overview-text {
   margin-bottom: 1rem;
 }
 
+.sd-overview-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 320px !important;
+  gap: 1.5rem !important;
+  align-items: start !important;
+}
+
+.sd-benefits {
+  padding-right: 1rem;
+}
+
+.sd-benefits h3 {
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
 .sd-benefits-list {
-  flex: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.sd-benefits-list li {
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
 }
 
 .sd-cta-sidebar {
-  display: flex;
-  flex-direction: column;
+  padding: 0;
 }
 
 .sd-cta-sidebar .sd-cta-box {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.sd-cta-sidebar .sd-cta-list {
-  flex: 1;
 }
 
 @media (max-width: 992px) {
-  .sd-overview-content {
-    grid-template-columns: 1fr;
-  }
-  .sd-overview-content {
-    display: flex;
-    flex-direction: column;
-  }
-  .sd-cta-sidebar {
-    width: 100%;
-  }
-}
-
-@media (min-width: 1200px) {
-  .sd-overview-content {
-    grid-template-columns: 1fr 340px;
-    gap: 2rem;
+  .sd-overview-grid {
+    grid-template-columns: 1fr !important;
   }
 }
 

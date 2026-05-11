@@ -478,7 +478,103 @@
                     <small style="color: var(--text-secondary);">Add topic groups with a heading, items (title, description), and subtopics under each item.</small>
                 </div>
 
+                <!-- Projects -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-briefcase"></i> Industry Projects
+                </h3>
+                <div class="form-group">
+                    <label>Industry Projects</label>
+                    <div id="projects_list_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addProject()">
+                        <i class="fas fa-plus"></i> Add Project
+                    </button>
+                    <textarea id="projects_list" name="projects_list" style="display:none;">{{ course.projects_list if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add industry projects with title and description.</small>
+                </div>
+
+                <!-- Benefits -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-award"></i> Career Benefits
+                </h3>
+                <div class="form-group">
+                    <label>Career Benefits</label>
+                    <div id="benefits_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addBenefit()">
+                        <i class="fas fa-plus"></i> Add Benefit
+                    </button>
+                    <textarea id="benefits" name="benefits" style="display:none;">{{ course.benefits if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add career benefits with icon, title, and description.</small>
+                </div>
+
+                <!-- Advisor -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-user-tie"></i> Course Advisor
+                </h3>
+                <div class="form-group">
+                    <label>Course Advisors</label>
+                    <div id="advisor_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addAdvisor()">
+                        <i class="fas fa-plus"></i> Add Advisor
+                    </button>
+                    <textarea id="advisor" name="advisor" style="display:none;">{{ course.advisor if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add course advisors with name, role, bio, and image URL.</small>
+                </div>
+
+                <!-- Reviews -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-star"></i> Student Reviews
+                </h3>
+                <div class="form-group">
+                    <label>Student Reviews</label>
+                    <div id="reviews_list_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addReview()">
+                        <i class="fas fa-plus"></i> Add Review
+                    </button>
+                    <textarea id="reviews_list" name="reviews_list" style="display:none;">{{ course.reviews_list if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add student reviews with name, role, and text.</small>
+                </div>
+
+                <!-- Why Join -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-check-circle"></i> Why Join This Program
+                </h3>
+                <div class="form-group">
+                    <label>Why Join Points</label>
+                    <div id="why_join_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addWhyJoin()">
+                        <i class="fas fa-plus"></i> Add Point
+                    </button>
+                    <textarea id="why_join" name="why_join" style="display:none;">{{ course.why_join if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add reasons to join with icon, title, and description.</small>
+                </div>
+
+                <!-- Certification -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-certificate"></i> Exam & Certification
+                </h3>
+                <div class="form-group">
+                    <label>Certification FAQs</label>
+                    <div id="certification_container" class="dynamic-field-container"></div>
+                    <button type="button" class="btn-add-field" onclick="addCertFaq()">
+                        <i class="fas fa-plus"></i> Add FAQ
+                    </button>
+                    <textarea id="certification" name="certification" style="display:none;">{{ course.certification if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add certification FAQs with title and text.</small>
+                </div>
+
                 <hr style="border: none; border-top: 2px solid rgba(79, 70, 229, 0.1); margin: 2.5rem 0;">
+
+                <!-- Eligibility / Prerequisites -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
+                    <i class="fas fa-clipboard-check"></i> Prerequisites / Eligibility
+                </h3>
+                <div class="form-group">
+                    <label for="eligibility">Eligibility Requirements</label>
+                    <textarea id="eligibility" name="eligibility" class="form-control" 
+                              placeholder="Who is this course for? e.g. Beginners, Working Professionals, Career Changers, Students & Graduates" 
+                              style="min-height: 120px;">{{ course.eligibility if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Describe who should take this course and any prerequisites.</small>
+                </div>
 
                 <!-- Publish -->
                 <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(79, 70, 229, 0.05); border-radius: 10px; border: 1px solid rgba(79, 70, 229, 0.15);">
@@ -931,6 +1027,12 @@
     let learningPathCount = 0;
     let faqCount = 0;
     let topicWiseGroupCount = 0;
+    let projectCount = 0;
+    let benefitCount = 0;
+    let advisorCount = 0;
+    let reviewCount = 0;
+    let whyJoinCount = 0;
+    let certFaqCount = 0;
 
     function escapeHtml(str) {
         if (!str) return '';
@@ -1002,6 +1104,119 @@
             <div class="field-inputs">
                 <input type="text" placeholder="Question (e.g. Do I need prior experience?)" value="${escapeHtml(question || '')}" data-field="question">
                 <textarea placeholder="Answer..." data-field="answer">${escapeHtml(answer || '')}</textarea>
+            </div>
+            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    }
+
+    function addProject(title, description) {
+        projectCount++;
+        const container = document.getElementById('projects_list_container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field-item';
+        item.innerHTML = `
+            <span class="field-number">${projectCount}</span>
+            <div class="field-inputs">
+                <input type="text" placeholder="Project title (e.g. Network Security Audit)" value="${escapeHtml(title || '')}" data-field="title">
+                <textarea placeholder="Project description..." data-field="description">${escapeHtml(description || '')}</textarea>
+            </div>
+            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    }
+
+    function addBenefit(icon, title, description) {
+        benefitCount++;
+        const container = document.getElementById('benefits_container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field-item';
+        item.innerHTML = `
+            <span class="field-number">${benefitCount}</span>
+            <div class="field-inputs">
+                <input type="text" placeholder="Icon (e.g. fas fa-briefcase)" value="${escapeHtml(icon || '')}" data-field="icon">
+                <input type="text" placeholder="Benefit title (e.g. Industry Certification)" value="${escapeHtml(title || '')}" data-field="title">
+                <textarea placeholder="Benefit description..." data-field="description">${escapeHtml(description || '')}</textarea>
+            </div>
+            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    }
+
+    function addAdvisor(name, role, bio, image) {
+        advisorCount++;
+        const container = document.getElementById('advisor_container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field-item';
+        item.innerHTML = `
+            <span class="field-number">${advisorCount}</span>
+            <div class="field-inputs">
+                <input type="text" placeholder="Advisor name (e.g. Dr. John Smith)" value="${escapeHtml(name || '')}" data-field="name">
+                <input type="text" placeholder="Role (e.g. Senior Cybersecurity Expert)" value="${escapeHtml(role || '')}" data-field="role">
+                <textarea placeholder="Bio..." data-field="bio">${escapeHtml(bio || '')}</textarea>
+                <input type="text" placeholder="Image URL" value="${escapeHtml(image || '')}" data-field="image">
+            </div>
+            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    }
+
+    function addReview(name, role, text) {
+        reviewCount++;
+        const container = document.getElementById('reviews_list_container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field-item';
+        item.innerHTML = `
+            <span class="field-number">${reviewCount}</span>
+            <div class="field-inputs">
+                <input type="text" placeholder="Reviewer name (e.g. Sarah Johnson)" value="${escapeHtml(name || '')}" data-field="name">
+                <input type="text" placeholder="Role (e.g. Software Engineer, Google)" value="${escapeHtml(role || '')}" data-field="role">
+                <textarea placeholder="Review text..." data-field="text">${escapeHtml(text || '')}</textarea>
+            </div>
+            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    }
+
+    function addWhyJoin(icon, title, description) {
+        whyJoinCount++;
+        const container = document.getElementById('why_join_container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field-item';
+        item.innerHTML = `
+            <span class="field-number">${whyJoinCount}</span>
+            <div class="field-inputs">
+                <input type="text" placeholder="Icon (e.g. fas fa-check)" value="${escapeHtml(icon || '')}" data-field="icon">
+                <input type="text" placeholder="Point title (e.g. Real-world Projects)" value="${escapeHtml(title || '')}" data-field="title">
+                <textarea placeholder="Point description..." data-field="description">${escapeHtml(description || '')}</textarea>
+            </div>
+            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        container.appendChild(item);
+    }
+
+    function addCertFaq(title, text) {
+        certFaqCount++;
+        const container = document.getElementById('certification_container');
+        const item = document.createElement('div');
+        item.className = 'dynamic-field-item';
+        item.innerHTML = `
+            <span class="field-number">${certFaqCount}</span>
+            <div class="field-inputs">
+                <input type="text" placeholder="FAQ title (e.g. When is the exam?)" value="${escapeHtml(title || '')}" data-field="title">
+                <textarea placeholder="FAQ answer text..." data-field="text">${escapeHtml(text || '')}</textarea>
             </div>
             <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
                 <i class="fas fa-trash-alt"></i>
@@ -1132,7 +1347,6 @@
     }
 
     function initDynamicFields() {
-        // Parse existing JSON from hidden textareas and render friendly fields
         try {
             const statsVal = document.getElementById('detail_stats').value.trim();
             if (statsVal) {
@@ -1182,6 +1396,66 @@
                 }
             }
         } catch(e) { console.warn('Could not parse topic_wise_content:', e); }
+
+        try {
+            const projVal = document.getElementById('projects_list').value.trim();
+            if (projVal) {
+                const projects = JSON.parse(projVal);
+                if (Array.isArray(projects)) {
+                    projects.forEach(p => addProject(p.title || '', p.description || ''));
+                }
+            }
+        } catch(e) { console.warn('Could not parse projects_list:', e); }
+
+        try {
+            const benVal = document.getElementById('benefits').value.trim();
+            if (benVal) {
+                const benefits = JSON.parse(benVal);
+                if (Array.isArray(benefits)) {
+                    benefits.forEach(b => addBenefit(b.icon || '', b.title || '', b.description || ''));
+                }
+            }
+        } catch(e) { console.warn('Could not parse benefits:', e); }
+
+        try {
+            const advVal = document.getElementById('advisor').value.trim();
+            if (advVal) {
+                const advisors = JSON.parse(advVal);
+                if (Array.isArray(advisors)) {
+                    advisors.forEach(a => addAdvisor(a.name || '', a.role || '', a.bio || '', a.image || ''));
+                }
+            }
+        } catch(e) { console.warn('Could not parse advisor:', e); }
+
+        try {
+            const revVal = document.getElementById('reviews_list').value.trim();
+            if (revVal) {
+                const reviews = JSON.parse(revVal);
+                if (Array.isArray(reviews)) {
+                    reviews.forEach(r => addReview(r.name || '', r.role || '', r.text || ''));
+                }
+            }
+        } catch(e) { console.warn('Could not parse reviews_list:', e); }
+
+        try {
+            const wjVal = document.getElementById('why_join').value.trim();
+            if (wjVal) {
+                const whyJoin = JSON.parse(wjVal);
+                if (Array.isArray(whyJoin)) {
+                    whyJoin.forEach(w => addWhyJoin(w.icon || '', w.title || '', w.description || ''));
+                }
+            }
+        } catch(e) { console.warn('Could not parse why_join:', e); }
+
+        try {
+            const certVal = document.getElementById('certification').value.trim();
+            if (certVal) {
+                const certFaqs = JSON.parse(certVal);
+                if (Array.isArray(certFaqs)) {
+                    certFaqs.forEach(c => addCertFaq(c.title || '', c.text || ''));
+                }
+            }
+        } catch(e) { console.warn('Could not parse certification:', e); }
     }
 
     function serializeDynamicFields() {
@@ -1247,6 +1521,71 @@
             if (heading || items.length > 0) twcArr.push({ heading, items });
         });
         document.getElementById('topic_wise_content').value = twcArr.length > 0 ? JSON.stringify(twcArr) : '';
+
+        // Serialize Projects
+        const projItems = document.querySelectorAll('#projects_list_container .dynamic-field-item');
+        const projArr = [];
+        projItems.forEach(item => {
+            const title = item.querySelector('[data-field="title"]').value.trim();
+            const description = item.querySelector('[data-field="description"]').value.trim();
+            if (title || description) projArr.push({ title, description });
+        });
+        document.getElementById('projects_list').value = projArr.length > 0 ? JSON.stringify(projArr) : '';
+
+        // Serialize Benefits
+        const benItems = document.querySelectorAll('#benefits_container .dynamic-field-item');
+        const benArr = [];
+        benItems.forEach(item => {
+            const icon = item.querySelector('[data-field="icon"]').value.trim();
+            const title = item.querySelector('[data-field="title"]').value.trim();
+            const description = item.querySelector('[data-field="description"]').value.trim();
+            if (icon || title || description) benArr.push({ icon, title, description });
+        });
+        document.getElementById('benefits').value = benArr.length > 0 ? JSON.stringify(benArr) : '';
+
+        // Serialize Advisors
+        const advItems = document.querySelectorAll('#advisor_container .dynamic-field-item');
+        const advArr = [];
+        advItems.forEach(item => {
+            const name = item.querySelector('[data-field="name"]').value.trim();
+            const role = item.querySelector('[data-field="role"]').value.trim();
+            const bio = item.querySelector('[data-field="bio"]').value.trim();
+            const image = item.querySelector('[data-field="image"]').value.trim();
+            if (name || role || bio || image) advArr.push({ name, role, bio, image });
+        });
+        document.getElementById('advisor').value = advArr.length > 0 ? JSON.stringify(advArr) : '';
+
+        // Serialize Reviews
+        const revItems = document.querySelectorAll('#reviews_list_container .dynamic-field-item');
+        const revArr = [];
+        revItems.forEach(item => {
+            const name = item.querySelector('[data-field="name"]').value.trim();
+            const role = item.querySelector('[data-field="role"]').value.trim();
+            const text = item.querySelector('[data-field="text"]').value.trim();
+            if (name || role || text) revArr.push({ name, role, text });
+        });
+        document.getElementById('reviews_list').value = revArr.length > 0 ? JSON.stringify(revArr) : '';
+
+        // Serialize Why Join
+        const wjItems = document.querySelectorAll('#why_join_container .dynamic-field-item');
+        const wjArr = [];
+        wjItems.forEach(item => {
+            const icon = item.querySelector('[data-field="icon"]').value.trim();
+            const title = item.querySelector('[data-field="title"]').value.trim();
+            const description = item.querySelector('[data-field="description"]').value.trim();
+            if (icon || title || description) wjArr.push({ icon, title, description });
+        });
+        document.getElementById('why_join').value = wjArr.length > 0 ? JSON.stringify(wjArr) : '';
+
+        // Serialize Certification FAQs
+        const certItems = document.querySelectorAll('#certification_container .dynamic-field-item');
+        const certArr = [];
+        certItems.forEach(item => {
+            const title = item.querySelector('[data-field="title"]').value.trim();
+            const text = item.querySelector('[data-field="text"]').value.trim();
+            if (title || text) certArr.push({ title, text });
+        });
+        document.getElementById('certification').value = certArr.length > 0 ? JSON.stringify(certArr) : '';
     }
 
     // Form validation + serialize dynamic fields

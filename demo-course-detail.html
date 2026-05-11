@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS Solution Architect - TrainingProtec</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0079f8;
+      --primary-dark: #0066cc;
+      --primary-light: #e6f3ff;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --dark: #1e293b;
+      --gray-600: #475569;
+      --gray-400: #94a3b8;
+      --gray-200: #e2e8f0;
+      --gray-100: #f1f5f9;
+      --gray-50: #f8fafc;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-50); color: var(--dark); line-height: 1.6; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 56px 0; }
+    .section-header { margin-bottom: 40px; }
+    .section-badge { display: inline-block; background: var(--primary-light); color: var(--primary); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+    .section-title { font-size: 30px; font-weight: 700; margin-bottom: 8px; }
+    .section-title strong { color: var(--primary); }
+    .section-sub { font-size: 16px; color: var(--gray-600); }
+
+    /* Navbar */
+    .navbar { background: var(--white); padding: 16px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-size: 20px; font-weight: 700; color: var(--dark); text-decoration: none; }
+    .brand i { color: var(--primary); margin-right: 8px; }
+    .nav-links { display: flex; gap: 8px; }
+    .nav-link { padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--gray-600); text-decoration: none; transition: all 0.2s; }
+    .nav-link:hover { color: var(--primary); background: var(--primary-light); }
+
+    /* Hero */
+    .hero { background: linear-gradient(135deg, var(--dark) 0%, #1e40af 100%); color: white; padding: 64px 0; }
+    .hero-content { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: start; }
+    .hero h1 { font-size: 38px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
+    .hero-sub { font-size: 17px; opacity: 0.9; margin-bottom: 24px; line-height: 1.7; }
+    .hero-rating { display: flex; align-items: center; gap: 20px; margin-bottom: 28px; }
+    .rating-badge { display: flex; align-items: center; gap: 8px; }
+    .rating-badge i { color: var(--warning); font-size: 20px; }
+    .rating-badge span { font-size: 32px; font-weight: 700; color: var(--warning); }
+    .rating-text { font-size: 14px; opacity: 0.85; }
+    .rating-platforms { display: flex; gap: 20px; margin-left: 24px; padding-left: 24px; border-left: 1px solid rgba(255,255,255,0.25); }
+    .rating-platform { font-size: 12px; opacity: 0.7; text-align: center; }
+    .rating-platform span { display: block; font-size: 15px; color: white; font-weight: 600; }
+    .hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .hero-stat { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; text-align: center; }
+    .hero-stat i { font-size: 20px; opacity: 0.7; margin-bottom: 8px; }
+    .hero-stat .num { font-size: 24px; font-weight: 700; color: #93c5fd; }
+    .hero-stat .lbl { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+
+    /* CTA Card */
+    .cta-card { background: var(--white); border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+    .cta-badge { display: inline-block; background: var(--success); color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+    .cta-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: var(--dark); }
+    .cta-list { list-style: none; margin-bottom: 24px; }
+    .cta-list li { display: flex; align-items: center; gap: 12px; padding: 12px 0; font-size: 14px; color: var(--gray-600); border-bottom: 1px solid #f1f5f9; }
+    .cta-list li:last-child { border: none; }
+    .cta-list li i { color: var(--success); font-size: 16px; }
+    .cta-price { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+    .cta-price .cur { font-size: 36px; font-weight: 800; color: var(--dark); }
+    .cta-price .old { font-size: 18px; color: var(--gray-400); text-decoration: line-through; }
+    .cta-price .discount { background: var(--warning); color: var(--dark); padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: 600; }
+    .cta-btn { display: block; width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; text-decoration: none; text-align: center; transition: background 0.2s; }
+    .cta-btn:hover { background: var(--primary-dark); }
+    .cta-btn2 { display: block; width: 100%; padding: 14px; background: transparent; color: var(--primary); border: 2px solid var(--primary); border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; text-align: center; margin-top: 12px; text-decoration: none; }
+    .cta-btn2:hover { background: var(--primary-light); }
+
+    /* Prerequisites */
+    .prerequisites { background: var(--white); }
+    .prereq-box { background: var(--white); border: 1px solid #e2e8f0; border-radius: 12px; padding: 32px; }
+    .prereq-box h3 { font-size: 22px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+    .prereq-box h3 i { color: var(--primary); font-size: 24px; }
+    .prereq-box > p { font-size: 15px; color: var(--gray-600); line-height: 1.8; margin-bottom: 24px; }
+    .prereq-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+    .prereq-tag { background: var(--gray-100); padding: 10px 18px; border-radius: 8px; font-size: 14px; color: var(--gray-600); display: flex; align-items: center; gap: 8px; }
+    .prereq-tag i { color: var(--primary); }
+
+    /* Overview */
+    .overview { background: var(--gray-50); }
+    .overview-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; }
+    .overview-content > p { font-size: 15px; color: var(--gray-600); line-height: 1.8; margin-bottom: 28px; }
+    .features-box { background: linear-gradient(135deg, var(--primary-light), #dbeafe); padding: 28px; border-radius: 14px; border-left: 4px solid var(--primary); margin-bottom: 28px; }
+    .features-box h3 { font-size: 17px; font-weight: 600; margin-bottom: 18px; }
+    .features-list { display: flex; flex-direction: column; gap: 14px; }
+    .feature-item { display: flex; align-items: flex-start; gap: 12px; }
+    .feature-item i { color: var(--success); font-size: 16px; margin-top: 2px; }
+    .feature-item span { font-size: 14px; color: var(--gray-600); }
+    .skills-box { background: var(--white); border: 1px solid #e2e8f0; border-radius: 14px; padding: 28px; }
+    .skills-box h3 { font-size: 17px; font-weight: 600; margin-bottom: 18px; }
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+    .skill-tag { background: var(--gray-100); padding: 8px 16px; border-radius: 8px; font-size: 13px; color: var(--gray-600); }
+
+    /* Benefits */
+    .benefits { background: var(--white); }
+    .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .benefit-card { background: var(--gray-50); border-radius: 12px; padding: 28px; text-align: center; }
+    .benefit-card i { font-size: 36px; color: var(--primary); margin-bottom: 16px; }
+    .benefit-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .benefit-card p { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+
+    /* Salary */
+    .salary { background: var(--gray-50); }
+    .salary-table { background: var(--white); border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
+    .salary-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; background: var(--primary); color: white; padding: 16px 24px; font-weight: 600; font-size: 14px; }
+    .salary-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; align-items: center; }
+    .salary-row:last-child { border: none; }
+    .salary-row:hover { background: var(--gray-50); }
+    .salary-role { font-weight: 600; font-size: 15px; }
+    .salary-salary { color: var(--gray-600); font-size: 14px; }
+    .salary-salary span { color: var(--success); font-weight: 600; }
+    .salary-companies { display: flex; gap: 8px; align-items: center; }
+    .company-logo { width: 32px; height: 32px; background: var(--gray-100); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--gray-400); }
+
+    /* Curriculum */
+    .curriculum { background: var(--gray-50); }
+    .curriculum-tabs { display: flex; gap: 8px; margin-bottom: 32px; }
+    .curriculum-tab { padding: 12px 24px; background: var(--white); border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--gray-600); cursor: pointer; transition: all 0.2s; }
+    .curriculum-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .curriculum-section { background: var(--white); border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+    .curriculum-section-header { display: flex; align-items: center; gap: 16px; padding: 20px 24px; cursor: pointer; background: none; border: none; width: 100%; transition: background 0.2s; }
+    .curriculum-section-header:hover { background: var(--gray-50); }
+    .section-num { width: 44px; height: 44px; background: var(--primary); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+    .section-info { flex: 1; text-align: left; }
+    .section-info h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .section-meta { display: flex; gap: 20px; font-size: 13px; color: var(--gray-400); }
+    .section-meta span { display: flex; align-items: center; gap: 5px; }
+    .section-toggle { width: 32px; height: 32px; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gray-600); font-size: 12px; transition: all 0.2s; }
+    .curriculum-section.active .section-toggle { background: var(--primary); color: white; transform: rotate(180deg); }
+    .curriculum-section.active { border-color: var(--primary); }
+
+    .curriculum-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+    .curriculum-section.active .curriculum-body { max-height: 5000px; }
+    .curriculum-inner { padding: 0 24px 24px; }
+
+    .lesson-item { display: flex; align-items: center; gap: 16px; padding: 14px 16px; background: var(--gray-50); border-radius: 8px; margin-bottom: 8px; border: 1px solid transparent; }
+    .lesson-item:hover { border-color: var(--primary-light); }
+    .lesson-item:last-child { margin-bottom: 0; }
+    .lesson-icon { color: var(--gray-400); font-size: 14px; width: 20px; text-align: center; }
+    .lesson-item.preview .lesson-icon { color: var(--primary); }
+    .lesson-name { flex: 1; font-size: 14px; color: var(--gray-600); }
+    .lesson-item.preview .lesson-name { color: var(--dark); font-weight: 500; }
+    .lesson-duration { font-size: 12px; color: var(--gray-400); margin-right: 12px; }
+    .preview-tag { background: var(--primary); color: white; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+
+    /* Projects */
+    .projects { background: var(--white); }
+    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .project-card { background: var(--gray-50); border-radius: 12px; padding: 28px; border: 1px solid #e2e8f0; transition: all 0.2s; }
+    .project-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .project-num { font-size: 12px; font-weight: 600; color: var(--primary); margin-bottom: 12px; }
+    .project-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+    .project-card p { font-size: 14px; color: var(--gray-600); line-height: 1.6; }
+
+    /* Advisor */
+    .advisor { background: var(--gray-50); }
+    .advisor-card { background: var(--white); border-radius: 12px; padding: 32px; display: flex; gap: 32px; align-items: center; border: 1px solid #e2e8f0; max-width: 800px; }
+    .advisor-img { width: 120px; height: 120px; background: var(--gray-100); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+    .advisor-img i { font-size: 48px; color: var(--gray-400); }
+    .advisor-info h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .advisor-info .role { font-size: 14px; color: var(--primary); font-weight: 500; margin-bottom: 16px; }
+    .advisor-info p { font-size: 14px; color: var(--gray-600); line-height: 1.7; }
+    .advisor-social { display: flex; gap: 12px; margin-top: 16px; }
+    .advisor-social a { width: 36px; height: 36px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--gray-600); transition: all 0.2s; }
+    .advisor-social a:hover { background: var(--primary); color: white; }
+
+    /* Certification */
+    .certification { background: var(--white); }
+    .cert-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; align-items: center; }
+    .cert-content { border: 2px dashed #e2e8f0; border-radius: 12px; padding: 40px; text-align: center; }
+    .cert-content i { font-size: 80px; color: var(--gray-300); margin-bottom: 16px; }
+    .cert-content h3 { font-size: 18px; font-weight: 600; }
+    .cert-faqs { display: flex; flex-direction: column; gap: 12px; }
+    .cert-faq { background: var(--gray-50); border-radius: 10px; padding: 20px; }
+    .cert-faq h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .cert-faq h4 i { color: var(--primary); }
+    .cert-faq p { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+
+    /* Reviews */
+    .reviews { background: var(--gray-50); }
+    .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .review-card { background: var(--white); border-radius: 12px; padding: 24px; border: 1px solid #e2e8f0; }
+    .review-card > i { color: var(--primary); font-size: 28px; margin-bottom: 16px; }
+    .review-card p { font-size: 14px; color: var(--gray-600); line-height: 1.7; margin-bottom: 16px; }
+    .review-author { display: flex; align-items: center; gap: 12px; }
+    .review-avatar { width: 44px; height: 44px; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--gray-600); }
+    .review-info h4 { font-size: 14px; font-weight: 600; }
+    .review-info span { font-size: 12px; color: var(--gray-400); }
+    .review-social { display: flex; gap: 8px; margin-top: 12px; }
+    .review-social a { color: var(--gray-400); font-size: 14px; }
+
+    /* Why Join */
+    .why-join { background: var(--white); }
+    .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .why-card { text-align: center; padding: 28px 20px; }
+    .why-card i { font-size: 36px; color: var(--primary); margin-bottom: 16px; }
+    .why-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .why-card p { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+
+    /* FAQs */
+    .faqs { background: var(--gray-50); }
+    .faq-list { max-width: 800px; margin: 0 auto; }
+    .faq-item { background: var(--white); border-radius: 10px; margin-bottom: 12px; overflow: hidden; border: 1px solid transparent; transition: all 0.2s; }
+    .faq-item:hover { border-color: var(--primary-light); }
+    .faq-item.active { border-color: var(--primary); }
+    .faq-question { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background: none; border: none; width: 100%; font-size: 15px; font-weight: 600; cursor: pointer; text-align: left; color: var(--dark); }
+    .faq-question i { color: var(--primary); font-size: 14px; transition: transform 0.2s; }
+    .faq-item.active .faq-question i { transform: rotate(180deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: all 0.3s; }
+    .faq-item.active .faq-answer { max-height: 500px; }
+    .faq-answer p { padding: 0 24px 20px; font-size: 14px; color: var(--gray-600); line-height: 1.7; }
+
+    /* Footer */
+    .footer { background: var(--dark); color: white; padding: 48px 0; text-align: center; }
+    .footer p { opacity: 0.7; font-size: 14px; }
+
+    @media (max-width: 1024px) {
+      .hero-content, .overview-grid, .cert-grid { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-stats, .benefits-grid, .projects-grid, .reviews-grid, .why-grid { grid-template-columns: repeat(2, 1fr); }
+      .salary-header, .salary-row { grid-template-columns: 1fr 1fr; }
+      .salary-header > *:nth-child(3), .salary-header > *:nth-child(4),
+      .salary-row > *:nth-child(3), .salary-row > *:nth-child(4) { display: none; }
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 28px; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .section-title { font-size: 24px; }
+      .nav-links { display: none; }
+      .advisor-card { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="#" class="brand"><i class="fas fa-shield-alt"></i>TrainingProtec</a>
+      <div class="nav-links">
+        <a href="#prerequisites" class="nav-link">Prerequisites</a>
+        <a href="#overview" class="nav-link">Overview</a>
+        <a href="#curriculum" class="nav-link">Curriculum</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#reviews" class="nav-link">Reviews</a>
+        <a href="#faqs" class="nav-link">FAQs</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-left">
+          <h1>AWS Solutions Architect Certification Training</h1>
+          <p class="hero-sub">Master AWS architectural principles and services such as IAM, VPC, EC2, EBS. Elevate your career to the cloud with industry-recognized certification.</p>
+          <div class="hero-rating">
+            <div class="rating-badge">
+              <i class="fas fa-star"></i>
+              <span>4.5</span>
+            </div>
+            <div class="rating-text">7903 ratings | 38.9K learners</div>
+            <div class="rating-platforms">
+              <div class="rating-platform"><span>4.5</span>SwitchUp</div>
+              <div class="rating-platform"><span>4.6</span>Trustpilot</div>
+            </div>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <i class="fas fa-play-circle"></i>
+              <div class="num">50+</div>
+              <div class="lbl">Hours</div>
+            </div>
+            <div class="hero-stat">
+              <i class="fas fa-file-alt"></i>
+              <div class="num">30+</div>
+              <div class="lbl">Lessons</div>
+            </div>
+            <div class="hero-stat">
+              <i class="fas fa-project-diagram"></i>
+              <div class="num">3</div>
+              <div class="lbl">Projects</div>
+            </div>
+            <div class="hero-stat">
+              <i class="fas fa-certificate"></i>
+              <div class="num">1</div>
+              <div class="lbl">Cert</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="cta-card">
+            <div class="cta-badge"><i class="fas fa-bolt"></i> 41% Off</div>
+            <h3>Enroll Now</h3>
+            <ul class="cta-list">
+              <li><i class="fas fa-check-circle"></i><span>Lifetime access to 50 hours of content</span></li>
+              <li><i class="fas fa-check-circle"></i><span>3 simulation exams (60 questions each)</span></li>
+              <li><i class="fas fa-check-circle"></i><span>16 live demos of AWS services</span></li>
+              <li><i class="fas fa-check-circle"></i><span>3 real-time industry projects</span></li>
+              <li><i class="fas fa-check-circle"></i><span>Access to Integrated labs</span></li>
+              <li><i class="fas fa-check-circle"></i><span>24x7 learner assistance</span></li>
+            </ul>
+            <div class="cta-price">
+              <span class="cur">$15,000</span>
+              <span class="old">$25,424</span>
+              <span class="discount">41% OFF</span>
+            </div>
+            <a href="#" class="cta-btn">Enroll Now</a>
+            <a href="#" class="cta-btn2">Download Syllabus</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prerequisites -->
+  <section class="section prerequisites" id="prerequisites">
+    <div class="container">
+      <div class="prereq-box">
+        <h3><i class="fas fa-clipboard-list"></i> Eligibility</h3>
+        <p>Any professional interested in hosting highly scalable, fault-tolerant applications on the AWS platform should take this AWS Solutions Architect course. However, the online AWS Solutions Architect certification course is ideal for:</p>
+        <div class="prereq-tags">
+          <span class="prereq-tag"><i class="fas fa-check"></i> Solutions Architects</span>
+          <span class="prereq-tag"><i class="fas fa-check"></i> Programmers</span>
+          <span class="prereq-tag"><i class="fas fa-check"></i> Cloud Developers</span>
+          <span class="prereq-tag"><i class="fas fa-check"></i> Cloud Software Engineers</span>
+          <span class="prereq-tag"><i class="fas fa-check"></i> DevOps Professionals</span>
+          <span class="prereq-tag"><i class="fas fa-check"></i> IT Administrators</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overview -->
+  <section class="section overview" id="overview">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Overview</span>
+        <h2 class="section-title">AWS Solutions Architect Course <strong>Overview</strong></h2>
+        <p class="section-sub">Master AWS architectural principles and services</p>
+      </div>
+
+      <div class="overview-grid">
+        <div class="overview-content">
+          <p>The AWS Solutions Architect Certification training course will enable you to design, plan, deploy, and scale AWS implementations utilizing over 70 cloud computing services. The AWS training is aligned with the AWS Solutions Architect(Associate) exam featuring Amazon-designated best practices.</p>
+
+          <div class="features-box">
+            <h3><i class="fas fa-star"></i> Key Features</h3>
+            <div class="features-list">
+              <div class="feature-item"><i class="fas fa-check-circle"></i><span>8X higher interaction in live online classes with industry experts</span></div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i><span>3 simulation exams (60 questions each)</span></div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i><span>100% money-back guarantee</span></div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i><span>16 live demos of AWS services</span></div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i><span>3 real-time industry projects with integrated labs</span></div>
+              <div class="feature-item"><i class="fas fa-check-circle"></i><span>AWS select technology partner</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skills-box">
+          <h3>Skills Covered</h3>
+          <div class="skills-grid">
+            <span class="skill-tag">AWS Solution Planning</span>
+            <span class="skill-tag">Designing Resilient AWS Implementations</span>
+            <span class="skill-tag">AWS Implementation Optimization</span>
+            <span class="skill-tag">AWS Architecture Best Practice</span>
+            <span class="skill-tag">AWS Cost Estimation</span>
+            <span class="skill-tag">AWS Data IO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="section benefits">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Benefits</span>
+        <h2 class="section-title">Career Benefits</h2>
+        <p class="section-sub">Why AWS certification is worth your time and investment</p>
+      </div>
+
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <i class="fas fa-chart-line"></i>
+          <h3>High Demand</h3>
+          <p>94%+ of enterprises use cloud but struggle to hire experts. Cloud architect roles projected to grow 13-15% through 2033.</p>
+        </div>
+        <div class="benefit-card">
+          <i class="fas fa-dollar-sign"></i>
+          <h3>High Salaries</h3>
+          <p>AWS Certified Solutions Architect earns up to $113,000/year. Among highest-paying IT certifications globally.</p>
+        </div>
+        <div class="benefit-card">
+          <i class="fas fa-briefcase"></i>
+          <h3>Career Growth</h3>
+          <p>Certification opens doors to roles like Cloud Architect, DevOps Engineer, and Solutions Architect at top companies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Salary -->
+  <section class="section salary">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Salaries</span>
+        <h2 class="section-title">Job Roles & <strong>Salaries</strong></h2>
+        <p class="section-sub">Explore career opportunities and salary ranges</p>
+      </div>
+
+      <div class="salary-table">
+        <div class="salary-header">
+          <span>Job Roles</span>
+          <span>Min Salary</span>
+          <span>Avg Salary</span>
+          <span>Hiring Companies</span>
+        </div>
+        <div class="salary-row">
+          <div class="salary-role">Cloud Solution Architect</div>
+          <div class="salary-salary"><span>$85K</span></div>
+          <div class="salary-salary"><span>$120K</span></div>
+          <div class="salary-companies">
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+          </div>
+        </div>
+        <div class="salary-row">
+          <div class="salary-role">Cloud Administrator</div>
+          <div class="salary-salary"><span>$55K</span></div>
+          <div class="salary-salary"><span>$85K</span></div>
+          <div class="salary-companies">
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+          </div>
+        </div>
+        <div class="salary-row">
+          <div class="salary-role">Cloud Developer</div>
+          <div class="salary-salary"><span>$70K</span></div>
+          <div class="salary-salary"><span>$95K</span></div>
+          <div class="salary-companies">
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+          </div>
+        </div>
+        <div class="salary-row">
+          <div class="salary-role">Cloud Engineer</div>
+          <div class="salary-salary"><span>$75K</span></div>
+          <div class="salary-salary"><span>$100K</span></div>
+          <div class="salary-companies">
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+            <div class="company-logo"><i class="fas fa-building"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curriculum -->
+  <section class="section curriculum" id="curriculum">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Curriculum</span>
+        <h2 class="section-title">AWS Solutions Architect Course <strong>Curriculum</strong></h2>
+        <p class="section-sub">Complete syllabus with detailed lessons</p>
+      </div>
+
+      <div class="curriculum-tabs">
+        <button class="curriculum-tab active">Self-Paced Learning</button>
+        <button class="curriculum-tab">Live Online</button>
+      </div>
+
+      <!-- Section 1 -->
+      <div class="curriculum-section active">
+        <button class="curriculum-section-header">
+          <div class="section-num">1</div>
+          <div class="section-info">
+            <h3>Course Introduction</h3>
+            <div class="section-meta">
+              <span><i class="fas fa-play-circle"></i> 1 Lesson</span>
+              <span><i class="fas fa-clock"></i> 06:32</span>
+            </div>
+          </div>
+          <div class="section-toggle"><i class="fas fa-chevron-down"></i></div>
+        </button>
+        <div class="curriculum-body">
+          <div class="curriculum-inner">
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">1.01 Introduction to AWS</span>
+              <span class="lesson-duration">04:55</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">1.02 Course Components and Exam Format</span>
+              <span class="lesson-duration">01:37</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="curriculum-section">
+        <button class="curriculum-section-header">
+          <div class="section-num">2</div>
+          <div class="section-info">
+            <h3>AWS Core Concepts</h3>
+            <div class="section-meta">
+              <span><i class="fas fa-play-circle"></i> 46 Lessons</span>
+              <span><i class="fas fa-clock"></i> 01:27:46</span>
+            </div>
+          </div>
+          <div class="section-toggle"><i class="fas fa-chevron-down"></i></div>
+        </button>
+        <div class="curriculum-body">
+          <div class="curriculum-inner">
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">2.01 Overview of AWS</span>
+              <span class="lesson-duration">01:59</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.02 AWS Infrastructure: Part 1</span>
+              <span class="lesson-duration">03:23</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.03 AWS Infrastructure: Part 2</span>
+              <span class="lesson-duration">02:12</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.04 AWS Infrastructure: Part 3</span>
+              <span class="lesson-duration">02:53</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.05 AWS Infrastructure: Part 4</span>
+              <span class="lesson-duration">03:43</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.06 Overview of AWS Core Services</span>
+              <span class="lesson-duration">01:52</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.07 Amazon EC2</span>
+              <span class="lesson-duration">02:00</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.08 Amazon EKS</span>
+              <span class="lesson-duration">00:55</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.09 Amazon Lightsail</span>
+              <span class="lesson-duration">01:05</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.10 AWS Batch</span>
+              <span class="lesson-duration">01:15</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.11 Elastic Beanstalk</span>
+              <span class="lesson-duration">00:54</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.12 AWS Fargate</span>
+              <span class="lesson-duration">01:01</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.13 AWS Lambda</span>
+              <span class="lesson-duration">01:38</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.14 S3 Simple Storage Service</span>
+              <span class="lesson-duration">01:34</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.15 EFS - Elastic File System</span>
+              <span class="lesson-duration">03:08</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.16 EBS - Elastic Block Storage</span>
+              <span class="lesson-duration">00:55</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.17 AWS Backup</span>
+              <span class="lesson-duration">01:06</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.18 Storage Gateway</span>
+              <span class="lesson-duration">01:51</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.19 Data Sync</span>
+              <span class="lesson-duration">01:17</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.20 AWS Snow Family</span>
+              <span class="lesson-duration">03:39</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.21 Database Services Overview</span>
+              <span class="lesson-duration">00:51</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.22 RDS - Relational Database Services</span>
+              <span class="lesson-duration">01:41</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.23 Amazon Redshift</span>
+              <span class="lesson-duration">01:03</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.24 DynamoDB</span>
+              <span class="lesson-duration">00:54</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.25 ElastiCache</span>
+              <span class="lesson-duration">01:18</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.26 DocumentDB</span>
+              <span class="lesson-duration">00:54</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.27 Neptune</span>
+              <span class="lesson-duration">00:45</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.28 QLDB - Quantum Ledger Database</span>
+              <span class="lesson-duration">01:09</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.29 AWS Account Set Up</span>
+              <span class="lesson-duration">02:31</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.30 AWS Free Tier</span>
+              <span class="lesson-duration">00:57</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.31 Introduction to AWS Management Console</span>
+              <span class="lesson-duration">03:32</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.32 AWS Billing and Pricing</span>
+              <span class="lesson-duration">06:36</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.33 AWS Support</span>
+              <span class="lesson-duration">04:00</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.34 Billing Alerts</span>
+              <span class="lesson-duration">01:47</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.35 Delegate Access</span>
+              <span class="lesson-duration">03:34</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.36 Delegate Access Using IAM Roles</span>
+              <span class="lesson-duration">03:00</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.37 AWS Identity and Access Management</span>
+              <span class="lesson-duration">01:06</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.38 IAM Features</span>
+              <span class="lesson-duration">04:56</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.39 Accessing IAM</span>
+              <span class="lesson-duration">00:45</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.40 Working of IAM</span>
+              <span class="lesson-duration">01:12</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.41 IAM Users</span>
+              <span class="lesson-duration">00:58</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.42 AWS Command Line Interface</span>
+              <span class="lesson-duration">02:41</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">2.43 Key Takeaways</span>
+              <span class="lesson-duration">00:49</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="curriculum-section">
+        <button class="curriculum-section-header">
+          <div class="section-num">3</div>
+          <div class="section-info">
+            <h3>Compute and Related Features</h3>
+            <div class="section-meta">
+              <span><i class="fas fa-play-circle"></i> 18 Lessons</span>
+              <span><i class="fas fa-clock"></i> 49:45</span>
+            </div>
+          </div>
+          <div class="section-toggle"><i class="fas fa-chevron-down"></i></div>
+        </button>
+        <div class="curriculum-body">
+          <div class="curriculum-inner">
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">3.01 Learning Objective</span>
+              <span class="lesson-duration">11:06</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.02 EC2 Instance Types</span>
+              <span class="lesson-duration">04:30</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.03 Placement Group</span>
+              <span class="lesson-duration">01:53</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.04 Cluster Placement Groups</span>
+              <span class="lesson-duration">01:56</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.05 Spread Placement Groups</span>
+              <span class="lesson-duration">00:47</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.06 EC2 Instance Metadata</span>
+              <span class="lesson-duration">02:45</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.07 EC2 Overview</span>
+              <span class="lesson-duration">01:38</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.08 Spot Instance Interruptions</span>
+              <span class="lesson-duration">00:33</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.09 Reasons for Interruption</span>
+              <span class="lesson-duration">02:51</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.10 Hibernation for EC2 Instances</span>
+              <span class="lesson-duration">02:42</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.11 EBS Overview</span>
+              <span class="lesson-duration">03:44</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.12 Amazon EBS vs Instance Store</span>
+              <span class="lesson-duration">02:58</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.13 EBS Security</span>
+              <span class="lesson-duration">01:33</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.14 Elastic Load Balancing</span>
+              <span class="lesson-duration">03:10</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.15 AWS Lambda Deep Dive</span>
+              <span class="lesson-duration">04:00</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.16 ELB Logs</span>
+              <span class="lesson-duration">02:58</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.17 Auto Scaling</span>
+              <span class="lesson-duration">04:31</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">3.18 Key Takeaways</span>
+              <span class="lesson-duration">00:40</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="curriculum-section">
+        <button class="curriculum-section-header">
+          <div class="section-num">4</div>
+          <div class="section-info">
+            <h3>Storage Services</h3>
+            <div class="section-meta">
+              <span><i class="fas fa-play-circle"></i> 21 Lessons</span>
+              <span><i class="fas fa-clock"></i> 01:22:20</span>
+            </div>
+          </div>
+          <div class="section-toggle"><i class="fas fa-chevron-down"></i></div>
+        </button>
+        <div class="curriculum-body">
+          <div class="curriculum-inner">
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">4.01 Introduction to Amazon S3</span>
+              <span class="lesson-duration">06:07</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.02 Components of Amazon S3</span>
+              <span class="lesson-duration">03:54</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.03 Amazon S3 Storage Classes: Part 1</span>
+              <span class="lesson-duration">04:59</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.04 Amazon S3 Storage Classes: Part 2</span>
+              <span class="lesson-duration">05:40</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.05 Version Control in S3: Part 1</span>
+              <span class="lesson-duration">04:13</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.06 Version Control in S3: Part 2</span>
+              <span class="lesson-duration">03:49</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.07 S3 Lifecycle Management</span>
+              <span class="lesson-duration">05:43</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.08 Access Controls</span>
+              <span class="lesson-duration">04:23</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.09 Amazon S3 Replication</span>
+              <span class="lesson-duration">05:45</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.10 Performance Guidance for S3</span>
+              <span class="lesson-duration">02:43</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.11 Storage Gateway: Part 1</span>
+              <span class="lesson-duration">03:07</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.12 Storage Gateway: Part 2</span>
+              <span class="lesson-duration">03:36</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.13 S3 Encryption: Part 1</span>
+              <span class="lesson-duration">04:44</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.14 S3 Encryption: Part 2</span>
+              <span class="lesson-duration">04:50</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.15 Elastic File System</span>
+              <span class="lesson-duration">02:49</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.16 Amazon FSx</span>
+              <span class="lesson-duration">05:21</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.17 Unauthorized Link Access</span>
+              <span class="lesson-duration">02:10</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.18 AWS Glue Data</span>
+              <span class="lesson-duration">02:57</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.19 Amazon Athena</span>
+              <span class="lesson-duration">03:11</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">4.20 Key Takeaways</span>
+              <span class="lesson-duration">00:44</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5 -->
+      <div class="curriculum-section">
+        <button class="curriculum-section-header">
+          <div class="section-num">5</div>
+          <div class="section-info">
+            <h3>VPC Networking and Content Delivery</h3>
+            <div class="section-meta">
+              <span><i class="fas fa-play-circle"></i> 24 Lessons</span>
+              <span><i class="fas fa-clock"></i> 01:38:11</span>
+            </div>
+          </div>
+          <div class="section-toggle"><i class="fas fa-chevron-down"></i></div>
+        </button>
+        <div class="curriculum-body">
+          <div class="curriculum-inner">
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">5.01 Learning Objectives</span>
+              <span class="lesson-duration">02:15</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.02 Firewall Security Group</span>
+              <span class="lesson-duration">01:35</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.03 Network ACL</span>
+              <span class="lesson-duration">04:18</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.04 IP Addresses</span>
+              <span class="lesson-duration">02:34</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.05 VPC Flow Logs: Part 1</span>
+              <span class="lesson-duration">05:39</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.06 VPC Flow Logs: Part 2</span>
+              <span class="lesson-duration">02:10</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.07 Internet Gateways</span>
+              <span class="lesson-duration">06:22</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.08 Interface Endpoint</span>
+              <span class="lesson-duration">04:38</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.09 Gateway Endpoints and Peering</span>
+              <span class="lesson-duration">04:46</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.10 Transit Gateway</span>
+              <span class="lesson-duration">04:46</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.11 Default VPC and Flow Log</span>
+              <span class="lesson-duration">08:55</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.12 Private Link and Bastion Host</span>
+              <span class="lesson-duration">03:54</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.13 AWS Systems Manager</span>
+              <span class="lesson-duration">05:56</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.14 VPN: Part 1</span>
+              <span class="lesson-duration">03:39</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.15 VPN: Part 2</span>
+              <span class="lesson-duration">04:06</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.16 Direct Connect</span>
+              <span class="lesson-duration">04:02</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.17 Direct Connect Costs</span>
+              <span class="lesson-duration">03:45</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.18 CloudFront</span>
+              <span class="lesson-duration">02:07</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.19 Lambda Edge</span>
+              <span class="lesson-duration">04:11</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.20 CloudFront Security</span>
+              <span class="lesson-duration">01:41</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.21 Route 53</span>
+              <span class="lesson-duration">05:44</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">5.22 Key Takeaways</span>
+              <span class="lesson-duration">00:40</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6 -->
+      <div class="curriculum-section">
+        <button class="curriculum-section-header">
+          <div class="section-num">6</div>
+          <div class="section-info">
+            <h3>Databases</h3>
+            <div class="section-meta">
+              <span><i class="fas fa-play-circle"></i> 20 Lessons</span>
+              <span><i class="fas fa-clock"></i> 01:15:14</span>
+            </div>
+          </div>
+          <div class="section-toggle"><i class="fas fa-chevron-down"></i></div>
+        </button>
+        <div class="curriculum-body">
+          <div class="curriculum-inner">
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">6.01 Learning Objectives</span>
+              <span class="lesson-duration">01:03</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">6.02 Introduction to Databases</span>
+              <span class="lesson-duration">05:07</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">6.03 RDS - Relational Database Service</span>
+              <span class="lesson-duration">05:40</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">6.04 RDS Deep Dive: Part 1</span>
+              <span class="lesson-duration">03:42</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">6.05 RDS Deep Dive: Part 2</span>
+              <span class="lesson-duration">03:58</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">6.06 Read Replicas and RDS Costs</span>
+              <span class="lesson-duration">06:55</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">6.07 Amazon Aurora</span>
+              <span class="lesson-duration">04:56</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">6.08 Aurora DB Cluster Types</span>
+              <span class="lesson-duration">05:11</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">6.09 Aurora Multi Master</span>
+              <span class="lesson-duration">03:22</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">6.10 DynamoDB Introduction</span>
+              <span class="lesson-duration">05:23</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 7 -->
+      <div class="curriculum-section">
+        <button class="curriculum-section-header">
+          <div class="section-num">7</div>
+          <div class="section-info">
+            <h3>Security and IAM</h3>
+            <div class="section-meta">
+              <span><i class="fas fa-play-circle"></i> 51 Lessons</span>
+              <span><i class="fas fa-clock"></i> 01:34:15</span>
+            </div>
+          </div>
+          <div class="section-toggle"><i class="fas fa-chevron-down"></i></div>
+        </button>
+        <div class="curriculum-body">
+          <div class="curriculum-inner">
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">7.01 Learning Objectives</span>
+              <span class="lesson-duration">01:09</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">7.02 Responsibility Models in AWS</span>
+              <span class="lesson-duration">02:33</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">7.03 Federation</span>
+              <span class="lesson-duration">01:51</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">7.04 Security is Job Zero</span>
+              <span class="lesson-duration">02:08</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">7.05 AWS IAM Overview</span>
+              <span class="lesson-duration">02:58</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">7.06 IAM Policy</span>
+              <span class="lesson-duration">03:16</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">7.07 Inline Policy</span>
+              <span class="lesson-duration">02:01</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">7.08 ARN - Amazon Resource Naming</span>
+              <span class="lesson-duration">01:06</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">7.09 AWS Service Principal</span>
+              <span class="lesson-duration">04:20</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">7.10 Principle of Least Privilege</span>
+              <span class="lesson-duration">01:16</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 8 -->
+      <div class="curriculum-section">
+        <button class="curriculum-section-header">
+          <div class="section-num">8</div>
+          <div class="section-info">
+            <h3>Serverless and Application Services</h3>
+            <div class="section-meta">
+              <span><i class="fas fa-play-circle"></i> 12 Lessons</span>
+              <span><i class="fas fa-clock"></i> 42:59</span>
+            </div>
+          </div>
+          <div class="section-toggle"><i class="fas fa-chevron-down"></i></div>
+        </button>
+        <div class="curriculum-body">
+          <div class="curriculum-inner">
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">8.01 Learning Objectives</span>
+              <span class="lesson-duration">01:14</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">8.02 Lambda: Part 1</span>
+              <span class="lesson-duration">05:10</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">8.03 Lambda: Part 2</span>
+              <span class="lesson-duration">05:26</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">8.04 API Gateway</span>
+              <span class="lesson-duration">01:45</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">8.05 SQS Introduction</span>
+              <span class="lesson-duration">06:07</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">8.06 SQS Security and Performance</span>
+              <span class="lesson-duration">04:49</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">8.07 SNS</span>
+              <span class="lesson-duration">04:13</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">8.08 EventBridge</span>
+              <span class="lesson-duration">04:04</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">8.09 Kinesis: Part 1</span>
+              <span class="lesson-duration">05:33</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">8.10 Kinesis: Part 2</span>
+              <span class="lesson-duration">03:57</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">8.11 Key Takeaways</span>
+              <span class="lesson-duration">00:41</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 9 -->
+      <div class="curriculum-section">
+        <button class="curriculum-section-header">
+          <div class="section-num">9</div>
+          <div class="section-info">
+            <h3>Monitoring and Automation</h3>
+            <div class="section-meta">
+              <span><i class="fas fa-play-circle"></i> 10 Lessons</span>
+              <span><i class="fas fa-clock"></i> 24:47</span>
+            </div>
+          </div>
+          <div class="section-toggle"><i class="fas fa-chevron-down"></i></div>
+        </button>
+        <div class="curriculum-body">
+          <div class="curriculum-inner">
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">9.01 Learning Objectives</span>
+              <span class="lesson-duration">01:20</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">9.02 CloudWatch</span>
+              <span class="lesson-duration">02:11</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">9.03 CloudWatch Metrics</span>
+              <span class="lesson-duration">02:58</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">9.04 CloudWatch Alarms</span>
+              <span class="lesson-duration">02:28</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">9.05 CloudWatch Logs</span>
+              <span class="lesson-duration">01:42</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">9.06 CloudFormation Introduction</span>
+              <span class="lesson-duration">02:43</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">9.07 Types of Templates</span>
+              <span class="lesson-duration">04:59</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">9.08 Condition Section</span>
+              <span class="lesson-duration">00:34</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">9.09 Intrinsic Functions</span>
+              <span class="lesson-duration">03:15</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">9.10 Key Takeaways</span>
+              <span class="lesson-duration">00:31</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 10 -->
+      <div class="curriculum-section">
+        <button class="curriculum-section-header">
+          <div class="section-num">10</div>
+          <div class="section-info">
+            <h3>Container Service</h3>
+            <div class="section-meta">
+              <span><i class="fas fa-play-circle"></i> 8 Lessons</span>
+              <span><i class="fas fa-clock"></i> 17:17</span>
+            </div>
+          </div>
+          <div class="section-toggle"><i class="fas fa-chevron-down"></i></div>
+        </button>
+        <div class="curriculum-body">
+          <div class="curriculum-inner">
+            <div class="lesson-item preview">
+              <i class="fas fa-play-circle lesson-icon"></i>
+              <span class="lesson-name">10.01 Learning Objectives</span>
+              <span class="lesson-duration">01:05</span>
+              <span class="preview-tag">Preview</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">10.02 Containers and Orchestration</span>
+              <span class="lesson-duration">03:08</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">10.03 Amazon ECR</span>
+              <span class="lesson-duration">01:06</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">10.04 Amazon ECS</span>
+              <span class="lesson-duration">05:16</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">10.05 ECS Launch Types</span>
+              <span class="lesson-duration">01:45</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">10.06 Dynamic Port Mapping</span>
+              <span class="lesson-duration">01:14</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">10.07 AWS Fargate</span>
+              <span class="lesson-duration">03:00</span>
+            </div>
+            <div class="lesson-item">
+              <i class="fas fa-lock lesson-icon"></i>
+              <span class="lesson-name">10.08 Key Takeaways</span>
+              <span class="lesson-duration">00:43</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="section projects" id="projects">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Projects</span>
+        <h2 class="section-title">Industry <strong>Projects</strong></h2>
+        <p class="section-sub">Hands-on projects with real-world scenarios</p>
+      </div>
+
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-num">Project 1</div>
+          <h3>Custom VPC Creation</h3>
+          <p>Create a custom VPC with public and private subnets on two availability zones and launch instances into each subnet.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-num">Project 2</div>
+          <h3>Load Balancer Configuration</h3>
+          <p>Launch two web servers and configure a load balancer and auto-scaling for high availability and performance.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-num">Project 3</div>
+          <h3>RD Gateway Configuration</h3>
+          <p>Configure RD Gateway on a VPC with a public and private subnet for secure remote access.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Advisor -->
+  <section class="section advisor">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Advisor</span>
+        <h2 class="section-title">Course <strong>Advisor</strong></h2>
+        <p class="section-sub">Learn from industry experts</p>
+      </div>
+
+      <div class="advisor-card">
+        <div class="advisor-img">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="advisor-info">
+          <h3>Marc Weaver</h3>
+          <div class="role">AWS Solutions Architect & DB Expert, Author and Founder - Databasable</div>
+          <p>Marc is an AWS solutions architect and Database Expert. He has over 15+ years of experience working with investment banks across the globe. He has authored courses on AWS solutions architecture and Database migration.</p>
+          <div class="advisor-social">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certification -->
+  <section class="section certification">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Certification</span>
+        <h2 class="section-title">Exam & <strong>Certification</strong></h2>
+        <p class="section-sub">Get AWS certified and validate your skills</p>
+      </div>
+
+      <div class="cert-grid">
+        <div class="cert-content">
+          <i class="fas fa-certificate"></i>
+          <h3>AWS Solutions Architect Associate</h3>
+        </div>
+        <div class="cert-faqs">
+          <div class="cert-faq">
+            <h4><i class="fas fa-question-circle"></i> Exam Format</h4>
+            <p>65 multiple-choice questions in 130 minutes. Passing scores are set by AWS and subject to change.</p>
+          </div>
+          <div class="cert-faq">
+            <h4><i class="fas fa-sync-alt"></i> Retake Policy</h4>
+            <p>If you fail the exam, you must wait 14 days before retaking. No limits on number of attempts.</p>
+          </div>
+          <div class="cert-faq">
+            <h4><i class="fas fa-shield-alt"></i> 100% Money Back</h4>
+            <p>If you do not pass on the first attempt, we refund 100% of your course fee.</p>
+          </div>
+          <div class="cert-faq">
+            <h4><i class="fas fa-calendar-check"></i> Validity</h4>
+            <p>Certification is valid for 2 years. AWS sends email notification 6 months before expiry.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="section reviews" id="reviews">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Reviews</span>
+        <h2 class="section-title">What Learners <strong>Say</strong></h2>
+        <p class="section-sub">Real feedback from our students</p>
+      </div>
+
+      <div class="reviews-grid">
+        <div class="review-card">
+          <i class="fas fa-quote-left"></i>
+          <p>Having graduated from the AWS Cloud Architect Certification Program via Simplilearn, I extend my gratitude to mentors Sumit Kumar Jui and Pranav Phadke for imparting a fantastic learning experience. I am excited about forthcoming opportunities.</p>
+          <div class="review-author">
+            <div class="review-avatar">AP</div>
+            <div class="review-info">
+              <h4>Abhinav P</h4>
+              <span>Senior Process Associate</span>
+            </div>
+          </div>
+          <div class="review-social">
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="review-card">
+          <i class="fas fa-quote-left"></i>
+          <p>I completed Simplilearn's AWS Solution Architect Associate course and found its content and structure impressive. I highly recommend it for enhancing IT skills, suitable for teams and managers alike.</p>
+          <div class="review-author">
+            <div class="review-avatar">ND</div>
+            <div class="review-info">
+              <h4>Niranjan Damaraju</h4>
+              <span>Delivery Director at Cognizant</span>
+            </div>
+          </div>
+          <div class="review-social">
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="review-card">
+          <i class="fas fa-quote-left"></i>
+          <p>The trainer was fantastic. She was very supportive and was always there to clear the doubts by giving practical and theoretical examples. The overall experience was great.</p>
+          <div class="review-author">
+            <div class="review-avatar">SM</div>
+            <div class="review-info">
+              <h4>Shadav Mohammad Ansari</h4>
+              <span>IT Manager at CODE INC</span>
+            </div>
+          </div>
+          <div class="review-social">
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Join -->
+  <section class="section why-join">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Why Us</span>
+        <h2 class="section-title">Why Join this <strong>Program</strong></h2>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-card">
+          <i class="fas fa-rocket"></i>
+          <h3>Career Growth</h3>
+          <p>Cutting-edge curriculum designed with industry experts to develop job-ready skills</p>
+        </div>
+        <div class="why-card">
+          <i class="fas fa-chalkboard-teacher"></i>
+          <h3>Expert Trainers</h3>
+          <p>Learn from practitioners who bring current best practices and case studies</p>
+        </div>
+        <div class="why-card">
+          <i class="fas fa-laptop-code"></i>
+          <h3>Real-World Projects</h3>
+          <p>Capstone projects with real world data sets and virtual labs for hands-on learning</p>
+        </div>
+        <div class="why-card">
+          <i class="fas fa-headset"></i>
+          <h3>24x7 Support</h3>
+          <p>Learning support from mentors and community of peers to resolve doubts</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQs -->
+  <section class="section faqs" id="faqs">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">FAQs</span>
+        <h2 class="section-title">Frequently Asked <strong>Questions</strong></h2>
+        <p class="section-sub">Everything you need to know</p>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item active">
+          <button class="faq-question">
+            <span>What is AWS Solution Architect certification?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Our Amazon Web Services (AWS) Solution Architect certification training helps you understand how to select the right AWS services, build secure and reliable solutions, and support business needs in the cloud.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How to become an AWS Solutions Architect?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>To become an AWS Solutions Architect, you can start by learning cloud computing basics and understanding how Amazon Web Services (AWS) works. Then build knowledge of core AWS services such as compute, storage, networking, and security. Our AWS course helps you learn these concepts in a structured way and prepares you for the AWS Solutions Architect Associate exam.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is the AWS certification roadmap for beginners?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>For beginners, we recommend starting with a basic AWS credential to learn about fundamental cloud principles and the main AWS services. After that, you may go on to the associate level. The AWS Solutions Architect Associate path shows you how to create cloud systems that are safe, scalable, and dependable.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How long does it take to prepare for the AWS Solution Architect exam?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Preparation time for the AWS Solutions Architect Associate exam usually ranges from 6 to 12 weeks for most learners, depending on their experience and study schedule. If you are completely new to cloud or AWS, it may take longer because you will first need to understand core services, architecture basics, security, and networking concepts.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What are the eligibility requirements for the AWS certification?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>The AWS Solution Architect certification course is meant for professionals who want to host highly scalable, fault-tolerant applications on AWS. It is especially suitable for solutions architects, programmers, cloud developers, cloud software engineers, and DevOps professionals. While no strict academic barrier is mentioned, the course is intended for learners and working professionals.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 TrainingProtec. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.curriculum-section-header').forEach(header => {
+      header.addEventListener('click', () => {
+        header.parentElement.classList.toggle('active');
+      });
+    });
+
+    document.querySelectorAll('.curriculum-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.curriculum-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

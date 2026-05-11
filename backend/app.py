@@ -676,6 +676,13 @@ class Course(db.Model):
     faq = db.Column(db.Text, default='')                   # JSON: [{question, answer}]
     detail_stats = db.Column(db.Text, default='')          # JSON: [{number, label}]
     topic_wise_content = db.Column(db.Text, default='')    # JSON: [{heading, items: [{title, description, subtopics: []}]}]
+    eligibility = db.Column(db.Text, default='')           # for Prerequisites/Eligibility section
+    projects_list = db.Column(db.Text, default='')      # JSON: [{title, description}]
+    benefits = db.Column(db.Text, default='')           # JSON: [{icon, title, description}]
+    advisor = db.Column(db.Text, default='')             # JSON: {name, role, bio, image}
+    reviews_list = db.Column(db.Text, default='')       # JSON: [{name, role, text, avatar}]
+    why_join = db.Column(db.Text, default='')            # JSON: [{icon, title, description}]
+    certification = db.Column(db.Text, default='')      # JSON: {title, faqs: [{title, text}]}
 
     def to_dict(self):
         return {
@@ -721,6 +728,13 @@ class Course(db.Model):
         base['faq'] = json.loads(self.faq) if self.faq else []
         base['detailStats'] = json.loads(self.detail_stats) if self.detail_stats else []
         base['topicWiseContent'] = json.loads(self.topic_wise_content) if self.topic_wise_content else []
+        base['eligibility'] = self.eligibility or ''
+        base['projectsList'] = json.loads(self.projects_list) if self.projects_list else []
+        base['benefits'] = json.loads(self.benefits) if self.benefits else []
+        base['advisor'] = json.loads(self.advisor) if self.advisor else {}
+        base['reviewsList'] = json.loads(self.reviews_list) if self.reviews_list else []
+        base['whyJoin'] = json.loads(self.why_join) if self.why_join else []
+        base['certification'] = json.loads(self.certification) if self.certification else {}
         return base
 
 class Subscriber(db.Model):
@@ -1208,7 +1222,14 @@ def admin_course_new():
             technologies_list=request.form.get('technologies_list', ''),
             faq=request.form.get('faq', ''),
             detail_stats=request.form.get('detail_stats', ''),
-            topic_wise_content=request.form.get('topic_wise_content', '')
+            topic_wise_content=request.form.get('topic_wise_content', ''),
+            eligibility=request.form.get('eligibility', ''),
+            projects_list=request.form.get('projects_list', ''),
+            benefits=request.form.get('benefits', ''),
+            advisor=request.form.get('advisor', ''),
+            reviews_list=request.form.get('reviews_list', ''),
+            why_join=request.form.get('why_join', ''),
+            certification=request.form.get('certification', '')
         )
         try:
             db.session.add(course)
@@ -1260,6 +1281,13 @@ def admin_course_edit(id):
         course.faq = request.form.get('faq', '')
         course.detail_stats = request.form.get('detail_stats', '')
         course.topic_wise_content = request.form.get('topic_wise_content', '')
+        course.eligibility = request.form.get('eligibility', '')
+        course.projects_list = request.form.get('projects_list', '')
+        course.benefits = request.form.get('benefits', '')
+        course.advisor = request.form.get('advisor', '')
+        course.reviews_list = request.form.get('reviews_list', '')
+        course.why_join = request.form.get('why_join', '')
+        course.certification = request.form.get('certification', '')
         try:
             db.session.commit()
             flash('Course updated successfully!', 'success')
@@ -1678,6 +1706,7 @@ def create_sample_blogs():
 
 def create_sample_courses():
     if Course.query.count() == 0:
+        import json
         courses = [
             Course(
                 title='Data Science & AI',
@@ -1701,7 +1730,70 @@ def create_sample_courses():
                 instructor_experience='14+ years',
                 curriculum='Python & Statistics, Machine Learning, Deep Learning & NLP, AI with TensorFlow',
                 is_published=True,
-                sort_order=1
+                sort_order=1,
+                tagline='Become a Data Scientist — Learn Python, ML, Deep Learning & AI',
+                hero_image='https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                overview='The Data Science & AI course is a comprehensive program designed to take you from beginner to professional data scientist. You will master Python programming, statistical analysis, machine learning algorithms, deep learning frameworks, and real-world AI applications. The curriculum includes hands-on projects with real datasets, capstone projects, and preparation for industry-recognized certifications.\n\nThis course is designed for professionals who want to build a career in data science, AI, or machine learning. No prior coding experience is required — we start from the fundamentals and progressively build your skills through practical exercises and real-world projects.',
+                key_benefits='Learn Python, Pandas, NumPy & data visualization\nBuild ML models with scikit-learn & TensorFlow\n15+ real-world projects including capstone\nPlacement assistance with 200+ hiring partners\nLifetime access to course content & updates\nIndustry-recognized certification upon completion',
+                detail_stats=json.dumps([{'number': '12,500+', 'label': 'Learners'}, {'number': '4.8', 'label': 'Rating'}, {'number': '150+', 'label': 'Hours Content'}, {'number': '15', 'label': 'Projects'}]),
+                topic_wise_content=json.dumps([
+                    {'heading': 'Python & Statistics', 'items': [
+                        {'title': 'Python Fundamentals', 'description': 'Learn Python from scratch with focus on data manipulation', 'subtopics': ['Variables & Data Types', 'Control Flow', 'Functions', 'List Comprehensions']},
+                        {'title': 'Data Analysis with Pandas', 'description': 'Master data cleaning, transformation and analysis', 'subtopics': ['DataFrames', 'GroupBy Operations', 'Merging & Joining', 'Pivot Tables']},
+                        {'title': 'Statistical Analysis', 'description': 'Apply statistical methods for data-driven decisions', 'subtopics': ['Descriptive Statistics', 'Hypothesis Testing', 'Correlation Analysis', 'Probability Distributions']}
+                    ]},
+                    {'heading': 'Machine Learning', 'items': [
+                        {'title': 'Supervised Learning', 'description': 'Classification and regression algorithms', 'subtopics': ['Linear Regression', 'Decision Trees', 'Random Forest', 'SVM']},
+                        {'title': 'Unsupervised Learning', 'description': 'Clustering and dimensionality reduction', 'subtopics': ['K-Means Clustering', 'Hierarchical Clustering', 'PCA', 't-SNE']}
+                    ]},
+                    {'heading': 'Deep Learning & AI', 'items': [
+                        {'title': 'Neural Networks', 'description': 'Build and train deep learning models', 'subtopics': ['Perceptrons', 'Backpropagation', 'Regularization', 'Optimizers']},
+                        {'title': 'Computer Vision & NLP', 'description': 'Advanced AI applications', 'subtopics': ['CNN Architectures', 'Transfer Learning', 'RNN & LSTM', 'Transformers']}
+                    ]}
+                ]),
+                learning_path=json.dumps([
+                    {'step': 1, 'title': 'Python & Statistics', 'description': 'Start with Python fundamentals, data structures, and statistical foundations. Build a strong base in programming and math.'},
+                    {'step': 2, 'title': 'Data Analysis & Visualization', 'description': 'Master Pandas, NumPy, and visualization libraries like Matplotlib and Seaborn to analyze and present data.'},
+                    {'step': 3, 'title': 'Machine Learning', 'description': 'Learn supervised and unsupervised ML algorithms. Build predictive models using scikit-learn.'},
+                    {'step': 4, 'title': 'Deep Learning & AI', 'description': 'Dive into neural networks, TensorFlow, Keras, and advanced AI techniques.'},
+                    {'step': 5, 'title': 'Capstone Project', 'description': 'Apply all skills to a real-world industry project and build your portfolio.'}
+                ]),
+                technologies_list='Python, Pandas, NumPy, scikit-learn, TensorFlow, Keras, SQL, Tableau, Power BI, Jupyter, Git',
+                faq=json.dumps([
+                    {'question': 'Do I need prior coding experience?', 'answer': 'No, this course starts from the basics. We cover Python fundamentals before moving to advanced topics.'},
+                    {'question': 'What career opportunities are available after this course?', 'answer': 'You can become a Data Scientist, ML Engineer, AI Engineer, Data Analyst, or Business Intelligence Analyst.'},
+                    {'question': 'Is there any placement assistance?', 'answer': 'Yes, we provide placement assistance with our network of 200+ hiring partners including top MNCs and startups.'},
+                    {'question': 'Will I get a certificate?', 'answer': 'Yes, you will receive an industry-recognized Data Science & AI certification upon successful completion.'}
+                ]),
+                eligibility='This course is ideal for:\n\n- Beginners looking to start a career in Data Science\n- IT professionals wanting to transition into AI/ML roles\n- Graduates from any background (science, commerce, arts)\n- Business professionals seeking data-driven decision making skills',
+                projects_list=json.dumps([
+                    {'title': 'Customer Churn Prediction', 'description': 'Build a machine learning model to predict customer churn for a telecom company using classification algorithms.'},
+                    {'title': 'House Price Prediction', 'description': 'Develop a regression model to predict house prices based on various features using linear regression and ensemble methods.'},
+                    {'title': 'Sentiment Analysis', 'description': 'Create an NLP pipeline to analyze customer reviews and classify sentiment using LSTM networks.'}
+                ]),
+                benefits=json.dumps([
+                    {'icon': 'chart-line', 'title': 'High Demand', 'description': 'Data Science roles are among the fastest-growing jobs globally with 94%+ enterprises adopting AI/ML.'},
+                    {'icon': 'dollar-sign', 'title': 'High Salaries', 'description': 'Data Scientists earn up to $150,000/year. Among the highest-paying tech roles globally.'},
+                    {'icon': 'briefcase', 'title': 'Career Growth', 'description': 'Clear path from Junior Data Scientist to Lead AI Engineer with defined milestones.'}
+                ]),
+                advisor=json.dumps({'name': 'Dr. Amit Sharma', 'role': 'Ex-Google AI Engineer | Data Science Professor at IIT Delhi', 'bio': 'Dr. Sharma has 14+ years of experience in AI research and industry applications. He led ML teams at Google and now mentors the next generation of data scientists.', 'image': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}),
+                reviews_list=json.dumps([
+                    {'name': 'Rahul Verma', 'role': 'Data Scientist at TCS', 'text': 'This course transformed my career. The hands-on projects with real datasets prepared me for industry challenges.'},
+                    {'name': 'Priya Singh', 'role': 'ML Engineer at Infosys', 'text': 'Best data science course I have taken. The deep learning section with TensorFlow was exceptional.'},
+                    {'name': 'Amit Patel', 'role': 'Analytics Lead at Wipro', 'text': 'Got placed within 2 months of completing the course. The placement team is highly supportive.'}
+                ]),
+                why_join=json.dumps([
+                    {'icon': 'rocket', 'title': 'Career Growth', 'description': 'Cutting-edge curriculum designed with industry experts to develop job-ready skills.'},
+                    {'icon': 'chalkboard-teacher', 'title': 'Expert Trainers', 'description': 'Learn from practitioners who bring current best practices and case studies from top companies.'},
+                    {'icon': 'laptop-code', 'title': 'Real-World Projects', 'description': 'Capstone projects with real world data sets and virtual labs for hands-on learning.'},
+                    {'icon': 'headset', 'title': '24x7 Support', 'description': 'Learning support from mentors and community of peers to resolve doubts instantly.'}
+                ]),
+                certification=json.dumps({'title': 'Data Science & AI Professional Certificate', 'faqs': [
+                    {'title': 'Exam Format', 'text': 'Online proctored exam with 60 multiple-choice questions. 120 minutes duration.'},
+                    {'title': 'Retake Policy', 'text': 'If you fail, you can retake after 14 days. Unlimited attempts allowed.'},
+                    {'title': 'Validity', 'text': 'Certification is valid for life. No renewal required.'},
+                    {'title': 'Recognition', 'text': 'Recognized by 200+ hiring partners including TCS, Infosys, Wipro, Amazon, and Google.'}
+                ]})
             ),
             Course(
                 title='Cloud Computing & DevOps',
@@ -1725,7 +1817,68 @@ def create_sample_courses():
                 instructor_experience='12+ years',
                 curriculum='AWS Core Services, Docker & Kubernetes, CI/CD Pipelines, Infrastructure as Code',
                 is_published=True,
-                sort_order=2
+                sort_order=2,
+                tagline='Master AWS, Docker, Kubernetes & DevOps — Deploy at Scale',
+                hero_image='https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                overview='The Cloud Computing & DevOps course is a hands-on program that teaches you to design, deploy, and manage cloud infrastructure at scale. You will master AWS services, Docker containers, Kubernetes orchestration, and CI/CD pipelines. This course prepares you for the AWS Solutions Architect Associate certification and real-world DevOps roles.\n\nIdeal for IT professionals, developers, and system administrators looking to build cloud expertise and advance their careers in DevOps engineering.',
+                key_benefits='Master AWS core services including EC2, S3, VPC, IAM\nLearn Docker containers and Kubernetes orchestration\nBuild CI/CD pipelines with Jenkins, GitHub Actions\nDeploy real applications to AWS cloud\nAWS Solutions Architect certification prep included\nHands-on labs with real cloud infrastructure',
+                detail_stats=json.dumps([{'number': '9,800+', 'label': 'Learners'}, {'number': '4.7', 'label': 'Rating'}, {'number': '120+', 'label': 'Hours Content'}, {'number': '12', 'label': 'Projects'}]),
+                topic_wise_content=json.dumps([
+                    {'heading': 'AWS Cloud Fundamentals', 'items': [
+                        {'title': 'EC2 & Compute Services', 'description': 'Launch and manage virtual servers in AWS cloud', 'subtopics': ['Instance Types', 'AMI Creation', 'Auto Scaling', 'Load Balancing']},
+                        {'title': 'Storage & Database', 'description': 'AWS storage solutions and database services', 'subtopics': ['S3 Buckets', 'EBS Volumes', 'RDS Setup', 'DynamoDB']}
+                    ]},
+                    {'heading': 'DevOps Essentials', 'items': [
+                        {'title': 'Docker & Containers', 'description': 'Package applications in Docker containers', 'subtopics': ['Dockerfile', 'Docker Compose', 'Container Networking', 'Docker Hub']},
+                        {'title': 'Kubernetes Orchestration', 'description': 'Deploy and manage containerized applications at scale', 'subtopics': ['Pods & Deployments', 'Services & Ingress', 'ConfigMaps & Secrets', 'Helm Charts']}
+                    ]},
+                    {'heading': 'CI/CD & Infrastructure', 'items': [
+                        {'title': 'CI/CD Pipelines', 'description': 'Automate deployment with Jenkins and GitHub Actions', 'subtopics': ['Jenkins Setup', 'Pipeline as Code', 'GitHub Actions', 'Automated Testing']},
+                        {'title': 'Infrastructure as Code', 'description': 'Manage infrastructure with Terraform and CloudFormation', 'subtopics': ['Terraform Basics', 'AWS CloudFormation', 'State Management', 'Module Design']}
+                    ]}
+                ]),
+                learning_path=json.dumps([
+                    {'step': 1, 'title': 'AWS Fundamentals', 'description': 'Learn AWS core services — EC2, S3, VPC, IAM. Set up your AWS account and explore the cloud console.'},
+                    {'step': 2, 'title': 'Containers with Docker', 'description': 'Master Docker — create Dockerfiles, manage images, and orchestrate multi-container applications.'},
+                    {'step': 3, 'title': 'Kubernetes Deployment', 'description': 'Deploy containerized apps to Kubernetes clusters. Learn scaling, monitoring, and management.'},
+                    {'step': 4, 'title': 'CI/CD Pipelines', 'description': 'Build automated deployment pipelines with Jenkins, GitHub Actions, and cloud-native tools.'},
+                    {'step': 5, 'title': 'Real Projects', 'description': 'Deploy a full-stack application to AWS EKS with CI/CD pipeline and monitoring.'}
+                ]),
+                technologies_list='AWS, Docker, Kubernetes, Jenkins, Terraform, Ansible, GitHub Actions, CloudFormation, Prometheus, Grafana',
+                faq=json.dumps([
+                    {'question': 'What are the prerequisites for this course?', 'answer': 'Basic IT knowledge and familiarity with command line is recommended. No prior cloud experience required.'},
+                    {'question': 'Does this include AWS certification prep?', 'answer': 'Yes, the course includes comprehensive preparation for the AWS Solutions Architect Associate certification.'},
+                    {'question': 'What job roles can I apply for after this course?', 'answer': 'You can become a Cloud Engineer, DevOps Engineer, AWS Solutions Architect, or Site Reliability Engineer.'}
+                ]),
+                eligibility='This course is ideal for:\n\n- Software developers wanting to learn cloud and DevOps\n- System administrators transitioning to cloud roles\n- IT professionals seeking AWS certification\n- Anyone wanting to deploy applications at scale',
+                projects_list=json.dumps([
+                    {'title': 'Custom VPC Creation', 'description': 'Create a custom VPC with public and private subnets across two availability zones and launch instances.'},
+                    {'title': 'Load Balancer Configuration', 'description': 'Launch two web servers and configure Application Load Balancer with auto-scaling for high availability.'},
+                    {'title': 'CI/CD Pipeline with Docker', 'description': 'Build a complete CI/CD pipeline using Jenkins, Docker Hub, and AWS ECS deployment.'}
+                ]),
+                benefits=json.dumps([
+                    {'icon': 'chart-line', 'title': 'High Demand', 'description': '94%+ of enterprises use cloud but struggle to hire experts. Cloud roles projected to grow 13-15% through 2033.'},
+                    {'icon': 'dollar-sign', 'title': 'High Salaries', 'description': 'AWS Certified Solutions Architect earns up to $130,000/year. Among highest-paying cloud roles globally.'},
+                    {'icon': 'briefcase', 'title': 'Career Growth', 'description': 'Certification opens doors to Cloud Architect, DevOps Engineer, and SRE roles at top companies.'}
+                ]),
+                advisor=json.dumps({'name': 'Rajesh Menon', 'role': 'AWS Certified Solutions Architect | Ex-Amazon Cloud Engineer', 'bio': 'Rajesh has 12+ years in cloud architecture, having led cloud migrations at Amazon and multiple Fortune 500 companies.', 'image': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}),
+                reviews_list=json.dumps([
+                    {'name': 'Suresh Kumar', 'role': 'DevOps Engineer at Infosys', 'text': 'The Kubernetes section is fantastic. Cleared my AWS certification on the first attempt.'},
+                    {'name': 'Neha Gupta', 'role': 'Cloud Architect at TCS', 'text': 'Best investment for my career. The real projects gave me hands-on experience that interviews demanded.'},
+                    {'name': 'Vikram Singh', 'role': 'SRE at Wipro', 'text': 'Excellent course structure. The CI/CD pipeline project was exactly what I needed for my job.'}
+                ]),
+                why_join=json.dumps([
+                    {'icon': 'rocket', 'title': 'Career Growth', 'description': 'Cutting-edge curriculum designed with industry experts to develop job-ready cloud skills.'},
+                    {'icon': 'chalkboard-teacher', 'title': 'Expert Trainers', 'description': 'Learn from AWS-certified professionals who have worked at Amazon and top tech companies.'},
+                    {'icon': 'laptop-code', 'title': 'Real-World Projects', 'description': 'Deploy real applications to AWS with CI/CD pipelines, Kubernetes, and infrastructure as code.'},
+                    {'icon': 'headset', 'title': '24x7 Support', 'description': 'Learning support from mentors and community of peers to resolve doubts instantly.'}
+                ]),
+                certification=json.dumps({'title': 'AWS Solutions Architect Associate Certification', 'faqs': [
+                    {'title': 'Exam Format', 'text': '65 multiple-choice questions in 130 minutes. Passing scores are set by AWS and subject to change.'},
+                    {'title': 'Retake Policy', 'text': 'If you fail the exam, you must wait 14 days before retaking. No limits on number of attempts.'},
+                    {'title': 'Money Back', 'text': 'If you do not pass on the first attempt, we refund 100% of your course fee.'},
+                    {'title': 'Validity', 'text': 'Certification is valid for 2 years. AWS sends email notification 6 months before expiry.'}
+                ]})
             ),
             Course(
                 title='Cyber Security',
@@ -1749,7 +1902,68 @@ def create_sample_courses():
                 instructor_experience='16+ years',
                 curriculum='Network Security Basics, Ethical Hacking, Penetration Testing, Compliance & Forensics',
                 is_published=True,
-                sort_order=3
+                sort_order=3,
+                tagline='Become a Cyber Security Expert — Ethical Hacking, Pen Testing & CEH Prep',
+                hero_image='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                overview='The Cyber Security course is a comprehensive program that teaches you to protect systems, networks, and data from cyber threats. You will learn ethical hacking, penetration testing, network security, and compliance frameworks. The course includes hands-on labs with Kali Linux, Metasploit, Burp Suite, and prepares you for the CEH (Certified Ethical Hacker) certification.',
+                key_benefits='Learn ethical hacking and penetration testing techniques\nMaster Kali Linux, Metasploit, Burp Suite & Nmap\nHands-on labs with real attack scenarios\nCEH certification prep included\nNetwork security and firewall configuration\nIncident response and forensics training',
+                detail_stats=json.dumps([{'number': '7,200+', 'label': 'Learners'}, {'number': '4.8', 'label': 'Rating'}, {'number': '100+', 'label': 'Hours Content'}, {'number': '10', 'label': 'Projects'}]),
+                topic_wise_content=json.dumps([
+                    {'heading': 'Network Security Fundamentals', 'items': [
+                        {'title': 'Networking Basics', 'description': 'Understand TCP/IP, OSI model, and network protocols', 'subtopics': ['IP Addressing', 'Subnetting', 'DNS & DHCP', 'Routing & Switching']},
+                        {'title': 'Firewalls & Security', 'description': 'Configure and manage network security devices', 'subtopics': ['Firewall Rules', 'IDS/IPS', 'VPN Configuration', 'Network Monitoring']}
+                    ]},
+                    {'heading': 'Ethical Hacking & Pen Testing', 'items': [
+                        {'title': 'Reconnaissance & Scanning', 'description': 'Information gathering and vulnerability scanning', 'subtopics': ['Nmap Scanning', 'DNS Enumeration', 'Vulnerability Assessment', 'Port Scanning']},
+                        {'title': 'Exploitation & Post-Exploitation', 'description': 'Hands-on exploitation techniques and maintaining access', 'subtopics': ['Metasploit Framework', 'Buffer Overflow', 'Privilege Escalation', 'Password Attacks']}
+                    ]},
+                    {'heading': 'Web Application Security', 'items': [
+                        {'title': 'OWASP Top 10', 'description': 'Learn and exploit common web vulnerabilities', 'subtopics': ['SQL Injection', 'XSS Attacks', 'CSRF', 'File Inclusion']},
+                        {'title': 'Burp Suite & Web Pen Testing', 'description': 'Web application security testing with Burp Suite', 'subtopics': ['Proxy Setup', 'Intruder', 'Repeater', 'Web Vulnerabilities']}
+                    ]}
+                ]),
+                learning_path=json.dumps([
+                    {'step': 1, 'title': 'Networking Fundamentals', 'description': 'Master TCP/IP, OSI model, routing, switching, and network protocols.'},
+                    {'step': 2, 'title': 'Kali Linux & Tools', 'description': 'Set up Kali Linux and master tools like Nmap, Wireshark, and Nikto.'},
+                    {'step': 3, 'title': 'Penetration Testing', 'description': 'Learn ethical hacking methodology — reconnaissance, scanning, exploitation, and reporting.'},
+                    {'step': 4, 'title': 'Web Application Security', 'description': 'Exploit OWASP Top 10 vulnerabilities and secure web applications.'},
+                    {'step': 5, 'title': 'CEH Certification Prep', 'description': 'Prepare for CEH certification with practice tests and exam strategies.'}
+                ]),
+                technologies_list='Kali Linux, Metasploit, Burp Suite, Nmap, Wireshark, Nessus, Snort, John the Ripper, Hydra',
+                faq=json.dumps([
+                    {'question': 'Do I need prior experience for this course?', 'answer': 'Basic IT knowledge is helpful but not required. We start from networking fundamentals.'},
+                    {'question': 'Is CEH certification included?', 'answer': 'The course includes CEH exam prep materials. Certification exam cost is separate.'},
+                    {'question': 'What career paths are available?', 'answer': 'You can become an Ethical Hacker, Penetration Tester, Security Analyst, SOC Analyst, or CISO.'}
+                ]),
+                eligibility='This course is ideal for:\n\n- IT professionals looking to specialize in security\n- Graduates wanting to enter cyber security field\n- System administrators securing infrastructure\n- Anyone interested in ethical hacking careers',
+                projects_list=json.dumps([
+                    {'title': 'Network Vulnerability Assessment', 'description': 'Conduct a comprehensive vulnerability scan on a mock corporate network using Nessus and Nmap.'},
+                    {'title': 'Web Application Pen Test', 'description': 'Perform a full penetration test on a vulnerable web application using Burp Suite.'},
+                    {'title': 'Metasploit Exploitation Lab', 'description': 'Set up a vulnerable lab environment and exploit multiple systems using Metasploit framework.'}
+                ]),
+                benefits=json.dumps([
+                    {'icon': 'shield-alt', 'title': 'Critical Need', 'description': 'Every organization needs cyber security. 3.5 million job openings projected by 2025.'},
+                    {'icon': 'dollar-sign', 'title': 'High Salaries', 'description': 'Cyber Security professionals earn $100K-$200K/year. Among the highest-paying IT fields.'},
+                    {'icon': 'briefcase', 'title': 'Job Security', 'description': 'Cyber threats are increasing — security roles are recession-proof and in high demand.'}
+                ]),
+                advisor=json.dumps({'name': 'Vikash Kumar', 'role': 'CISO | CEH, OSCP Certified | Former IIT Bombay Security Researcher', 'bio': 'Vikash has 16+ years in cyber security, working as CISO at multiple MNCs and conducting security research at IIT Bombay.', 'image': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}),
+                reviews_list=json.dumps([
+                    {'name': 'Arun Sharma', 'role': 'Security Analyst at IBM', 'text': 'The lab exercises with Kali Linux are incredibly realistic. Cleared my CEH on the first attempt.'},
+                    {'name': 'Sneha Reddy', 'role': 'Penetration Tester at Paladion', 'text': 'Best cyber security course. The web application security section was exactly what I needed.'},
+                    {'name': 'Manish Joshi', 'role': 'SOC Analyst at Deloitte', 'text': 'Got placed as a Security Analyst 3 months after completing the course. Highly recommended.'}
+                ]),
+                why_join=json.dumps([
+                    {'icon': 'rocket', 'title': 'Career Growth', 'description': 'Cutting-edge curriculum designed with industry experts to develop job-ready security skills.'},
+                    {'icon': 'chalkboard-teacher', 'title': 'Expert Trainers', 'description': 'Learn from certified professionals with real-world pen testing experience.'},
+                    {'icon': 'laptop-code', 'title': 'Real-World Projects', 'description': 'Hands-on labs with Kali Linux, Metasploit, and real attack/defense scenarios.'},
+                    {'icon': 'headset', 'title': '24x7 Support', 'description': 'Learning support from mentors and community of peers to resolve doubts instantly.'}
+                ]),
+                certification=json.dumps({'title': 'Certified Ethical Hacker (CEH) Preparation', 'faqs': [
+                    {'title': 'Exam Format', 'text': '125 multiple-choice questions in 4 hours. Available at EC-Council authorized centers.'},
+                    {'title': 'Prerequisites', 'text': 'Must have 2 years of information security experience or attend official CEH training.'},
+                    {'title': 'Validity', 'text': 'CEH certification is valid for 3 years. Can be renewed through EC-Council continuing education.'},
+                    {'title': 'Career Impact', 'text': 'CEH is recognized globally and often required for pen testing and security analyst roles.'}
+                ]})
             ),
             Course(
                 title='Full Stack Web Development',
@@ -1773,7 +1987,68 @@ def create_sample_courses():
                 instructor_experience='10+ years',
                 curriculum='HTML CSS & JavaScript, React & Redux, Node.js & Express, MongoDB & Deployment',
                 is_published=True,
-                sort_order=4
+                sort_order=4,
+                tagline='Become a Full Stack Developer — React, Node.js, MongoDB & Deploy',
+                hero_image='https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                overview='The Full Stack Web Development course teaches you to build complete web applications from scratch using the MERN stack. You will master frontend development with React, backend development with Node.js and Express, and database management with MongoDB. The course includes 10+ real-world projects including an e-commerce platform and social media application.',
+                key_benefits='Build 10+ real-world projects from scratch\nMaster React, Node.js, Express & MongoDB\nDeploy full-stack apps to production\nLearn Redux for state management\nBuild REST APIs and GraphQL\nAuth, payment integration & deployment',
+                detail_stats=json.dumps([{'number': '15,000+', 'label': 'Learners'}, {'number': '4.9', 'label': 'Rating'}, {'number': '200+', 'label': 'Hours Content'}, {'number': '12', 'label': 'Projects'}]),
+                topic_wise_content=json.dumps([
+                    {'heading': 'Frontend Development', 'items': [
+                        {'title': 'HTML, CSS & JavaScript', 'description': 'Build responsive and interactive user interfaces', 'subtopics': ['Semantic HTML', 'CSS Flexbox & Grid', 'JavaScript ES6+', 'DOM Manipulation']},
+                        {'title': 'React & Redux', 'description': 'Build modern single-page applications with React', 'subtopics': ['Components & Props', 'State & Hooks', 'Redux Toolkit', 'React Router']}
+                    ]},
+                    {'heading': 'Backend Development', 'items': [
+                        {'title': 'Node.js & Express', 'description': 'Build server-side applications with Node.js', 'subtopics': ['Express Routing', 'Middleware', 'REST APIs', 'Authentication']},
+                        {'title': 'MongoDB & Database', 'description': 'Design and manage NoSQL databases', 'subtopics': ['Schema Design', 'Mongoose ODM', 'Aggregation', 'Indexing']}
+                    ]},
+                    {'heading': 'Deployment & DevOps', 'items': [
+                        {'title': 'Git & Version Control', 'description': 'Collaborative development with Git', 'subtopics': ['Branching Strategies', 'Merge Conflicts', 'Pull Requests', 'GitHub Actions']},
+                        {'title': 'Cloud Deployment', 'description': 'Deploy apps to Heroku, Vercel, and AWS', 'subtopics': ['CI/CD Pipelines', 'Environment Variables', 'Domain Setup', 'SSL Certificates']}
+                    ]}
+                ]),
+                learning_path=json.dumps([
+                    {'step': 1, 'title': 'HTML, CSS & JavaScript', 'description': 'Build strong foundations in web technologies — HTML5, CSS3, and modern JavaScript ES6+.'},
+                    {'step': 2, 'title': 'React Development', 'description': 'Master React — components, hooks, state management, and routing.'},
+                    {'step': 3, 'title': 'Backend with Node.js', 'description': 'Build REST APIs and server-side logic with Node.js and Express.'},
+                    {'step': 4, 'title': 'MongoDB & Database', 'description': 'Design MongoDB schemas and integrate with your full-stack application.'},
+                    {'step': 5, 'title': 'Deploy to Production', 'description': 'Deploy your full-stack app to production with CI/CD and monitoring.'}
+                ]),
+                technologies_list='React, Node.js, Express, MongoDB, JavaScript, HTML, CSS, Redux, Git, GitHub, AWS, Heroku',
+                faq=json.dumps([
+                    {'question': 'Do I need prior programming experience?', 'answer': 'Basic computer knowledge is enough. We start from HTML and JavaScript fundamentals.'},
+                    {'question': 'What projects will I build?', 'answer': 'You will build an e-commerce platform, social media app, task manager, blog platform, and 6 more projects.'},
+                    {'question': 'What job roles can I apply for?', 'answer': 'You can become a Frontend Developer, Backend Developer, Full Stack Developer, or MERN Stack Developer.'}
+                ]),
+                eligibility='This course is ideal for:\n\n- Beginners wanting to become web developers\n- Those looking to switch careers to tech\n- Students and graduates seeking practical skills\n- Anyone wanting to build their own web applications',
+                projects_list=json.dumps([
+                    {'title': 'E-Commerce Platform', 'description': 'Build a full e-commerce app with product catalog, shopping cart, payment integration, and admin panel.'},
+                    {'title': 'Social Media App', 'description': 'Create a Twitter-like social platform with posts, likes, comments, followers, and real-time chat.'},
+                    {'title': 'Task Management App', 'description': 'Develop a Trello-like project management tool with drag-and-drop boards and team collaboration.'}
+                ]),
+                benefits=json.dumps([
+                    {'icon': 'code', 'title': 'High Demand', 'description': 'Every business needs web developers. Full stack roles are among the most in-demand tech jobs.'},
+                    {'icon': 'dollar-sign', 'title': 'High Salaries', 'description': 'Full Stack Developers earn $80K-$150K/year. Some of the highest-paid developer roles.'},
+                    {'icon': 'briefcase', 'title': 'Career Growth', 'description': 'Clear path from Junior Developer to Senior Developer and Tech Lead positions.'}
+                ]),
+                advisor=json.dumps({'name': 'Priya Nair', 'role': 'Senior Full Stack Developer | Ex-Flipkart | NIT Trichy', 'bio': 'Priya has 10+ years building scalable web applications at Flipkart and multiple startups. She mentors developers to land top tech jobs.', 'image': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}),
+                reviews_list=json.dumps([
+                    {'name': 'Karthik Rajan', 'role': 'Frontend Developer at Amazon', 'text': 'The React section is so thorough. Got hired at Amazon 2 months after completing this course.'},
+                    {'name': 'Divya Menon', 'role': 'Full Stack Dev at Zomato', 'text': 'Built my portfolio with 10 projects from this course. The e-commerce project was mind-blowing.'},
+                    {'name': 'Sanjay Kumar', 'role': 'MERN Stack Developer at Swiggy', 'text': 'Best investment for my career. The instructor explains complex concepts in simple terms.'}
+                ]),
+                why_join=json.dumps([
+                    {'icon': 'rocket', 'title': 'Career Growth', 'description': 'Cutting-edge curriculum designed with industry experts to develop job-ready web development skills.'},
+                    {'icon': 'chalkboard-teacher', 'title': 'Expert Trainers', 'description': 'Learn from developers who have worked at Flipkart, Amazon, and top tech startups.'},
+                    {'icon': 'laptop-code', 'title': 'Real-World Projects', 'description': 'Build 10+ real-world projects including e-commerce, social media, and task management apps.'},
+                    {'icon': 'headset', 'title': '24x7 Support', 'description': 'Learning support from mentors and community of peers to resolve doubts instantly.'}
+                ]),
+                certification=json.dumps({'title': 'Full Stack Web Developer Certificate', 'faqs': [
+                    {'title': 'Certificate', 'text': 'Receive a professional Full Stack Developer certificate upon course completion.'},
+                    {'title': 'Portfolio', 'text': 'Build a portfolio of 10+ deployed projects that you can showcase to employers.'},
+                    {'title': 'Interview Prep', 'text': 'Get interview preparation with mock interviews, resume building, and soft skills training.'},
+                    {'title': 'Hiring Partners', 'text': 'Access to our network of 150+ hiring partners including Amazon, Flipkart, Zomato, and Swiggy.'}
+                ]})
             ),
             Course(
                 title='Digital Marketing',
@@ -1797,7 +2072,68 @@ def create_sample_courses():
                 instructor_experience='11+ years',
                 curriculum='SEO & Content Marketing, Google Ads & PPC, Social Media Strategy, Analytics & Reporting',
                 is_published=True,
-                sort_order=5
+                sort_order=5,
+                tagline='Master Digital Marketing — SEO, Google Ads, Social Media & Analytics',
+                hero_image='https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                overview='The Digital Marketing course is a comprehensive program that teaches you to reach and engage audiences online. You will master SEO, Google Ads, social media marketing, content strategy, and analytics. The course includes $100 Google Ad credits for hands-on practice and prepares you for Google certification exams.',
+                key_benefits='Learn SEO — on-page, off-page, and technical SEO\nMaster Google Ads PPC campaigns with real budget\nSocial media marketing across Instagram, LinkedIn, Facebook\nContent strategy and marketing automation\nGoogle Analytics 4 and data-driven decisions\n$100 Google Ad credits included',
+                detail_stats=json.dumps([{'number': '18,000+', 'label': 'Learners'}, {'number': '4.7', 'label': 'Rating'}, {'number': '80+', 'label': 'Hours Content'}, {'number': '6', 'label': 'Projects'}]),
+                topic_wise_content=json.dumps([
+                    {'heading': 'SEO & Content Marketing', 'items': [
+                        {'title': 'On-Page SEO', 'description': 'Optimize website content for search engines', 'subtopics': ['Keyword Research', 'Meta Tags', 'Content Optimization', 'Internal Linking']},
+                        {'title': 'Off-Page SEO', 'description': 'Build authority and backlinks for better rankings', 'subtopics': ['Link Building', 'Guest Posting', 'Social Signals', 'Local SEO']}
+                    ]},
+                    {'heading': 'Google Ads & PPC', 'items': [
+                        {'title': 'Search Campaigns', 'description': 'Create and manage Google Search ad campaigns', 'subtopics': ['Keyword Match Types', 'Ad Copywriting', 'Bidding Strategies', 'Quality Score']},
+                        {'title': 'Display & Video Ads', 'description': 'Run visual ad campaigns across Google network', 'subtopics': ['Display Targeting', 'Banner Design', 'YouTube Ads', 'Remarketing']}
+                    ]},
+                    {'heading': 'Social Media & Analytics', 'items': [
+                        {'title': 'Social Media Strategy', 'description': 'Build brand presence on Instagram, LinkedIn, Facebook', 'subtopics': ['Content Calendar', 'Influencer Marketing', 'Paid Social Ads', 'Community Management']},
+                        {'title': 'Analytics & Reporting', 'description': 'Track, measure, and optimize marketing performance', 'subtopics': ['Google Analytics 4', 'Conversion Tracking', 'A/B Testing', 'ROI Calculation']}
+                    ]}
+                ]),
+                learning_path=json.dumps([
+                    {'step': 1, 'title': 'Digital Marketing Foundations', 'description': 'Understand the digital marketing landscape, consumer behavior, and channel overview.'},
+                    {'step': 2, 'title': 'SEO & Content', 'description': 'Master search engine optimization and create content that ranks.'},
+                    {'step': 3, 'title': 'Google Ads & PPC', 'description': 'Run profitable paid campaigns on Google and other platforms.'},
+                    {'step': 4, 'title': 'Social Media Marketing', 'description': 'Build brand presence and run paid social campaigns.'},
+                    {'step': 5, 'title': 'Analytics & Strategy', 'description': 'Track performance, optimize campaigns, and build marketing strategies.'}
+                ]),
+                technologies_list='Google Ads, Google Analytics, Facebook Ads Manager, Instagram, LinkedIn, HubSpot, Mailchimp, Semrush',
+                faq=json.dumps([
+                    {'question': 'Do I need any prior experience?', 'answer': 'No, this course starts from basics and is perfect for beginners.'},
+                    {'question': 'Are Google Ads credits included?', 'answer': 'Yes, you get $100 Google Ad credits to run real campaigns during the course.'},
+                    {'question': 'What jobs can I get after this course?', 'answer': 'You can become a Digital Marketing Specialist, SEO Analyst, PPC Manager, or Social Media Manager.'}
+                ]),
+                eligibility='This course is ideal for:\n\n- Business owners wanting to market online\n- Students and graduates starting their career\n- Marketing professionals upgrading their skills\n- Anyone interested in the digital marketing field',
+                projects_list=json.dumps([
+                    {'title': 'SEO Audit & Strategy', 'description': 'Conduct a complete SEO audit of a website and create a 6-month SEO strategy.'},
+                    {'title': 'Google Ads Campaign', 'description': 'Create and manage a real Google Ads campaign with $100 credits and analyze results.'},
+                    {'title': 'Social Media Campaign', 'description': 'Develop and execute a complete social media marketing campaign for a brand.'}
+                ]),
+                benefits=json.dumps([
+                    {'icon': 'chart-line', 'title': 'High Demand', 'description': 'Every business needs digital marketing. Demand for digital marketers is growing 25%+ annually.'},
+                    {'icon': 'dollar-sign', 'title': 'High Salaries', 'description': 'Digital Marketing Managers earn $60K-$120K/year. High demand across all industries.'},
+                    {'icon': 'briefcase', 'title': 'Flexible Careers', 'description': 'Work as freelancer, in-house marketer, or agency. Multiple career paths available.'}
+                ]),
+                advisor=json.dumps({'name': 'Sneha Patel', 'role': 'CMO | Ex-HubSpot | Google Certified Trainer', 'bio': 'Sneha has 11+ years in digital marketing, having led marketing at HubSpot India and now training the next generation of marketers.', 'image': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}),
+                reviews_list=json.dumps([
+                    {'name': 'Ravi Shankar', 'role': 'Digital Marketing Manager at OYO', 'text': 'The Google Ads section is excellent. Started my own agency after completing this course.'},
+                    {'name': 'Ananya Gupta', 'role': 'SEO Specialist at PolicyBazaar', 'text': 'The SEO training helped me get promoted to SEO Lead. Best course for digital marketing.'},
+                    {'name': 'Pranav Joshi', 'role': 'Social Media Manager at BookMyShow', 'text': 'Got hired as Social Media Manager immediately after course completion. Highly recommended.'}
+                ]),
+                why_join=json.dumps([
+                    {'icon': 'rocket', 'title': 'Career Growth', 'description': 'Cutting-edge curriculum designed with industry experts to develop job-ready digital marketing skills.'},
+                    {'icon': 'chalkboard-teacher', 'title': 'Expert Trainers', 'description': 'Learn from marketing leaders who have worked at HubSpot, Google, and top brands.'},
+                    {'icon': 'laptop-code', 'title': 'Real-World Projects', 'description': 'Run real campaigns with $100 Google Ad credits and build your portfolio.'},
+                    {'icon': 'headset', 'title': '24x7 Support', 'description': 'Learning support from mentors and community of peers to resolve doubts instantly.'}
+                ]),
+                certification=json.dumps({'title': 'Google Digital Marketing Certification', 'faqs': [
+                    {'title': 'Certifications Included', 'text': 'Google Ads Certification, Google Analytics Certification, and Course Completion Certificate.'},
+                    {'title': 'Hands-on Practice', 'text': 'Run real campaigns with $100 Google Ad credits included in the course.'},
+                    {'title': 'Career Support', 'text': 'Get resume building, interview prep, and access to our hiring partner network.'},
+                    {'title': 'Validity', 'text': 'Google certifications are valid for 1 year. We provide renewal support.'}
+                ]})
             ),
             Course(
                 title='Business Analytics',
@@ -1821,7 +2157,68 @@ def create_sample_courses():
                 instructor_experience='15+ years',
                 curriculum='Excel Advanced, SQL for Analytics, Tableau & Power BI, Statistical Modeling',
                 is_published=True,
-                sort_order=6
+                sort_order=6,
+                tagline='Master Business Analytics — Excel, SQL, Tableau, Power BI & Statistics',
+                hero_image='https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                overview='The Business Analytics course teaches you to transform raw data into actionable business insights. You will master Excel advanced functions, SQL for data analysis, Tableau and Power BI for visualization, and statistical analysis techniques. The course includes real business datasets from companies to practice on.',
+                key_benefits='Master Excel — pivot tables, VLOOKUP, macros, Power Query\nLearn SQL for data extraction and manipulation\nBuild interactive dashboards with Tableau and Power BI\nStatistical analysis and predictive modeling\nWork on real business datasets from top companies\nTableau Desktop Specialist certification prep',
+                detail_stats=json.dumps([{'number': '8,500+', 'label': 'Learners'}, {'number': '4.6', 'label': 'Rating'}, {'number': '90+', 'label': 'Hours Content'}, {'number': '8', 'label': 'Projects'}]),
+                topic_wise_content=json.dumps([
+                    {'heading': 'Excel & Data Management', 'items': [
+                        {'title': 'Advanced Excel', 'description': 'Master Excel for business analytics', 'subtopics': ['Pivot Tables', 'VLOOKUP & INDEX-MATCH', 'Power Query', 'Excel Macros']},
+                        {'title': 'Data Preparation', 'description': 'Clean, transform, and prepare data for analysis', 'subtopics': ['Data Cleaning', 'Power Pivot', 'DAX Functions', 'Data Modeling']}
+                    ]},
+                    {'heading': 'SQL & Database Analytics', 'items': [
+                        {'title': 'SQL Fundamentals', 'description': 'Query and manipulate databases with SQL', 'subtopics': ['SELECT & Filters', 'Joins & Unions', 'Aggregations', 'Subqueries']},
+                        {'title': 'Advanced SQL', 'description': 'Complex queries and performance optimization', 'subtopics': ['Window Functions', 'CTEs', 'Query Optimization', 'Database Design']}
+                    ]},
+                    {'heading': 'Visualization & Reporting', 'items': [
+                        {'title': 'Tableau Desktop', 'description': 'Build interactive dashboards with Tableau', 'subtopics': ['Chart Types', 'Calculated Fields', 'Dashboard Actions', 'Storytelling']},
+                        {'title': 'Power BI', 'description': 'Create business reports with Microsoft Power BI', 'subtopics': ['Data Modeling', 'DAX Formulas', 'Power Query', 'Publishing & Sharing']}
+                    ]}
+                ]),
+                learning_path=json.dumps([
+                    {'step': 1, 'title': 'Excel Mastery', 'description': 'Master advanced Excel functions — pivot tables, VLOOKUP, macros, and Power Query.'},
+                    {'step': 2, 'title': 'SQL for Analytics', 'description': 'Learn to query databases, extract data, and perform complex analyses.'},
+                    {'step': 3, 'title': 'Tableau Visualization', 'description': 'Build interactive dashboards and data stories with Tableau.'},
+                    {'step': 4, 'title': 'Power BI & Reporting', 'description': 'Create professional business reports with Microsoft Power BI.'},
+                    {'step': 5, 'title': 'Real Projects', 'description': 'Work on real business datasets and build a portfolio of analytics projects.'}
+                ]),
+                technologies_list='Excel, SQL, Tableau, Power BI, Python, Jupyter, Google Sheets, BigQuery',
+                faq=json.dumps([
+                    {'question': 'Do I need a math background?', 'answer': 'Basic math knowledge is sufficient. We cover statistics as part of the course.'},
+                    {'question': 'What tools will I learn?', 'answer': 'You will master Excel, SQL, Tableau, and Power BI — the most in-demand analytics tools.'},
+                    {'question': 'What jobs can I get?', 'answer': 'You can become a Business Analyst, Data Analyst, BI Developer, or Analytics Manager.'}
+                ]),
+                eligibility='This course is ideal for:\n\n- Professionals looking to add analytics skills\n- Graduates from any background wanting data careers\n- Business managers making data-driven decisions\n- Anyone interested in the growing field of analytics',
+                projects_list=json.dumps([
+                    {'title': 'Sales Analytics Dashboard', 'description': 'Build an interactive Tableau dashboard analyzing sales data from a retail company.'},
+                    {'title': 'Customer Churn Analysis', 'description': 'Perform SQL analysis to identify customer churn patterns and build a prediction model.'},
+                    {'title': 'Financial Reporting with Power BI', 'description': 'Create a comprehensive financial report with Power BI including KPIs and trends.'}
+                ]),
+                benefits=json.dumps([
+                    {'icon': 'chart-bar', 'title': 'High Demand', 'description': 'Business Analytics is among the fastest-growing career fields with 25%+ annual growth.'},
+                    {'icon': 'dollar-sign', 'title': 'High Salaries', 'description': 'Business Analysts earn $70K-$130K/year. High demand across all industries.'},
+                    {'icon': 'briefcase', 'title': 'Career Growth', 'description': 'Clear path from Analyst to Senior Analyst to Analytics Manager roles.'}
+                ]),
+                advisor=json.dumps({'name': 'Dr. Sanjay Mehta', 'role': 'Analytics Lead | Ex-Deloitte | ISB Hyderabad', 'bio': 'Dr. Mehta has 15+ years in business analytics, having led analytics teams at Deloitte and ISB Hyderabad. He has trained 5000+ professionals.', 'image': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}),
+                reviews_list=json.dumps([
+                    {'name': 'Nisha Agarwal', 'role': 'Business Analyst at HCL', 'text': 'The Tableau section is fantastic. Built my portfolio and got hired within 2 months.'},
+                    {'name': 'Vikram Shah', 'role': 'Data Analyst at Accenture', 'text': 'The SQL section is very thorough. Cleared my Tableau Desktop Specialist exam easily.'},
+                    {'name': 'Aditi Sharma', 'role': 'BI Developer at Cognizant', 'text': 'Best business analytics course. The Power BI projects were exactly what employers wanted.'}
+                ]),
+                why_join=json.dumps([
+                    {'icon': 'rocket', 'title': 'Career Growth', 'description': 'Cutting-edge curriculum designed with industry experts to develop job-ready analytics skills.'},
+                    {'icon': 'chalkboard-teacher', 'title': 'Expert Trainers', 'description': 'Learn from analytics professionals who have worked at Deloitte, BCG, and top consulting firms.'},
+                    {'icon': 'laptop-code', 'title': 'Real-World Projects', 'description': 'Work on real business datasets and build a portfolio of analytics dashboards and reports.'},
+                    {'icon': 'headset', 'title': '24x7 Support', 'description': 'Learning support from mentors and community of peers to resolve doubts instantly.'}
+                ]),
+                certification=json.dumps({'title': 'Business Analytics Professional Certificate', 'faqs': [
+                    {'title': 'Certifications Included', 'text': 'Course completion certificate and Tableau Desktop Specialist exam voucher included.'},
+                    {'title': 'Portfolio', 'text': 'Build a portfolio of 8 analytics projects including dashboards, SQL reports, and Excel models.'},
+                    {'title': 'Career Support', 'text': 'Resume building, interview prep, and access to our network of analytics hiring partners.'},
+                    {'title': 'Exam Prep', 'text': 'Tableau Desktop Specialist certification preparation with practice tests included.'}
+                ]})
             ),
             Course(
                 title='UI/UX Design',
@@ -1845,7 +2242,68 @@ def create_sample_courses():
                 instructor_experience='9+ years',
                 curriculum='Design Thinking, Figma & Prototyping, User Research, Design Systems',
                 is_published=True,
-                sort_order=7
+                sort_order=7,
+                tagline='Become a UI/UX Designer — Figma, Prototyping, User Research & Design Systems',
+                hero_image='https://images.unsplash.com/photo-1626785774573-4b799315345d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                overview='The UI/UX Design course teaches you to create beautiful, user-centered digital products. You will master Figma for design and prototyping, learn design thinking methodology, conduct user research, and build design systems. The course includes 10+ design projects and real client work for your portfolio.',
+                key_benefits='Master Figma — design, prototype, and collaborate\nLearn design thinking and user-centered design\nConduct user interviews and usability testing\nBuild 10+ piece professional design portfolio\nReal client projects and design sprints\nUX design certification upon completion',
+                detail_stats=json.dumps([{'number': '6,200+', 'label': 'Learners'}, {'number': '4.8', 'label': 'Rating'}, {'number': '70+', 'label': 'Hours Content'}, {'number': '10', 'label': 'Projects'}]),
+                topic_wise_content=json.dumps([
+                    {'heading': 'Design Fundamentals', 'items': [
+                        {'title': 'Design Thinking', 'description': 'Learn the human-centered design process', 'subtopics': ['Empathy Mapping', 'Personas', 'User Journeys', 'Wireframing']},
+                        {'title': 'Visual Design', 'description': 'Master color, typography, and layout principles', 'subtopics': ['Color Theory', 'Typography Basics', 'Grid Systems', 'Visual Hierarchy']}
+                    ]},
+                    {'heading': 'Figma & Prototyping', 'items': [
+                        {'title': 'Figma Mastery', 'description': 'Master Figma for UI design and prototyping', 'subtopics': ['Components', 'Auto Layout', 'Prototyping', 'Design Systems']},
+                        {'title': 'Interactive Prototypes', 'description': 'Create high-fidelity interactive prototypes', 'subtopics': ['Micro-interactions', 'Smart Animate', 'Conditional Flows', 'Developer handoff']}
+                    ]},
+                    {'heading': 'User Research & Testing', 'items': [
+                        {'title': 'User Research Methods', 'description': 'Conduct user research to inform design decisions', 'subtopics': ['User Interviews', 'Surveys', 'Card Sorting', 'Heuristic Evaluation']},
+                        {'title': 'Usability Testing', 'description': 'Test designs with real users and iterate', 'subtopics': ['Test Planning', 'Moderated Testing', 'Unmoderated Testing', 'Insight Analysis']}
+                    ]}
+                ]),
+                learning_path=json.dumps([
+                    {'step': 1, 'title': 'Design Foundations', 'description': 'Learn design thinking, visual design principles, and the design process.'},
+                    {'step': 2, 'title': 'Figma Mastery', 'description': 'Master Figma for UI design, components, auto layout, and prototyping.'},
+                    {'step': 3, 'title': 'User Research', 'description': 'Conduct user interviews, surveys, and usability tests to inform your designs.'},
+                    {'step': 4, 'title': 'Design Systems', 'description': 'Build scalable design systems with components, tokens, and documentation.'},
+                    {'step': 5, 'title': 'Portfolio Projects', 'description': 'Complete 10+ projects and real client work for your professional portfolio.'}
+                ]),
+                technologies_list='Figma, Sketch, Adobe XD, Principle, Maze, Hotjar, Notion, Storybook',
+                faq=json.dumps([
+                    {'question': 'Do I need to know how to code?', 'answer': 'No, UI/UX design does not require coding. You will focus on design tools like Figma.'},
+                    {'question': 'What will my portfolio include?', 'answer': 'You will create 10+ design projects including mobile app, website, and dashboard designs.'},
+                    {'question': 'What jobs can I get after this course?', 'answer': 'You can become a UI Designer, UX Designer, Product Designer, or UX Researcher.'}
+                ]),
+                eligibility='This course is ideal for:\n\n- Creative individuals wanting to design digital products\n- Anyone interested in the growing field of UX design\n- Graphic designers transitioning to digital product design\n- Product managers wanting to improve their design skills',
+                projects_list=json.dumps([
+                    {'title': 'Mobile App Redesign', 'description': 'Redesign a popular mobile app with improved UX and modern UI following design thinking process.'},
+                    {'title': 'E-Commerce Website Design', 'description': 'Design a complete e-commerce website including product pages, cart, checkout, and account flows.'},
+                    {'title': 'Design System Creation', 'description': 'Build a comprehensive design system with components, tokens, and documentation in Figma.'}
+                ]),
+                benefits=json.dumps([
+                    {'icon': 'paint-brush', 'title': 'High Demand', 'description': 'Every product needs great design. UX designer roles are growing 30%+ annually.'},
+                    {'icon': 'dollar-sign', 'title': 'High Salaries', 'description': 'UI/UX Designers earn $70K-$140K/year. High demand across tech and product companies.'},
+                    {'icon': 'briefcase', 'title': 'Creative Careers', 'description': 'Design careers offer creative freedom with competitive salaries and growth opportunities.'}
+                ]),
+                advisor=json.dumps({'name': 'Anita Desai', 'role': 'Design Lead | Ex-Swiggy | NID Ahmedabad', 'bio': 'Anita has 9+ years in product design, having led design at Swiggy and multiple startups. She is an NID Ahmedabad graduate.', 'image': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}),
+                reviews_list=json.dumps([
+                    {'name': 'Rohan Das', 'role': 'UI Designer at Razorpay', 'text': 'The Figma course is incredibly detailed. Built my portfolio and got hired within 6 weeks.'},
+                    {'name': 'Meera Kapoor', 'role': 'Product Designer at CRED', 'text': 'Best design course I have taken. The design thinking section changed how I approach problems.'},
+                    {'name': 'Amit Shah', 'role': 'UX Designer at Myntra', 'text': 'Got placed as a Product Designer after completing the course. The real client projects were amazing.'}
+                ]),
+                why_join=json.dumps([
+                    {'icon': 'rocket', 'title': 'Career Growth', 'description': 'Cutting-edge curriculum designed with industry experts to develop job-ready design skills.'},
+                    {'icon': 'chalkboard-teacher', 'title': 'Expert Trainers', 'description': 'Learn from designers who have worked at Swiggy, Myntra, CRED, and top product companies.'},
+                    {'icon': 'laptop-code', 'title': 'Real-World Projects', 'description': 'Build a 10+ piece portfolio with real client projects and design sprints.'},
+                    {'icon': 'headset', 'title': '24x7 Support', 'description': 'Learning support from mentors and community of peers to resolve doubts instantly.'}
+                ]),
+                certification=json.dumps({'title': 'UI/UX Design Professional Certificate', 'faqs': [
+                    {'title': 'Portfolio', 'text': 'Build a 10+ piece portfolio of real design projects including mobile apps, websites, and dashboards.'},
+                    {'title': 'Certifications', 'text': 'Course completion certificate and Google UX Design Certificate exam prep included.'},
+                    {'title': 'Career Support', 'text': 'Resume building, portfolio reviews, and access to our network of design hiring partners.'},
+                    {'title': 'Tools Covered', 'text': 'Master Figma, the industry-standard design tool, along with prototyping and testing tools.'}
+                ]})
             ),
             Course(
                 title='Mobile App Development',
@@ -1869,13 +2327,73 @@ def create_sample_courses():
                 instructor_experience='10+ years',
                 curriculum='React Native Basics, Flutter Development, Firebase & APIs, App Store Deployment',
                 is_published=True,
-                sort_order=8
+                sort_order=8,
+                tagline='Build iOS & Android Apps — React Native, Flutter, Firebase & Publish',
+                hero_image='https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                overview='The Mobile App Development course teaches you to build beautiful, performant iOS and Android apps. You will master React Native and Flutter, integrate with Firebase backend, implement real-time features, and publish apps to App Store and Google Play. The course includes 8 real-world projects.',
+                key_benefits='Build cross-platform apps with React Native and Flutter\nMaster Firebase — auth, database, storage, and cloud functions\nReal-time features with WebSockets and push notifications\nPublish apps to App Store and Google Play\nState management with Redux and Provider\nApp Store optimization and ASO techniques',
+                detail_stats=json.dumps([{'number': '5,400+', 'label': 'Learners'}, {'number': '4.7', 'label': 'Rating'}, {'number': '110+', 'label': 'Hours Content'}, {'number': '8', 'label': 'Projects'}]),
+                topic_wise_content=json.dumps([
+                    {'heading': 'React Native Development', 'items': [
+                        {'title': 'React Native Fundamentals', 'description': 'Build cross-platform mobile apps with React Native', 'subtopics': ['Components', 'Props & State', 'Navigation', 'Lists & FlatList']},
+                        {'title': 'React Native Advanced', 'description': 'Master advanced patterns and performance optimization', 'subtopics': ['Redux Toolkit', 'Context API', 'Performance', 'Native Modules']}
+                    ]},
+                    {'heading': 'Flutter & Backend', 'items': [
+                        {'title': 'Flutter Development', 'description': 'Build native-quality apps with Flutter and Dart', 'subtopics': ['Widgets', 'State Management', 'Navigation', 'Platform Channels']},
+                        {'title': 'Firebase Integration', 'description': 'Backend services for mobile apps', 'subtopics': ['Firebase Auth', 'Firestore', 'Cloud Functions', 'Push Notifications']}
+                    ]},
+                    {'heading': 'Deployment & Publishing', 'items': [
+                        {'title': 'App Store Publishing', 'description': 'Publish apps to iOS App Store and Google Play', 'subtopics': ['Apple Developer', 'Play Console', 'App Signing', 'Testing']},
+                        {'title': 'App Store Optimization', 'description': 'Optimize app visibility and downloads', 'subtopics': ['ASO Basics', 'Keyword Research', 'Screenshots', 'Reviews Management']}
+                    ]}
+                ]),
+                learning_path=json.dumps([
+                    {'step': 1, 'title': 'React Native Basics', 'description': 'Build your first cross-platform mobile app with React Native.'},
+                    {'step': 2, 'title': 'State Management', 'description': 'Master Redux Toolkit and Context API for app state management.'},
+                    {'step': 3, 'title': 'Flutter Development', 'description': 'Learn Flutter and Dart for building native-quality apps.'},
+                    {'step': 4, 'title': 'Firebase Backend', 'description': 'Integrate authentication, database, storage, and cloud functions.'},
+                    {'step': 5, 'title': 'Publish to Stores', 'description': 'Deploy your app to App Store and Google Play and optimize for downloads.'}
+                ]),
+                technologies_list='React Native, Flutter, Dart, Firebase, Redux, JavaScript, TypeScript, Xcode, Android Studio',
+                faq=json.dumps([
+                    {'question': 'Do I need a Mac to build iOS apps?', 'answer': 'Yes, iOS development requires a Mac. You can build Android on any OS.'},
+                    {'question': 'What will I build?', 'answer': 'You will build 8 apps including a social media app, e-commerce app, and real-time chat app.'},
+                    {'question': 'What jobs can I get?', 'answer': 'You can become a Mobile Developer, React Native Developer, Flutter Developer, or iOS/Android Developer.'}
+                ]),
+                eligibility='This course is ideal for:\n\n- Developers wanting to build mobile apps\n- Web developers expanding to mobile\n- Students and graduates entering mobile development\n- Anyone wanting to publish their own app',
+                projects_list=json.dumps([
+                    {'title': 'Social Media App', 'description': 'Build a complete social media app with posts, likes, comments, stories, and real-time chat.'},
+                    {'title': 'E-Commerce Mobile App', 'description': 'Create an e-commerce app with product catalog, cart, payments, and order tracking.'},
+                    {'title': 'Fitness Tracker App', 'description': 'Build a fitness app with workout tracking, progress charts, and Firebase backend.'}
+                ]),
+                benefits=json.dumps([
+                    {'icon': 'mobile-alt', 'title': 'High Demand', 'description': 'Mobile development is one of the most in-demand skills. 70%+ of web traffic comes from mobile.'},
+                    {'icon': 'dollar-sign', 'title': 'High Salaries', 'description': 'Mobile Developers earn $80K-$150K/year. Among the highest-paying developer roles.'},
+                    {'icon': 'briefcase', 'title': 'Build Your App', 'description': 'Not just jobs — learn to build and publish your own mobile app to the App Store.'}
+                ]),
+                advisor=json.dumps({'name': 'Karan Singh', 'role': 'Mobile Lead | Ex-Paytm | BITS Pilani', 'bio': 'Karan has 10+ years in mobile development, having led mobile teams at Paytm and multiple startups. He is a BITS Pilani graduate.', 'image': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}),
+                reviews_list=json.dumps([
+                    {'name': 'Rajiv Nair', 'role': 'React Native Developer at OYO', 'text': 'The React Native section is fantastic. Built and published my own app within 3 months.'},
+                    {'name': 'Deepika Sharma', 'role': 'Flutter Developer at PhonePe', 'text': 'Best mobile development course. The Firebase integration section was exactly what I needed.'},
+                    {'name': 'Anil Kumar', 'role': 'Mobile Developer at Cred', 'text': 'Got hired as a Mobile Developer immediately after the course. The projects were industry-relevant.'}
+                ]),
+                why_join=json.dumps([
+                    {'icon': 'rocket', 'title': 'Career Growth', 'description': 'Cutting-edge curriculum designed with industry experts to develop job-ready mobile skills.'},
+                    {'icon': 'chalkboard-teacher', 'title': 'Expert Trainers', 'description': 'Learn from mobile developers who have worked at Paytm, OYO, PhonePe, and top startups.'},
+                    {'icon': 'laptop-code', 'title': 'Real-World Projects', 'description': 'Build 8 real-world mobile apps including social media, e-commerce, and fitness apps.'},
+                    {'icon': 'headset', 'title': '24x7 Support', 'description': 'Learning support from mentors and community of peers to resolve doubts instantly.'}
+                ]),
+                certification=json.dumps({'title': 'Mobile App Development Professional Certificate', 'faqs': [
+                    {'title': 'Platforms Covered', 'text': 'Build apps for both iOS and Android using React Native and Flutter.'},
+                    {'title': 'Publishing', 'text': 'Publish your apps to App Store and Google Play with step-by-step guidance.'},
+                    {'title': 'Portfolio', 'text': 'Build a portfolio of 8 published mobile apps that you can showcase to employers.'},
+                    {'title': 'Career Support', 'text': 'Resume building, interview prep, and access to our network of mobile hiring partners.'}
+                ]})
             )
         ]
         for course in courses:
             db.session.add(course)
-        db.session.commit()
-        print('Sample courses created!')
+print('Sample courses created!')
 
 def create_sample_testimonials():
     if Testimonial.query.count() == 0:
@@ -1977,6 +2495,13 @@ def migrate_db():
             'faq': "ALTER TABLE course ADD COLUMN faq TEXT DEFAULT ''",
             'detail_stats': "ALTER TABLE course ADD COLUMN detail_stats TEXT DEFAULT ''",
             'topic_wise_content': "ALTER TABLE course ADD COLUMN topic_wise_content TEXT DEFAULT ''",
+            'eligibility': "ALTER TABLE course ADD COLUMN eligibility TEXT DEFAULT ''",
+            'projects_list': "ALTER TABLE course ADD COLUMN projects_list TEXT DEFAULT ''",
+            'benefits': "ALTER TABLE course ADD COLUMN benefits TEXT DEFAULT ''",
+            'advisor': "ALTER TABLE course ADD COLUMN advisor TEXT DEFAULT ''",
+            'reviews_list': "ALTER TABLE course ADD COLUMN reviews_list TEXT DEFAULT ''",
+            'why_join': "ALTER TABLE course ADD COLUMN why_join TEXT DEFAULT ''",
+            'certification': "ALTER TABLE course ADD COLUMN certification TEXT DEFAULT ''",
         }
         for col_name, sql in course_new_columns.items():
             if col_name not in course_columns:

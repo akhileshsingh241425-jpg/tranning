@@ -4116,7 +4116,16 @@ section {
 }
 
 .sd-overview-grid {
-  display: contents;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .sd-overview-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .sd-cta-sidebar {

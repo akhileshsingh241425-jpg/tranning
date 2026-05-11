@@ -919,6 +919,62 @@ def search_courses():
     courses = courses_query.order_by(Course.sort_order, Course.created_at.desc()).all()
     return jsonify([course.to_dict() for course in courses])
 
+@app.route('/api/courses/sync', methods=['POST'])
+@login_required
+def sync_course():
+    """Sync course from external source (requires admin login)"""
+    data = request.json
+    if not data or not data.get('slug'):
+        return jsonify({'error': 'Missing course slug'}), 400
+    
+    course = Course.query.filter_by(slug=data['slug']).first()
+    if not course:
+        course = Course(slug=data['slug'])
+        db.session.add(course)
+    
+    course.title = data.get('title', course.title or '')
+    course.description = data.get('description', course.description or '')
+    course.image = data.get('image', course.image or '')
+    course.icon = data.get('icon', course.icon or 'FaBookOpen')
+    course.price = data.get('price', course.price or 0)
+    course.original_price = data.get('originalPrice', course.original_price or 0)
+    course.rating = data.get('rating', course.rating or 4.5)
+    course.reviews = data.get('reviews', course.reviews or 0)
+    course.learners = data.get('learners', course.learners or '0')
+    course.duration = data.get('duration', course.duration or '')
+    course.level = data.get('level', course.level or 'Beginner')
+    course.tag = data.get('tag', course.tag or '')
+    course.modules = data.get('modules', course.modules or 0)
+    course.projects = data.get('projects', course.projects or 0)
+    course.instructor_name = data.get('instructor', {}).get('name', course.instructor_name or '')
+    course.instructor_role = data.get('instructor', {}).get('role', course.instructor_role or '')
+    course.instructor_image = data.get('instructor', {}).get('image', course.instructor_image or '')
+    course.instructor_experience = data.get('instructor', {}).get('experience', course.instructor_experience or '')
+    course.curriculum = ','.join(data.get('curriculum', [])) if data.get('curriculum') else course.curriculum or ''
+    course.is_published = data.get('is_published', course.is_published)
+    course.sort_order = data.get('sort_order', course.sort_order or 0)
+    
+    course.tagline = data.get('tagline', course.tagline or '')
+    course.hero_image = data.get('heroImage', course.hero_image or '')
+    course.overview = data.get('overview', course.overview or '')
+    course.key_benefits = '\n'.join(data.get('keyBenefits', [])) if data.get('keyBenefits') else course.key_benefits or ''
+    course.modules_detail = json.dumps(data.get('modulesDetail', []))
+    course.learning_path = json.dumps(data.get('learningPath', []))
+    course.technologies_list = ','.join(data.get('technologies', [])) if data.get('technologies') else course.technologies_list or ''
+    course.faq = json.dumps(data.get('faq', []))
+    course.detail_stats = json.dumps(data.get('detailStats', []))
+    course.topic_wise_content = json.dumps(data.get('topicWiseContent', []))
+    course.eligibility = data.get('eligibility', course.eligibility or '')
+    course.projects_list = json.dumps(data.get('projectsList', []))
+    course.benefits = json.dumps(data.get('benefits', []))
+    course.advisor = json.dumps(data.get('advisor', {}))
+    course.reviews_list = json.dumps(data.get('reviewsList', []))
+    course.why_join = json.dumps(data.get('whyJoin', []))
+    course.certification = json.dumps(data.get('certification', {}))
+    
+    db.session.commit()
+    return jsonify({'success': True, 'course_id': course.id, 'title': course.title})
+
 # ==================== TESTIMONIAL API ROUTES ====================
 
 @app.route('/api/testimonials', methods=['GET'])

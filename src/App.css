@@ -4109,41 +4109,57 @@ section {
 }
 
 .sd-overview-content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  align-items: flex-start;
-}
-
-.sd-overview-content > *:first-child {
-  flex: 1;
-  min-width: 300px;
-}
-
-.sd-overview-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  width: 100%;
-  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+  align-items: stretch;
 }
 
 .sd-benefits {
+  display: flex;
+  flex-direction: column;
+}
+
+.sd-benefits h3 {
+  margin-bottom: 1rem;
+}
+
+.sd-benefits-list {
   flex: 1;
-  min-width: 300px;
 }
 
 .sd-cta-sidebar {
-  width: 320px;
-  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sd-cta-sidebar .sd-cta-box {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sd-cta-sidebar .sd-cta-list {
+  flex: 1;
 }
 
 @media (max-width: 992px) {
-  .sd-overview-grid {
+  .sd-overview-content {
+    grid-template-columns: 1fr;
+  }
+  .sd-overview-content {
+    display: flex;
     flex-direction: column;
   }
   .sd-cta-sidebar {
     width: 100%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .sd-overview-content {
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
   }
 }
 

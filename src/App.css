@@ -4108,53 +4108,68 @@ section {
   background: linear-gradient(90deg, transparent, rgba(0, 102, 204, 0.1), transparent);
 }
 
-.sd-overview-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.sd-overview-text {
-  margin-bottom: 1rem;
-}
-
 .sd-overview-grid {
-  display: grid !important;
-  grid-template-columns: 1fr 320px !important;
+  display: flex !important;
+  align-items: stretch !important;
   gap: 1.5rem !important;
-  align-items: start !important;
 }
 
 .sd-benefits {
-  padding-right: 1rem;
+  flex: 1;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .sd-benefits h3 {
   margin-bottom: 0.75rem;
   font-size: 1.1rem;
+  color: var(--text-primary);
 }
 
 .sd-benefits-list {
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .sd-benefits-list li {
-  padding: 0.5rem 0;
+  padding: 0.4rem 0;
   font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .sd-cta-sidebar {
-  padding: 0;
+  width: 320px;
+  flex-shrink: 0;
 }
 
 .sd-cta-sidebar .sd-cta-box {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sd-cta-sidebar .sd-cta-list {
+  flex: 1;
+  margin: 0.5rem 0;
+}
+
+.sd-cta-sidebar .sd-cta-price {
+  margin-top: auto;
 }
 
 @media (max-width: 992px) {
   .sd-overview-grid {
-    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+  .sd-cta-sidebar {
+    width: 100%;
   }
 }
 

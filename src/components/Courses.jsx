@@ -212,8 +212,12 @@ const Courses = () => {
   ];
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL || ''}/api/courses`)
-      .then(res => res.ok ? res.json() : Promise.reject())
+    const apiUrl = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/api/courses` : '/api/courses';
+    fetch(apiUrl)
+      .then(res => {
+        if (!res.ok) throw new Error('API not available');
+        return res.json();
+      })
       .then(data => {
         if (data && data.length > 0) {
           const mapped = data.map(c => ({
@@ -222,23 +226,24 @@ const Courses = () => {
             description: c.description,
             image: c.image,
             slug: c.slug,
-            price: `$${c.price}`,
-            originalPrice: `$${c.originalPrice}`,
-            rating: c.rating,
-            reviews: c.reviews,
-            learners: c.learners,
-            duration: c.duration,
-            level: c.level,
-            tag: c.tag,
-            modules: c.modules,
-            projects: c.projects,
-            instructor: c.instructor,
-            curriculum: c.curriculum
+            price: c.price ? `$${c.price}` : '$0',
+            originalPrice: c.originalPrice ? `$${c.originalPrice}` : '$0',
+            rating: c.rating || 4.5,
+            reviews: c.reviews || 0,
+            learners: c.learners || '0',
+            duration: c.duration || '',
+            level: c.level || 'Beginner',
+            tag: c.tag || '',
+            modules: c.modules || 0,
+            projects: c.projects || 0,
+            instructor: c.instructor || {},
+            curriculum: c.curriculum || []
           }));
           setCourses(mapped);
+          console.log('Loaded', mapped.length, 'courses from API');
         }
       })
-      .catch(() => {});
+      .catch(err => console.log('Using fallback courses, API error:', err.message));
   }, []);
 
   // Filter and search logic

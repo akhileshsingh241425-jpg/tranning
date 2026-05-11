@@ -4109,22 +4109,41 @@ section {
 }
 
 .sd-overview-content {
-  display: grid;
-  grid-template-columns: 1fr 380px;
+  display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
-  align-items: start;
+  align-items: flex-start;
+}
+
+.sd-overview-content > *:first-child {
+  flex: 1;
+  min-width: 300px;
 }
 
 .sd-overview-grid {
-  display: grid;
-  grid-template-columns: 1fr 350px;
+  display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
-  align-items: start;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.sd-benefits {
+  flex: 1;
+  min-width: 300px;
+}
+
+.sd-cta-sidebar {
+  width: 320px;
+  flex-shrink: 0;
 }
 
 @media (max-width: 992px) {
   .sd-overview-grid {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+  .sd-cta-sidebar {
+    width: 100%;
   }
 }
 
@@ -4135,8 +4154,8 @@ section {
 
 .sd-cta-sidebar .sd-cta-box {
   background: var(--bg-primary);
-  border-radius: 16px;
-  padding: 1.5rem;
+  border-radius: 12px;
+  padding: 1rem;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   border: 1px solid var(--border-color);
 }
@@ -4145,31 +4164,31 @@ section {
   display: inline-block;
   background: #22c55e;
   color: white;
-  padding: 0.3rem 0.8rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 20px;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .sd-cta-sidebar .sd-cta-box h3 {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .sd-cta-sidebar .sd-cta-list {
   list-style: none;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .sd-cta-sidebar .sd-cta-list li {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  font-size: 0.8rem;
+  gap: 0.4rem;
+  padding: 0.35rem 0;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   border-bottom: 1px solid var(--border-color);
 }
@@ -4180,24 +4199,24 @@ section {
 
 .sd-cta-sidebar .sd-cta-list li i {
   color: #22c55e;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
 }
 
 .sd-cta-sidebar .sd-cta-price {
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
 }
 
 .sd-cta-sidebar .sd-cur-price {
-  font-size: 1.75rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: var(--text-primary);
 }
 
 .sd-cta-sidebar .sd-old-price {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--text-light);
   text-decoration: line-through;
 }
@@ -4205,21 +4224,21 @@ section {
 .sd-cta-sidebar .sd-discount {
   background: #f59e0b;
   color: var(--text-primary);
-  padding: 0.2rem 0.5rem;
+  padding: 0.15rem 0.4rem;
   border-radius: 4px;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
 }
 
 .sd-cta-sidebar .sd-btn-enroll {
   display: block;
   width: 100%;
-  padding: 0.85rem;
+  padding: 0.7rem;
   background: var(--primary);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
@@ -4234,16 +4253,16 @@ section {
 .sd-btn-download {
   display: block;
   width: 100%;
-  padding: 0.85rem;
+  padding: 0.7rem;
   background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
   color: var(--primary);
   border: 2px solid var(--primary);
-  border-radius: 10px;
-  font-size: 0.95rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   text-align: center;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
   transition: all 0.3s ease;
 }
 

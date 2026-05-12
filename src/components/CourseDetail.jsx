@@ -57,11 +57,22 @@ const CourseDetail = () => {
           faq: (data.faq && data.faq.length > 0) ? data.faq : (localCourse && localCourse.faq) || [],
           stats: (data.detailStats && data.detailStats.length > 0) ? data.detailStats : (localCourse && localCourse.stats) || [],
           topicWiseContent: (data.topicWiseContent && data.topicWiseContent.length > 0) ? data.topicWiseContent : (localCourse && localCourse.topicWiseContent) || [],
-          eligibility: data.eligibility || (localCourse && localCourse.eligibility),
+          eligibility: data.eligibility || data.prerequisites || (localCourse && localCourse.eligibility),
           why_join: data.why_join || (localCourse && localCourse.why_join),
           certification: data.certification || (localCourse && localCourse.certification),
           reviewsList: (data.reviewsList && data.reviewsList.length > 0) ? data.reviewsList : (localCourse && localCourse.reviewsList) || [],
-          projectsList: (data.projectsList && data.projectsList.length > 0) ? data.projectsList : (localCourse && localCourse.projectsList) || []
+          projectsList: (data.projectsList && data.projectsList.length > 0) ? data.projectsList : (localCourse && localCourse.projectsList) || [],
+          toolsCovered: (data.tools_covered && Array.isArray(data.tools_covered)) ? data.tools_covered : (typeof data.tools_covered === 'string' ? data.tools_covered.split(',').map(t => t.trim()).filter(t => t) : []) || (localCourse && localCourse.toolsCovered) || [],
+          skillsCovered: (data.skills_covered && Array.isArray(data.skills_covered)) ? data.skills_covered : (typeof data.skills_covered === 'string' ? data.skills_covered.split(',').map(s => s.trim()).filter(s => s) : []) || (localCourse && localCourse.skillsCovered) || [],
+          targetAudience: data.target_audience || (localCourse && localCourse.targetAudience),
+          trainingSchedule: data.training_schedule || (localCourse && localCourse.trainingSchedule),
+          mode: data.mode || (localCourse && localCourse.mode),
+          language: data.language || (localCourse && localCourse.language) || 'English',
+          emiOptions: data.emi_options || (localCourse && localCourse.emiOptions),
+          discountPercent: data.discount_percent || (localCourse && localCourse.discountPercent),
+          technologies: (data.technologies_list && typeof data.technologies_list === 'string') 
+            ? data.technologies_list.split(',').map(t => t.trim()).filter(t => t)
+            : (data.technologies && data.technologies.length > 0) ? data.technologies : (localCourse && localCourse.technologies) || []
         });
         setLoading(false);
       })
@@ -383,6 +394,46 @@ const CourseDetail = () => {
       </section>
       )}
 
+      {/* 7b. Tools & Technologies (Like Intellipaat) */}
+      {course.toolsCovered && course.toolsCovered.length > 0 && (
+      <section className="sd-tools-section">
+        <div className="sd-container">
+          <div className="sd-section-header">
+            <span className="sd-badge">Tools</span>
+            <h2>Tools & Technologies You'll <strong>Master</strong></h2>
+          </div>
+          <div className="sd-tools-grid">
+            {course.toolsCovered.map((tool, index) => (
+              <div key={index} className="sd-tool-card">
+                <FaCheckCircle />
+                <span>{tool}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* 7c. Skills Covered (if separate from technologies) */}
+      {course.skillsCovered && course.skillsCovered.length > 0 && (
+      <section className="sd-skills-section">
+        <div className="sd-container">
+          <div className="sd-section-header">
+            <span className="sd-badge">Capabilities</span>
+            <h2>What You'll Be <strong>Capable Of</strong></h2>
+          </div>
+          <div className="sd-skills-grid">
+            {course.skillsCovered.map((skill, index) => (
+              <div key={index} className="sd-skill-card">
+                <FaCheckCircle />
+                <span>{skill}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      )}
+
       {/* 8. Why Join */}
       <section className="sd-why-join-demo">
         <div className="sd-container">
@@ -399,7 +450,37 @@ const CourseDetail = () => {
         </div>
       </section>
 
-      {/* 8b. Student Reviews - What Students Say */}
+      {/* 8b. Prerequisites */}
+      {course.eligibility && (
+      <section className="sd-prerequisites">
+        <div className="sd-container">
+          <div className="sd-section-header">
+            <span className="sd-badge">Prerequisites</span>
+            <h2>What You Need to <strong>Know Before</strong></h2>
+          </div>
+          <div className="sd-prereq-content">
+            {renderParagraphs(course.eligibility, 'sd-prereq-text')}
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* 8c. Target Audience */}
+      {course.targetAudience && (
+      <section className="sd-target-audience">
+        <div className="sd-container">
+          <div className="sd-section-header">
+            <span className="sd-badge">Who Should Join</span>
+            <h2>Ideal <strong>Target Audience</strong></h2>
+          </div>
+          <div className="sd-target-content">
+            {renderParagraphs(course.targetAudience, 'sd-target-text')}
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* 8d. Student Reviews - What Students Say */}
       {course.reviewsList && course.reviewsList.length > 0 && (
       <section className="sd-testimonials">
         <div className="sd-container">

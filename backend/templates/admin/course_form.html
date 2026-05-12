@@ -27,40 +27,106 @@
     <main class="main-content">
         <div class="page-header">
             <h1 class="page-title">{% if course %}Edit{% else %}New{% endif %} Course</h1>
-            <a href="{{ url_for('admin_courses') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+            <a href="{{ url_for('admin_courses') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Courses</a>
         </div>
 
         <div class="card">
             <form method="POST" enctype="multipart/form-data">
-                <h3 style="color: var(--accent-color); margin-bottom: 1.5rem;"><i class="fas fa-info-circle"></i> Basic Info</h3>
                 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Course Title</label>
-                        <input type="text" name="title" class="form-control" value="{{ course.title if course else '' }}" placeholder="e.g. Data Science & AI" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Slug (URL)</label>
-                        <input type="text" name="slug" class="form-control" value="{{ course.slug if course else '' }}" placeholder="auto-generated">
-                    </div>
+                <!-- 1. Course Picture -->
+                <h3 style="color: var(--accent-color); margin-bottom: 1.5rem;"><i class="fas fa-image"></i> 1. Course Picture</h3>
+                <div class="form-group">
+                    <label>Course Image URL</label>
+                    <input type="text" name="image" class="form-control" value="{{ course.image if course else '' }}" placeholder="https://example.com/course-image.jpg">
+                    {% if course and course.image %}
+                    <img src="{{ course.image }}" style="max-width: 250px; margin-top: 10px; border-radius: 10px;">
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label>Hero Banner Image URL</label>
+                    <input type="text" name="hero_image" class="form-control" value="{{ course.hero_image if course else '' }}" placeholder="https://example.com/hero-banner.jpg">
                 </div>
 
+                <!-- 2. Course Name & Slug -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-heading"></i> 2. Course Name & URL</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Course Title *</label>
+                        <input type="text" name="title" class="form-control" value="{{ course.title if course else '' }}" placeholder="e.g. CompTIA Security+ Course" required>
+                    </div>
+                    <div class="form-group">
+                        <label>URL Slug</label>
+                        <input type="text" name="slug" class="form-control" value="{{ course.slug if course else '' }}" placeholder="e.g. comptia-security-course">
+                    </div>
+                </div>
                 <div class="form-group">
-                    <label>Description</label>
+                    <label>Tagline / Short Description</label>
+                    <input type="text" name="tagline" class="form-control" value="{{ course.tagline if course else '' }}" placeholder="e.g. Master cybersecurity fundamentals & get certified">
+                </div>
+
+                <!-- 3. Course Description -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-align-left"></i> 3. Course Description</h3>
+                <div class="form-group">
+                    <label>Short Description (for course listing)</label>
                     <textarea name="description" class="form-control" style="min-height: 100px;">{{ course.description if course else '' }}</textarea>
                 </div>
 
+                <!-- 4. Course Features -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-star"></i> 4. Course Features</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Course Image</label>
-                        <input type="text" name="image" class="form-control" value="{{ course.image if course else '' }}" placeholder="https://example.com/image.jpg">
-                        {% if course and course.image %}
-                        <img src="{{ course.image }}" style="max-width: 200px; margin-top: 10px; border-radius: 8px;">
-                        {% endif %}
+                        <label>Duration</label>
+                        <input type="text" name="duration" class="form-control" value="{{ course.duration if course else '' }}" placeholder="e.g. 40 Hours">
+                    </div>
+                    <div class="form-group">
+                        <label>Level</label>
+                        <select name="level" class="form-control">
+                            <option value="Beginner" {{ 'selected' if course and course.level == 'Beginner' }}>Beginner</option>
+                            <option value="Intermediate" {{ 'selected' if course and course.level == 'Intermediate' }}>Intermediate</option>
+                            <option value="Advanced" {{ 'selected' if course and course.level == 'Advanced' }}>Advanced</option>
+                            <option value="Beginner to Advanced" {{ 'selected' if course and course.level == 'Beginner to Advanced' }}>Beginner to Advanced</option>
+                            <option value="Beginner to Intermediate" {{ 'selected' if course and course.level == 'Beginner to Intermediate' }}>Beginner to Intermediate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Modules Count</label>
+                        <input type="number" name="modules" class="form-control" value="{{ course.modules if course else '0' }}" min="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Projects Count</label>
+                        <input type="number" name="projects" class="form-control" value="{{ course.projects if course else '0' }}" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Mode (Online/Live/Classroom)</label>
+                        <input type="text" name="mode" class="form-control" value="{{ course.mode if course else '' }}" placeholder="e.g. Live Online, Self-Paced">
+                    </div>
+                    <div class="form-group">
+                        <label>Language</label>
+                        <input type="text" name="language" class="form-control" value="{{ course.language if course else 'English' }}">
                     </div>
                 </div>
 
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-dollar-sign"></i> Pricing</h3>
+                <!-- 5. Training Schedule -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-calendar-alt"></i> 5. Training Schedule</h3>
+                <div class="form-group">
+                    <label>Schedule Details</label>
+                    <textarea name="training_schedule" class="form-control" style="min-height: 80px;" placeholder="e.g. Weekdays: Mon-Fri (7-10 PM), Weekends: Sat-Sun (10 AM-2 PM)">{{ course.training_schedule if course else '' }}</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="text" name="start_date" class="form-control" value="{{ course.start_date if course else '' }}" placeholder="e.g. Every Monday">
+                    </div>
+                    <div class="form-group">
+                        <label>Next Batch</label>
+                        <input type="text" name="next_batch" class="form-control" value="{{ course.next_batch if course else '' }}" placeholder="e.g. Starting 15th June">
+                    </div>
+                </div>
+
+                <!-- 6. Course Fee -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-dollar-sign"></i> 6. Course Fee</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Sale Price ($)</label>
@@ -70,45 +136,128 @@
                         <label>Original Price ($)</label>
                         <input type="number" name="original_price" class="form-control" value="{{ course.original_price if course else '' }}" min="0">
                     </div>
-                </div>
-
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-cogs"></i> Course Details</h3>
-                <div class="form-row">
                     <div class="form-group">
-                        <label>Duration</label>
-                        <input type="text" name="duration" class="form-control" value="{{ course.duration if course else '' }}" placeholder="e.g. 6 Months">
-                    </div>
-                    <div class="form-group">
-                        <label>Level</label>
-                        <select name="level" class="form-control">
-                            <option value="Beginner" {{ 'selected' if course and course.level == 'Beginner' }}>Beginner</option>
-                            <option value="Intermediate" {{ 'selected' if course and course.level == 'Intermediate' }}>Intermediate</option>
-                            <option value="Advanced" {{ 'selected' if course and course.level == 'Advanced' }}>Advanced</option>
-                            <option value="Beginner to Advanced" {{ 'selected' if course and course.level == 'Beginner to Advanced' }}>Beginner to Advanced</option>
-                        </select>
+                        <label>Discount (%)</label>
+                        <input type="number" name="discount_percent" class="form-control" value="{{ course.discount_percent if course else '' }}" min="0" max="100" placeholder="e.g. 33">
                     </div>
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Modules</label>
-                        <input type="number" name="modules" class="form-control" value="{{ course.modules if course else '0' }}" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Projects</label>
-                        <input type="number" name="projects" class="form-control" value="{{ course.projects if course else '0' }}" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Tag</label>
-                        <select name="tag" class="form-control">
-                            <option value="">— No Tag —</option>
-                            <option value="Bestseller" {{ 'selected' if course and course.tag == 'Bestseller' }}>Bestseller</option>
-                            <option value="Trending" {{ 'selected' if course and course.tag == 'Trending' }}>Trending</option>
-                            <option value="Popular" {{ 'selected' if course and course.tag == 'Popular' }}>Popular</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label>EMI/Installment Options</label>
+                    <input type="text" name="emi_options" class="form-control" value="{{ course.emi_options if course else '' }}" placeholder="e.g. No Cost EMI starting @ $50/month">
                 </div>
 
+                <!-- 7. About Course -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-info-circle"></i> 7. About Course</h3>
+                <div class="form-group">
+                    <label>About This Course (Detailed)</label>
+                    <textarea name="overview" class="form-control" style="min-height: 150px;">{{ course.overview if course else '' }}</textarea>
+                </div>
+
+                <!-- 8. Prerequisite -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-clipboard-check"></i> 8. Prerequisite</h3>
+                <div class="form-group">
+                    <label>Prerequisites (What you need before)</label>
+                    <textarea name="prerequisites" class="form-control" style="min-height: 100px;" placeholder="e.g. Basic computer knowledge, No prior security experience required">{{ course.prerequisites if course else '' }}</textarea>
+                </div>
+
+                <!-- 9. Target Audience -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-users"></i> 9. Target Audience</h3>
+                <div class="form-group">
+                    <label>Who should take this course?</label>
+                    <textarea name="target_audience" class="form-control" style="min-height: 100px;" placeholder="e.g. Beginners, IT Professionals, Career Changers, Security Aspirants">{{ course.target_audience if course else '' }}</textarea>
+                </div>
+
+                <!-- 10. What You'll Learn -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-lightbulb"></i> 10. What You'll Learn (Learning Objectives)</h3>
+                <div class="form-group">
+                    <label>Key Learning Points (one per line)</label>
+                    <textarea name="key_benefits" class="form-control" style="min-height: 150px;" placeholder="Understand networking concepts and architectures&#10;Configure and troubleshoot networks&#10;Implement security best practices&#10;Prepare for certification exam">{{ course.key_benefits if course else '' }}</textarea>
+                </div>
+
+                <!-- 11. Course Curriculum -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-list-alt"></i> 11. Course Curriculum</h3>
+                <div class="form-group">
+                    <label>Topic-wise Content (JSON format)</label>
+                    <textarea name="topic_wise_content" class="form-control" style="min-height: 200px; font-family: monospace; font-size: 0.85rem;" placeholder='[
+  {
+    "heading": "Module 1: Networking Fundamentals",
+    "items": [
+      {"title": "Introduction to Networking", "subtopics": ["What is Networking", "Network Types", "OSI Model"]},
+      {"title": "IP Addressing", "subtopics": ["IPv4", "IPv6", "Subnetting"]}
+    ]
+  }
+]'>{{ course.topic_wise_content if course else '' }}</textarea>
+                    <small style="color: var(--text-secondary);">Add modules with topics and subtopics in JSON format</small>
+                </div>
+
+                <!-- 12. Tools & Technologies (NEW - like Intellipaat) -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-tools"></i> 12. Tools & Technologies</h3>
+                <div class="form-group">
+                    <label>Tools Covered (comma-separated)</label>
+                    <input type="text" name="tools_covered" class="form-control" value="{{ course.tools_covered if course else '' }}" placeholder="e.g. Wireshark, Nmap, Metasploit, Burp Suite">
+                </div>
+                <div class="form-group">
+                    <label>Technologies (comma-separated)</label>
+                    <input type="text" name="technologies_list" class="form-control" value="{{ course.technologies_list if course else '' }}" placeholder="e.g. Network Security, Cloud Security, Penetration Testing">
+                </div>
+                <div class="form-group">
+                    <label>Skills Covered (comma-separated)</label>
+                    <input type="text" name="skills_covered" class="form-control" value="{{ course.skills_covered if course else '' }}" placeholder="e.g. Risk Assessment, Vulnerability Analysis, Incident Response">
+                </div>
+
+                <!-- Industry Projects -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-briefcase"></i> Industry Projects</h3>
+                <div class="form-group">
+                    <label>Projects (JSON format)</label>
+                    <textarea name="projects_list" class="form-control" style="min-height: 120px;" placeholder='[
+  {"title": "Network Security Project", "description": "Design and implement security for enterprise network"},
+  {"title": "Penetration Testing", "description": "Conduct vulnerability assessment and penetration testing"}
+]'>{{ course.projects_list if course else '' }}</textarea>
+                </div>
+
+                <!-- Why Join -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-check-circle"></i> Why Join This Program</h3>
+                <div class="form-group">
+                    <label>Why Join Points (JSON)</label>
+                    <textarea name="why_join" class="form-control" style="min-height: 100px;" placeholder='[
+  {"icon": "FaUserTie", "title": "Expert Trainers", "description": "Learn from industry professionals with 10+ years experience"},
+  {"icon": "FaLaptopCode", "title": "Hands-on Labs", "description": "Practice on real-world scenarios"}
+]'>{{ course.why_join if course else '' }}</textarea>
+                </div>
+
+                <!-- Student Reviews -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-star"></i> Student Reviews</h3>
+                <div class="form-group">
+                    <label>Reviews (JSON)</label>
+                    <textarea name="reviews_list" class="form-control" style="min-height: 100px;" placeholder='[
+  {"name": "John Smith", "role": "Security Analyst", "text": "Excellent course! Very practical content."}
+]'>{{ course.reviews_list if course else '' }}</textarea>
+                </div>
+
+                <!-- Certification -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-certificate"></i> Certification</h3>
+                <div class="form-group">
+                    <label>Certification Details (JSON)</label>
+                    <textarea name="certification" class="form-control" style="min-height: 100px;" placeholder='{
+  "title": "CompTIA Security+ Certification",
+  "exam_code": "SY0-701",
+  "description": "Globally recognized cybersecurity certification",
+  "validity": "3 years"
+}'>{{ course.certification if course else '' }}</textarea>
+                </div>
+
+                <!-- FAQ -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-question-circle"></i> FAQ</h3>
+                <div class="form-group">
+                    <label>Frequently Asked Questions (JSON)</label>
+                    <textarea name="faq" class="form-control" style="min-height: 150px;" placeholder='[
+  {"question": "What is CompTIA Security+?", "answer": "It is a global certification that validates foundational cybersecurity skills."},
+  {"question": "Is this course suitable for beginners?", "answer": "Yes, this course is designed for beginners with no prior experience."}
+]'>{{ course.faq if course else '' }}</textarea>
+                </div>
+
+                <!-- Stats -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-chart-bar"></i> Social Proof Stats</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Rating (0-5)</label>
@@ -119,91 +268,35 @@
                         <input type="number" name="reviews" class="form-control" value="{{ course.reviews if course else '0' }}" min="0">
                     </div>
                     <div class="form-group">
-                        <label>Learners</label>
-                        <input type="text" name="learners" class="form-control" value="{{ course.learners if course else '' }}" placeholder="e.g. 12,500+">
+                        <label>Total Learners</label>
+                        <input type="text" name="learners" class="form-control" value="{{ course.learners if course else '' }}" placeholder="e.g. 8000+">
                     </div>
                 </div>
 
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-file-alt"></i> Detail Page Content</h3>
-
-                <div class="form-group">
-                    <label>Tagline / Subtitle</label>
-                    <input type="text" name="tagline" class="form-control" value="{{ course.tagline if course else '' }}" placeholder="e.g. Become a Data Scientist">
+                <!-- Tags -->
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-tag"></i> Tags</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tag/Badge</label>
+                        <select name="tag" class="form-control">
+                            <option value="">— No Tag —</option>
+                            <option value="Bestseller" {{ 'selected' if course and course.tag == 'Bestseller' }}>Bestseller</option>
+                            <option value="Trending" {{ 'selected' if course and course.tag == 'Trending' }}>Trending</option>
+                            <option value="Popular" {{ 'selected' if course and course.tag == 'Popular' }}>Popular</option>
+                            <option value="New" {{ 'selected' if course and course.tag == 'New' }}>New</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Curriculum Tags (comma-separated)</label>
+                        <input type="text" name="curriculum" class="form-control" value="{{ course.curriculum if course else '' }}" placeholder="e.g. Network Security, Cloud Security, Ethical Hacking">
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Hero Image (Banner)</label>
-                    <input type="text" name="hero_image" class="form-control" value="{{ course.hero_image if course else '' }}" placeholder="https://example.com/banner.jpg">
-                </div>
-
-                <div class="form-group">
-                    <label>Overview / About This Course</label>
-                    <textarea name="overview" class="form-control" style="min-height: 120px;">{{ course.overview if course else '' }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Key Benefits (one per line)</label>
-                    <textarea name="key_benefits" class="form-control" style="min-height: 100px;" placeholder="Master Python & data analysis&#10;Build ML models&#10;15+ real-world projects">{{ course.key_benefits if course else '' }}</textarea>
-                </div>
-
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-chart-pie"></i> Detail Page Stats</h3>
-                <div class="form-group">
-                    <label>Stats (JSON format)</label>
-                    <textarea name="detail_stats" class="form-control" style="min-height: 80px;" placeholder='[{"value": "8000+", "label": "Learners Trained"}, {"value": "4.8/5", "label": "Rating"}]'>{{ course.detail_stats if course else '' }}</textarea>
-                </div>
-
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-list-check"></i> Curriculum</h3>
-                <div class="form-group">
-                    <label>Topic-wise Content (JSON)</label>
-                    <textarea name="topic_wise_content" class="form-control" style="min-height: 150px;" placeholder='[{"heading": "Module 1", "items": [{"title": "Topic", "subtopics": ["Sub1", "Sub2"]}]}]'>{{ course.topic_wise_content if course else '' }}</textarea>
-                </div>
-
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-briefcase"></i> Projects</h3>
-                <div class="form-group">
-                    <label>Projects (JSON)</label>
-                    <textarea name="projects_list" class="form-control" style="min-height: 100px;" placeholder='[{"title": "Project Name", "description": "Description"}]'>{{ course.projects_list if course else '' }}</textarea>
-                </div>
-
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-microchip"></i> Technologies</h3>
-                <div class="form-group">
-                    <label>Technologies (comma-separated)</label>
-                    <input type="text" name="technologies_list" class="form-control" value="{{ course.technologies_list if course else '' }}" placeholder="Python, Pandas, TensorFlow">
-                </div>
-
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-question-circle"></i> FAQ</h3>
-                <div class="form-group">
-                    <label>FAQ (JSON)</label>
-                    <textarea name="faq" class="form-control" style="min-height: 100px;" placeholder='[{"question": "Q?", "answer": "A"}]'>{{ course.faq if course else '' }}</textarea>
-                </div>
-
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-star"></i> Student Reviews</h3>
-                <div class="form-group">
-                    <label>Reviews (JSON)</label>
-                    <textarea name="reviews_list" class="form-control" style="min-height: 100px;" placeholder='[{"name": "John", "role": "Developer", "text": "Great course!"}]'>{{ course.reviews_list if course else '' }}</textarea>
-                </div>
-
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-check-circle"></i> Why Join</h3>
-                <div class="form-group">
-                    <label>Why Join (JSON)</label>
-                    <textarea name="why_join" class="form-control" style="min-height: 100px;" placeholder='[{"icon": "FaUser", "title": "Expert Trainers", "description": "..."}]'>{{ course.why_join if course else '' }}</textarea>
-                </div>
-
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-certificate"></i> Certification</h3>
-                <div class="form-group">
-                    <label>Certification (JSON)</label>
-                    <textarea name="certification" class="form-control" style="min-height: 80px;" placeholder='{"title": "Certificate Name", "description": "..."}'>{{ course.certification if course else '' }}</textarea>
-                </div>
-
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-clipboard-check"></i> Eligibility</h3>
-                <div class="form-group">
-                    <label>Eligibility / Prerequisites</label>
-                    <textarea name="eligibility" class="form-control" style="min-height: 80px;">{{ course.eligibility if course else '' }}</textarea>
-                </div>
-
-                <div style="margin: 2rem 0; padding: 1rem; background: rgba(34, 197, 94, 0.05); border-radius: 10px;">
+                <!-- Publish -->
+                <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(34, 197, 94, 0.05); border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.15);">
                     <div class="checkbox-group">
                         <input type="checkbox" id="is_published" name="is_published" {{ 'checked' if not course or course.is_published }}>
-                        <label for="is_published" style="cursor: pointer;">Publish this course (visible on website)</label>
+                        <label for="is_published" style="margin-bottom: 0; cursor: pointer;"><i class="fas fa-globe"></i> Publish this course (visible on website)</label>
                     </div>
                 </div>
 

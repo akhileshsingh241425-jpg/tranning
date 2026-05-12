@@ -5504,6 +5504,148 @@ section {
   font-weight: 700;
 }
 
+/* SD Tools & Technologies Section (Like Intellipaat) */
+.sd-tools-section {
+  padding: 4rem 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+}
+
+.sd-tools-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.sd-tool-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--bg-white);
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.sd-tool-card svg {
+  color: #10b981;
+  font-size: 0.85rem;
+}
+
+.sd-tool-card:hover {
+  border-color: #10b981;
+  background: #ecfdf5;
+  transform: translateY(-2px);
+}
+
+/* SD Skills Covered Section */
+.sd-skills-section {
+  padding: 4rem 0;
+  background: var(--bg-white);
+}
+
+.sd-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.sd-skill-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.sd-skill-card svg {
+  color: #6366f1;
+  font-size: 1rem;
+  min-width: 20px;
+}
+
+.sd-skill-card:hover {
+  border-color: #6366f1;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+}
+
+/* SD Prerequisites Section */
+.sd-prerequisites {
+  padding: 4rem 0;
+  background: linear-gradient(180deg, #fefce8 0%, #fef9c3 100%);
+}
+
+.sd-prereq-content {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--bg-white);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 2px solid #fef08a;
+}
+
+.sd-prereq-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.sd-prereq-text ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.sd-prereq-text li {
+  margin-bottom: 0.5rem;
+  color: #475569;
+}
+
+/* SD Target Audience Section */
+.sd-target-audience {
+  padding: 4rem 0;
+  background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+.sd-target-content {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--bg-white);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 2px solid #bae6fd;
+}
+
+.sd-target-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.sd-target-text ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.sd-target-text li {
+  margin-bottom: 0.5rem;
+  color: #475569;
+}
+
 .sd-lesson-name {
   flex: 1;
   font-size: 0.9rem;

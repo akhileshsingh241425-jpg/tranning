@@ -5646,6 +5646,158 @@ section {
   color: #475569;
 }
 
+/* Simple Clean Course Detail Layout */
+.simple-course-detail {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 24px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.simple-course-header {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid #e5e7eb;
+}
+
+.simple-course-header h1 {
+  font-size: 2rem;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.simple-course-header .tagline {
+  color: #6b7280;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.simple-course-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.simple-course-stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.simple-course-stats svg {
+  color: #6366f1;
+}
+
+.simple-course-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.simple-course-section h2 {
+  font-size: 1.25rem;
+  color: #111827;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #6366f1;
+  display: inline-block;
+}
+
+.simple-course-section p {
+  color: #4b5563;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.simple-course-section ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.simple-course-section li {
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.simple-course-section ul li::marker {
+  color: #6366f1;
+}
+
+.simple-content-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.simple-content-list span {
+  background: #f3f4f6;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.simple-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.simple-table th,
+.simple-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.simple-table th {
+  background: #f9fafb;
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.simple-table td {
+  color: #4b5563;
+}
+
+.simple-table tr:hover td {
+  background: #f9fafb;
+}
+
+.simple-faq-item {
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.simple-faq-question {
+  background: #f9fafb;
+  padding: 1rem;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+}
+
+.simple-faq-answer {
+  padding: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+  background: #fff;
+}
+
 .sd-lesson-name {
   flex: 1;
   font-size: 0.9rem;

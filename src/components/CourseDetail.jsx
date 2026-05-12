@@ -70,6 +70,7 @@ const CourseDetail = () => {
           language: data.language || (localCourse && localCourse.language) || 'English',
           emiOptions: data.emi_options || (localCourse && localCourse.emiOptions),
           discountPercent: data.discount_percent || (localCourse && localCourse.discountPercent),
+          originalPrice: data.originalPrice ? `$${data.originalPrice}` : (localCourse && localCourse.originalPrice),
           technologies: (data.technologies_list && typeof data.technologies_list === 'string') 
             ? data.technologies_list.split(',').map(t => t.trim()).filter(t => t)
             : (data.technologies && data.technologies.length > 0) ? data.technologies : (localCourse && localCourse.technologies) || []

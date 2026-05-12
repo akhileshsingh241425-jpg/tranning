@@ -6090,10 +6090,6 @@ section {
   font-size: 0.85rem;
   color: var(--text-light);
 }
-  padding: 1rem;
-  border-radius: 16px;
-  transition: all 0.3s ease;
-}
 
 .sd-why-card:nth-child(1) i {
   color: var(--primary);

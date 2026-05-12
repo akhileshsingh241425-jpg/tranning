@@ -4,1595 +4,215 @@
 
 {% block body %}
 <div class="admin-container">
-    <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <div class="logo-icon">
-                <i class="fas fa-graduation-cap"></i>
-            </div>
+            <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
             <span class="logo-text">TrainingProtec</span>
         </div>
-        
         <nav>
             <ul class="sidebar-nav">
-                <li>
-                    <a href="{{ url_for('admin_dashboard') }}">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('admin_courses') }}" class="active">
-                        <i class="fas fa-book-open"></i>
-                        <span>Courses</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('admin_blogs') }}">
-                        <i class="fas fa-newspaper"></i>
-                        <span>Blog Posts</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('admin_testimonials') }}">
-                        <i class="fas fa-star"></i>
-                        <span>Testimonials</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('admin_contacts') }}">
-                        <i class="fas fa-envelope"></i>
-                        <span>Messages</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('admin_users') }}">
-                        <i class="fas fa-users-cog"></i>
-                        <span>Users</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('admin_subscribers') }}">
-                        <i class="fas fa-bell"></i>
-                        <span>Subscribers</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/" target="_blank">
-                        <i class="fas fa-globe"></i>
-                        <span>View Website</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url_for('admin_logout') }}">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </a>
-                </li>
+                <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
+                <li><a href="{{ url_for('admin_courses') }}" class="active"><i class="fas fa-book-open"></i><span>Courses</span></a></li>
+                <li><a href="{{ url_for('admin_blogs') }}"><i class="fas fa-newspaper"></i><span>Blog Posts</span></a></li>
+                <li><a href="{{ url_for('admin_testimonials') }}"><i class="fas fa-star"></i><span>Testimonials</span></a></li>
+                <li><a href="{{ url_for('admin_contacts') }}"><i class="fas fa-envelope"></i><span>Messages</span></a></li>
+                <li><a href="{{ url_for('admin_users') }}"><i class="fas fa-users-cog"></i><span>Users</span></a></li>
+                <li><a href="{{ url_for('admin_subscribers') }}"><i class="fas fa-bell"></i><span>Subscribers</span></a></li>
+                <li><a href="/" target="_blank"><i class="fas fa-globe"></i><span>View Website</span></a></li>
+                <li><a href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
             </ul>
         </nav>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="page-header">
             <h1 class="page-title">{% if course %}Edit{% else %}New{% endif %} Course</h1>
-            <a href="{{ url_for('admin_courses') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i>
-                Back to Courses
-            </a>
+            <a href="{{ url_for('admin_courses') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
         </div>
 
         <div class="card">
-            <form method="POST" enctype="multipart/form-data" onsubmit="return validateCourseForm()">
-                <!-- Basic Info -->
-                <h3 style="color: var(--accent-color); margin-bottom: 1.5rem;">
-                    <i class="fas fa-info-circle"></i> Basic Information
-                </h3>
-
+            <form method="POST" enctype="multipart/form-data">
+                <h3 style="color: var(--accent-color); margin-bottom: 1.5rem;"><i class="fas fa-info-circle"></i> Basic Info</h3>
+                
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="title">Course Title</label>
-                        <input type="text" id="title" name="title" class="form-control"
-                               value="{{ course.title if course else '' }}" placeholder="e.g. Data Science & AI">
+                        <label>Course Title</label>
+                        <input type="text" name="title" class="form-control" value="{{ course.title if course else '' }}" placeholder="e.g. Data Science & AI" required>
                     </div>
-                    
                     <div class="form-group">
-                        <label for="slug">Slug (URL)</label>
-                        <input type="text" id="slug" name="slug" class="form-control" 
-                               value="{{ course.slug if course else '' }}" placeholder="auto-generated-from-title">
+                        <label>Slug (URL)</label>
+                        <input type="text" name="slug" class="form-control" value="{{ course.slug if course else '' }}" placeholder="auto-generated">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" class="form-control"
-                              placeholder="Detailed course description..." style="min-height: 120px;">{{ course.description if course else '' }}</textarea>
+                    <label>Description</label>
+                    <textarea name="description" class="form-control" style="min-height: 100px;">{{ course.description if course else '' }}</textarea>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Course Image</label>
-                        <div class="image-input-group">
-                            <div class="image-input-tabs">
-                                <button type="button" class="image-input-tab active" onclick="switchImageTab(this, 'upload')">
-                                    <i class="fas fa-upload"></i> Upload
-                                </button>
-                                <button type="button" class="image-input-tab" onclick="switchImageTab(this, 'url')">
-                                    <i class="fas fa-link"></i> URL
-                                </button>
-                            </div>
-                            <div class="image-input-content">
-                                <div class="image-input-panel active" data-panel="upload">
-                                    <div class="image-drop-zone" onclick="this.querySelector('input').click()">
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                        <p>Drag & drop image here or <span class="browse-link">Browse</span></p>
-                                        <p style="font-size: 0.75rem;">PNG, JPG, GIF, WebP (max 5MB)</p>
-                                        <input type="file" accept="image/*" onchange="handleImageUpload(this, 'image')">
-                                    </div>
-                                    <div class="upload-progress" id="image-upload-progress">
-                                        <div class="upload-progress-bar"><div style="width: 0%"></div></div>
-                                        <div class="upload-progress-text">Uploading...</div>
-                                    </div>
-                                    <div class="upload-error" id="image-upload-error"></div>
-                                </div>
-                                <div class="image-input-panel" data-panel="url">
-                                    <input type="text" id="image_url_input" class="form-control"
-                                           value="{{ course.image if course else '' }}"
-                                           placeholder="https://example.com/image.jpg"
-                                           oninput="document.getElementById('image').value = this.value; updateImagePreview('image')">
-                                </div>
-                            </div>
-                            <div class="image-preview-container" id="image-preview">
-                                <img src="{{ course.image if course and course.image else '' }}" alt="Preview" onerror="this.parentElement.classList.remove('has-image')">
-                                <div class="image-preview-info">
-                                    <div class="filename" id="image-filename"></div>
-                                    <div class="size" id="image-size"></div>
-                                </div>
-                                <button type="button" class="image-preview-remove" onclick="removeImage('image')">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <input type="hidden" id="image" name="image" value="{{ course.image if course else '' }}">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="icon">Icon Name</label>
-                        <select id="icon" name="icon" class="form-control">
-                            <option value="FaDatabase" {{ 'selected' if course and course.icon == 'FaDatabase' }}>FaDatabase — Data Science</option>
-                            <option value="FaCloud" {{ 'selected' if course and course.icon == 'FaCloud' }}>FaCloud — Cloud</option>
-                            <option value="FaShieldAlt" {{ 'selected' if course and course.icon == 'FaShieldAlt' }}>FaShieldAlt — Security</option>
-                            <option value="FaCode" {{ 'selected' if course and course.icon == 'FaCode' }}>FaCode — Development</option>
-                            <option value="FaBullhorn" {{ 'selected' if course and course.icon == 'FaBullhorn' }}>FaBullhorn — Marketing</option>
-                            <option value="FaChartBar" {{ 'selected' if course and course.icon == 'FaChartBar' }}>FaChartBar — Analytics</option>
-                            <option value="FaPaintBrush" {{ 'selected' if course and course.icon == 'FaPaintBrush' }}>FaPaintBrush — Design</option>
-                            <option value="FaMobileAlt" {{ 'selected' if course and course.icon == 'FaMobileAlt' }}>FaMobileAlt — Mobile</option>
-                            <option value="FaBookOpen" {{ 'selected' if course and course.icon == 'FaBookOpen' }}>FaBookOpen — General</option>
-                            <option value="FaLaptopCode" {{ 'selected' if course and course.icon == 'FaLaptopCode' }}>FaLaptopCode — Coding</option>
-                            <option value="FaRobot" {{ 'selected' if course and course.icon == 'FaRobot' }}>FaRobot — AI/ML</option>
-                        </select>
+                        <input type="text" name="image" class="form-control" value="{{ course.image if course else '' }}" placeholder="https://example.com/image.jpg">
+                        {% if course and course.image %}
+                        <img src="{{ course.image }}" style="max-width: 200px; margin-top: 10px; border-radius: 8px;">
+                        {% endif %}
                     </div>
                 </div>
 
-                <!-- Pricing -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-dollar-sign"></i> Pricing
-                </h3>
-
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-dollar-sign"></i> Pricing</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="price">Sale Price ($)</label>
-                        <input type="number" id="price" name="price" class="form-control"
-                               value="{{ course.price if course else '' }}" placeholder="e.g. 199" min="0">
+                        <label>Sale Price ($)</label>
+                        <input type="number" name="price" class="form-control" value="{{ course.price if course else '' }}" min="0">
                     </div>
-                    
                     <div class="form-group">
-                        <label for="original_price">Original Price ($)</label>
-                        <input type="number" id="original_price" name="original_price" class="form-control"
-                               value="{{ course.original_price if course else '' }}" placeholder="e.g. 599" min="0">
+                        <label>Original Price ($)</label>
+                        <input type="number" name="original_price" class="form-control" value="{{ course.original_price if course else '' }}" min="0">
                     </div>
                 </div>
 
-                <!-- Course Details -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-cogs"></i> Course Details
-                </h3>
-
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-cogs"></i> Course Details</h3>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="duration">Duration</label>
-                        <input type="text" id="duration" name="duration" class="form-control"
-                               value="{{ course.duration if course else '' }}" placeholder="e.g. 6 Months">
+                        <label>Duration</label>
+                        <input type="text" name="duration" class="form-control" value="{{ course.duration if course else '' }}" placeholder="e.g. 6 Months">
                     </div>
-                    
                     <div class="form-group">
-                        <label for="level">Level</label>
-                        <select id="level" name="level" class="form-control">
+                        <label>Level</label>
+                        <select name="level" class="form-control">
                             <option value="Beginner" {{ 'selected' if course and course.level == 'Beginner' }}>Beginner</option>
                             <option value="Intermediate" {{ 'selected' if course and course.level == 'Intermediate' }}>Intermediate</option>
                             <option value="Advanced" {{ 'selected' if course and course.level == 'Advanced' }}>Advanced</option>
                             <option value="Beginner to Advanced" {{ 'selected' if course and course.level == 'Beginner to Advanced' }}>Beginner to Advanced</option>
-                            <option value="Beginner to Intermediate" {{ 'selected' if course and course.level == 'Beginner to Intermediate' }}>Beginner to Intermediate</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="modules">Modules</label>
-                        <input type="number" id="modules" name="modules" class="form-control" 
-                               value="{{ course.modules if course else '0' }}" placeholder="Number of modules" min="0">
+                        <label>Modules</label>
+                        <input type="number" name="modules" class="form-control" value="{{ course.modules if course else '0' }}" min="0">
                     </div>
-                    
                     <div class="form-group">
-                        <label for="projects">Projects</label>
-                        <input type="number" id="projects" name="projects" class="form-control" 
-                               value="{{ course.projects if course else '0' }}" placeholder="Number of projects" min="0">
+                        <label>Projects</label>
+                        <input type="number" name="projects" class="form-control" value="{{ course.projects if course else '0' }}" min="0">
                     </div>
-                </div>
-
-                <div class="form-row">
                     <div class="form-group">
-                        <label for="tag">Tag / Badge</label>
-                        <select id="tag" name="tag" class="form-control">
-                            <option value="" {{ 'selected' if not course or not course.tag }}>— No Tag —</option>
+                        <label>Tag</label>
+                        <select name="tag" class="form-control">
+                            <option value="">— No Tag —</option>
                             <option value="Bestseller" {{ 'selected' if course and course.tag == 'Bestseller' }}>Bestseller</option>
                             <option value="Trending" {{ 'selected' if course and course.tag == 'Trending' }}>Trending</option>
-                            <option value="Hot" {{ 'selected' if course and course.tag == 'Hot' }}>Hot</option>
                             <option value="Popular" {{ 'selected' if course and course.tag == 'Popular' }}>Popular</option>
-                            <option value="New" {{ 'selected' if course and course.tag == 'New' }}>New</option>
                         </select>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="sort_order">Sort Order</label>
-                        <input type="number" id="sort_order" name="sort_order" class="form-control" 
-                               value="{{ course.sort_order if course else '0' }}" placeholder="0 = default" min="0">
-                    </div>
                 </div>
-
-                <!-- Stats -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-chart-bar"></i> Stats & Social Proof
-                </h3>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="rating">Rating (0-5)</label>
-                        <input type="number" id="rating" name="rating" class="form-control" 
-                               value="{{ course.rating if course else '4.5' }}" placeholder="e.g. 4.8" min="0" max="5" step="0.1">
+                        <label>Rating (0-5)</label>
+                        <input type="number" name="rating" class="form-control" value="{{ course.rating if course else '4.5' }}" min="0" max="5" step="0.1">
                     </div>
-                    
                     <div class="form-group">
-                        <label for="reviews">Reviews Count</label>
-                        <input type="number" id="reviews" name="reviews" class="form-control" 
-                               value="{{ course.reviews if course else '0' }}" placeholder="e.g. 2840" min="0">
+                        <label>Reviews Count</label>
+                        <input type="number" name="reviews" class="form-control" value="{{ course.reviews if course else '0' }}" min="0">
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="learners">Learners</label>
-                    <input type="text" id="learners" name="learners" class="form-control" 
-                           value="{{ course.learners if course else '' }}" placeholder="e.g. 12,500+">
-                </div>
-
-                <!-- Curriculum -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-list-check"></i> Curriculum Topics
-                </h3>
-
-                <div class="form-group">
-                    <label for="curriculum">Curriculum (comma-separated)</label>
-                    <input type="text" id="curriculum" name="curriculum" class="form-control" 
-                           value="{{ course.curriculum if course else '' }}" 
-                           placeholder="e.g. Python & Statistics, Machine Learning, Deep Learning, AI with TensorFlow">
-                    <small style="color: var(--text-secondary);">Separate topics with commas. These show as tags on the course card.</small>
-                </div>
-
-                <!-- Instructor Details -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-chalkboard-teacher"></i> Instructor Details
-                </h3>
-
-                <div class="form-row">
                     <div class="form-group">
-                        <label for="instructor_name">Instructor Name</label>
-                        <input type="text" id="instructor_name" name="instructor_name" class="form-control"
-                               value="{{ course.instructor_name if course else '' }}" placeholder="e.g. Dr. Amit Sharma">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="instructor_experience">Experience</label>
-                        <input type="text" id="instructor_experience" name="instructor_experience" class="form-control"
-                               value="{{ course.instructor_experience if course else '' }}" placeholder="e.g. 14+ years">
+                        <label>Learners</label>
+                        <input type="text" name="learners" class="form-control" value="{{ course.learners if course else '' }}" placeholder="e.g. 12,500+">
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="instructor_role">Instructor Role / Credentials</label>
-                    <input type="text" id="instructor_role" name="instructor_role" class="form-control"
-                           value="{{ course.instructor_role if course else '' }}" placeholder="e.g. Ex-Google AI Engineer | IIT Delhi">
-                </div>
-
-                <input type="hidden" id="instructor_image" name="instructor_image" value="{{ course.instructor_image if course else '' }}">
-
-                <!-- Publish -->
-                <hr style="border: none; border-top: 2px solid rgba(79, 70, 229, 0.1); margin: 2.5rem 0;">
-
-                <!-- ============ COURSE DETAIL PAGE FIELDS ============ -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 0.5rem; font-size: 1.3rem;">
-                    <i class="fas fa-file-alt"></i> Course Detail Page Content
-                </h3>
-                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
-                    These fields populate the full course detail page that visitors see when they click "View Course Details".
-                </p>
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-file-alt"></i> Detail Page Content</h3>
 
                 <div class="form-group">
-                    <label for="tagline">Tagline / Subtitle</label>
-                    <input type="text" id="tagline" name="tagline" class="form-control" 
-                           value="{{ course.tagline if course else '' }}" 
-                           placeholder="e.g. Become a Data Scientist — Learn Python, ML, Deep Learning & AI">
+                    <label>Tagline / Subtitle</label>
+                    <input type="text" name="tagline" class="form-control" value="{{ course.tagline if course else '' }}" placeholder="e.g. Become a Data Scientist">
                 </div>
 
                 <div class="form-group">
-                    <label>Hero Image (large banner)</label>
-                    <div class="image-input-group">
-                        <div class="image-input-tabs">
-                            <button type="button" class="image-input-tab active" onclick="switchImageTab(this, 'upload')">
-                                <i class="fas fa-upload"></i> Upload
-                            </button>
-                            <button type="button" class="image-input-tab" onclick="switchImageTab(this, 'url')">
-                                <i class="fas fa-link"></i> URL
-                            </button>
-                        </div>
-                        <div class="image-input-content">
-                            <div class="image-input-panel active" data-panel="upload">
-                                <div class="image-drop-zone" onclick="this.querySelector('input').click()">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <p>Drag & drop image here or <span class="browse-link">Browse</span></p>
-                                    <p style="font-size: 0.75rem;">PNG, JPG, GIF, WebP (max 5MB)</p>
-                                    <input type="file" accept="image/*" onchange="handleImageUpload(this, 'hero_image')">
-                                </div>
-                                <div class="upload-progress" id="hero_image-upload-progress">
-                                    <div class="upload-progress-bar"><div style="width: 0%"></div></div>
-                                    <div class="upload-progress-text">Uploading...</div>
-                                </div>
-                                <div class="upload-error" id="hero_image-upload-error"></div>
-                            </div>
-                            <div class="image-input-panel" data-panel="url">
-                                <input type="text" id="hero_image_url_input" class="form-control"
-                                       value="{{ course.hero_image if course else '' }}"
-                                       placeholder="https://example.com/banner.jpg (leave blank to use course image)"
-                                       oninput="document.getElementById('hero_image').value = this.value; updateImagePreview('hero_image')">
-                            </div>
-                        </div>
-                        <div class="image-preview-container" id="hero_image-preview">
-                            <img src="{{ course.hero_image if course and course.hero_image else '' }}" alt="Preview" onerror="this.parentElement.classList.remove('has-image')">
-                            <div class="image-preview-info">
-                                <div class="filename" id="hero_image-filename"></div>
-                                <div class="size" id="hero_image-size"></div>
-                            </div>
-                            <button type="button" class="image-preview-remove" onclick="removeImage('hero_image')">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <input type="hidden" id="hero_image" name="hero_image" value="{{ course.hero_image if course else '' }}">
+                    <label>Hero Image (Banner)</label>
+                    <input type="text" name="hero_image" class="form-control" value="{{ course.hero_image if course else '' }}" placeholder="https://example.com/banner.jpg">
                 </div>
 
                 <div class="form-group">
-                    <label for="overview">Overview / About This Course</label>
-                    <textarea id="overview" name="overview" class="form-control" 
-                              placeholder="Detailed overview paragraph about the course..." 
-                              style="min-height: 150px;">{{ course.overview if course else '' }}</textarea>
+                    <label>Overview / About This Course</label>
+                    <textarea name="overview" class="form-control" style="min-height: 120px;">{{ course.overview if course else '' }}</textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="key_benefits">Key Benefits / What You'll Learn (one per line)</label>
-                    <textarea id="key_benefits" name="key_benefits" class="form-control" 
-                              placeholder="Master Python, Pandas, NumPy & data visualization&#10;Build ML models with scikit-learn & TensorFlow&#10;15+ real-world projects including capstone&#10;Placement assistance with 200+ hiring partners" 
-                              style="min-height: 140px;">{{ course.key_benefits if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Enter each benefit on a new line.</small>
+                    <label>Key Benefits (one per line)</label>
+                    <textarea name="key_benefits" class="form-control" style="min-height: 100px;" placeholder="Master Python & data analysis&#10;Build ML models&#10;15+ real-world projects">{{ course.key_benefits if course else '' }}</textarea>
                 </div>
 
-                <!-- Detail Stats -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-chart-pie"></i> Detail Page Stats
-                </h3>
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-chart-pie"></i> Detail Page Stats</h3>
                 <div class="form-group">
-                    <label>Detail Page Stats</label>
-                    <div id="detail_stats_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addDetailStat()">
-                        <i class="fas fa-plus"></i> Add Stat
-                    </button>
-                    <textarea id="detail_stats" name="detail_stats" style="display:none;">{{ course.detail_stats if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add stats like number of learners, rating, hours of content, projects, etc.</small>
+                    <label>Stats (JSON format)</label>
+                    <textarea name="detail_stats" class="form-control" style="min-height: 80px;" placeholder='[{"value": "8000+", "label": "Learners Trained"}, {"value": "4.8/5", "label": "Rating"}]'>{{ course.detail_stats if course else '' }}</textarea>
                 </div>
 
-                <!-- Modules Detail -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-cubes"></i> Course Modules (Detail)
-                </h3>
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-list-check"></i> Curriculum</h3>
                 <div class="form-group">
-                    <label>Course Modules</label>
-                    <div id="modules_detail_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addModuleDetail()">
-                        <i class="fas fa-plus"></i> Add Module
-                    </button>
-                    <textarea id="modules_detail" name="modules_detail" style="display:none;">{{ course.modules_detail if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add each module with a title and description.</small>
+                    <label>Topic-wise Content (JSON)</label>
+                    <textarea name="topic_wise_content" class="form-control" style="min-height: 150px;" placeholder='[{"heading": "Module 1", "items": [{"title": "Topic", "subtopics": ["Sub1", "Sub2"]}]}]'>{{ course.topic_wise_content if course else '' }}</textarea>
                 </div>
 
-                <!-- Learning Path -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-route"></i> Learning Path
-                </h3>
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-briefcase"></i> Projects</h3>
                 <div class="form-group">
-                    <label>Learning Path Steps</label>
-                    <div id="learning_path_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addLearningPath()">
-                        <i class="fas fa-plus"></i> Add Step
-                    </button>
-                    <textarea id="learning_path" name="learning_path" style="display:none;">{{ course.learning_path if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add each step in the learning journey with step number, title, and description.</small>
+                    <label>Projects (JSON)</label>
+                    <textarea name="projects_list" class="form-control" style="min-height: 100px;" placeholder='[{"title": "Project Name", "description": "Description"}]'>{{ course.projects_list if course else '' }}</textarea>
                 </div>
 
-                <!-- Technologies -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-microchip"></i> Tools & Technologies
-                </h3>
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-microchip"></i> Technologies</h3>
                 <div class="form-group">
-                    <label for="technologies_list">Technologies (comma-separated)</label>
-                    <input type="text" id="technologies_list" name="technologies_list" class="form-control" 
-                           value="{{ course.technologies_list if course else '' }}" 
-                           placeholder="Python, Pandas, NumPy, scikit-learn, TensorFlow, Keras, SQL, Tableau">
-                    <small style="color: var(--text-secondary);">Comma-separated technology names. Shown as tags on detail page.</small>
+                    <label>Technologies (comma-separated)</label>
+                    <input type="text" name="technologies_list" class="form-control" value="{{ course.technologies_list if course else '' }}" placeholder="Python, Pandas, TensorFlow">
                 </div>
 
-                <!-- FAQ -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-question-circle"></i> FAQ
-                </h3>
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-question-circle"></i> FAQ</h3>
                 <div class="form-group">
-                    <label>Frequently Asked Questions</label>
-                    <div id="faq_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addFaq()">
-                        <i class="fas fa-plus"></i> Add FAQ
-                    </button>
-                    <textarea id="faq" name="faq" style="display:none;">{{ course.faq if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add each question and its answer.</small>
+                    <label>FAQ (JSON)</label>
+                    <textarea name="faq" class="form-control" style="min-height: 100px;" placeholder='[{"question": "Q?", "answer": "A"}]'>{{ course.faq if course else '' }}</textarea>
                 </div>
 
-                <!-- Topic-wise Content Distribution -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-sitemap"></i> Topic-wise Content Distribution
-                </h3>
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-star"></i> Student Reviews</h3>
                 <div class="form-group">
-                    <label>Topic Groups</label>
-                    <div id="topic_wise_content_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addTopicWiseGroup()">
-                        <i class="fas fa-plus"></i> Add Topic Group
-                    </button>
-                    <textarea id="topic_wise_content" name="topic_wise_content" style="display:none;">{{ course.topic_wise_content if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add topic groups with a heading, items (title, description), and subtopics under each item.</small>
+                    <label>Reviews (JSON)</label>
+                    <textarea name="reviews_list" class="form-control" style="min-height: 100px;" placeholder='[{"name": "John", "role": "Developer", "text": "Great course!"}]'>{{ course.reviews_list if course else '' }}</textarea>
                 </div>
 
-                <!-- Projects -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-briefcase"></i> Industry Projects
-                </h3>
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-check-circle"></i> Why Join</h3>
                 <div class="form-group">
-                    <label>Industry Projects</label>
-                    <div id="projects_list_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addProject()">
-                        <i class="fas fa-plus"></i> Add Project
-                    </button>
-                    <textarea id="projects_list" name="projects_list" style="display:none;">{{ course.projects_list if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add industry projects with title and description.</small>
+                    <label>Why Join (JSON)</label>
+                    <textarea name="why_join" class="form-control" style="min-height: 100px;" placeholder='[{"icon": "FaUser", "title": "Expert Trainers", "description": "..."}]'>{{ course.why_join if course else '' }}</textarea>
                 </div>
 
-                <!-- Benefits -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-award"></i> Career Benefits
-                </h3>
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-certificate"></i> Certification</h3>
                 <div class="form-group">
-                    <label>Career Benefits</label>
-                    <div id="benefits_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addBenefit()">
-                        <i class="fas fa-plus"></i> Add Benefit
-                    </button>
-                    <textarea id="benefits" name="benefits" style="display:none;">{{ course.benefits if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add career benefits with icon, title, and description.</small>
+                    <label>Certification (JSON)</label>
+                    <textarea name="certification" class="form-control" style="min-height: 80px;" placeholder='{"title": "Certificate Name", "description": "..."}'>{{ course.certification if course else '' }}</textarea>
                 </div>
 
-                <!-- Advisor -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-user-tie"></i> Course Advisor
-                </h3>
+                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;"><i class="fas fa-clipboard-check"></i> Eligibility</h3>
                 <div class="form-group">
-                    <label>Course Advisors</label>
-                    <div id="advisor_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addAdvisor()">
-                        <i class="fas fa-plus"></i> Add Advisor
-                    </button>
-                    <textarea id="advisor" name="advisor" style="display:none;">{{ course.advisor if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add course advisors with name, role, bio, and image URL.</small>
+                    <label>Eligibility / Prerequisites</label>
+                    <textarea name="eligibility" class="form-control" style="min-height: 80px;">{{ course.eligibility if course else '' }}</textarea>
                 </div>
 
-                <!-- Reviews -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-star"></i> Student Reviews
-                </h3>
-                <div class="form-group">
-                    <label>Student Reviews</label>
-                    <div id="reviews_list_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addReview()">
-                        <i class="fas fa-plus"></i> Add Review
-                    </button>
-                    <textarea id="reviews_list" name="reviews_list" style="display:none;">{{ course.reviews_list if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add student reviews with name, role, and text.</small>
-                </div>
-
-                <!-- Why Join -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-check-circle"></i> Why Join This Program
-                </h3>
-                <div class="form-group">
-                    <label>Why Join Points</label>
-                    <div id="why_join_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addWhyJoin()">
-                        <i class="fas fa-plus"></i> Add Point
-                    </button>
-                    <textarea id="why_join" name="why_join" style="display:none;">{{ course.why_join if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add reasons to join with icon, title, and description.</small>
-                </div>
-
-                <!-- Certification -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-certificate"></i> Exam & Certification
-                </h3>
-                <div class="form-group">
-                    <label>Certification FAQs</label>
-                    <div id="certification_container" class="dynamic-field-container"></div>
-                    <button type="button" class="btn-add-field" onclick="addCertFaq()">
-                        <i class="fas fa-plus"></i> Add FAQ
-                    </button>
-                    <textarea id="certification" name="certification" style="display:none;">{{ course.certification if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Add certification FAQs with title and text.</small>
-                </div>
-
-                <hr style="border: none; border-top: 2px solid rgba(79, 70, 229, 0.1); margin: 2.5rem 0;">
-
-                <!-- Eligibility / Prerequisites -->
-                <h3 style="color: var(--accent-color); margin: 2rem 0 1.5rem;">
-                    <i class="fas fa-clipboard-check"></i> Prerequisites / Eligibility
-                </h3>
-                <div class="form-group">
-                    <label for="eligibility">Eligibility Requirements</label>
-                    <textarea id="eligibility" name="eligibility" class="form-control" 
-                              placeholder="Who is this course for? e.g. Beginners, Working Professionals, Career Changers, Students & Graduates" 
-                              style="min-height: 120px;">{{ course.eligibility if course else '' }}</textarea>
-                    <small style="color: var(--text-secondary);">Describe who should take this course and any prerequisites.</small>
-                </div>
-
-                <!-- Publish -->
-                <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(79, 70, 229, 0.05); border-radius: 10px; border: 1px solid rgba(79, 70, 229, 0.15);">
+                <div style="margin: 2rem 0; padding: 1rem; background: rgba(34, 197, 94, 0.05); border-radius: 10px;">
                     <div class="checkbox-group">
-                        <input type="checkbox" id="is_published" name="is_published" 
-                               {{ 'checked' if not course or course.is_published }}>
-                        <label for="is_published" style="margin-bottom: 0; cursor: pointer;">
-                            <i class="fas fa-globe"></i> Publish this course (visible on website)
-                        </label>
+                        <input type="checkbox" id="is_published" name="is_published" {{ 'checked' if not course or course.is_published }}>
+                        <label for="is_published" style="cursor: pointer;">Publish this course (visible on website)</label>
                     </div>
-                </div>
-
-                <!-- Preview -->
-                <div id="pricePreview" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(34, 197, 94, 0.05); border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.15); display: none;">
-                    <strong style="color: var(--success-color);"><i class="fas fa-eye"></i> Price Preview:</strong>
-                    <span id="previewText" style="margin-left: 0.5rem;"></span>
                 </div>
 
                 <div style="display: flex; gap: 1rem;">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i>
-                        {% if course %}Update Course{% else %}Create Course{% endif %}
-                    </button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> {% if course %}Update{% else %}Create{% endif %} Course</button>
                     <a href="{{ url_for('admin_courses') }}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
     </main>
 </div>
-
-<style>
-    /* Dynamic Field Builder Styles */
-    .dynamic-field-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    .dynamic-field-item {
-        display: flex;
-        gap: 0.5rem;
-        align-items: flex-start;
-        padding: 0.75rem;
-        background: rgba(79, 70, 229, 0.03);
-        border: 1px solid rgba(79, 70, 229, 0.12);
-        border-radius: 8px;
-        position: relative;
-        transition: border-color 0.2s;
-    }
-    .dynamic-field-item:hover {
-        border-color: rgba(79, 70, 229, 0.3);
-    }
-    .dynamic-field-item .field-inputs {
-        flex: 1;
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-    }
-    .dynamic-field-item .field-inputs input,
-    .dynamic-field-item .field-inputs textarea {
-        flex: 1;
-        min-width: 120px;
-        padding: 0.5rem 0.75rem;
-        border: 1px solid rgba(79, 70, 229, 0.15);
-        border-radius: 6px;
-        font-size: 0.875rem;
-        background: #fff;
-        color: #1a1a2e;
-        transition: border-color 0.2s;
-    }
-    .dynamic-field-item .field-inputs input:focus,
-    .dynamic-field-item .field-inputs textarea:focus {
-        outline: none;
-        border-color: var(--accent-color, #4f46e5);
-        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
-    }
-    .dynamic-field-item .field-inputs textarea {
-        min-height: 60px;
-        resize: vertical;
-        min-width: 100%;
-    }
-    .dynamic-field-item .field-inputs input.field-small {
-        max-width: 80px;
-        min-width: 70px;
-        text-align: center;
-    }
-    .dynamic-field-item .field-number {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 28px;
-        height: 28px;
-        background: var(--accent-color, #4f46e5);
-        color: #fff;
-        border-radius: 50%;
-        font-size: 0.75rem;
-        font-weight: 600;
-        flex-shrink: 0;
-        margin-top: 0.4rem;
-    }
-    .btn-remove-field {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        background: rgba(239, 68, 68, 0.08);
-        color: #ef4444;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.8rem;
-        flex-shrink: 0;
-        margin-top: 0.25rem;
-        transition: all 0.2s;
-    }
-    .btn-remove-field:hover {
-        background: rgba(239, 68, 68, 0.2);
-        border-color: rgba(239, 68, 68, 0.5);
-    }
-    .btn-add-field {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.5rem 1rem;
-        margin-top: 0.5rem;
-        border: 1px dashed rgba(79, 70, 229, 0.4);
-        background: rgba(79, 70, 229, 0.05);
-        color: var(--accent-color, #4f46e5);
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.85rem;
-        font-weight: 500;
-        transition: all 0.2s;
-    }
-    .btn-add-field:hover {
-        background: rgba(79, 70, 229, 0.12);
-        border-color: rgba(79, 70, 229, 0.6);
-    }
-    .dynamic-field-item .field-inputs input::placeholder,
-    .dynamic-field-item .field-inputs textarea::placeholder {
-        color: var(--text-secondary, #94a3b8);
-        opacity: 0.7;
-    }
-
-    /* Topic-wise Content Distribution Styles */
-    .topic-wise-group {
-        flex-direction: column;
-        padding: 1rem;
-        background: rgba(79, 70, 229, 0.04);
-        border: 1px solid rgba(79, 70, 229, 0.18);
-        border-radius: 10px;
-    }
-    .topic-wise-group-header {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.75rem;
-    }
-    .topic-wise-heading-input {
-        flex: 1;
-        padding: 0.5rem 0.75rem;
-        border: 1px solid rgba(79, 70, 229, 0.15);
-        border-radius: 6px;
-        font-size: 0.95rem;
-        font-weight: 600;
-        background: #fff;
-        color: #1a1a2e;
-    }
-    .topic-wise-heading-input:focus {
-        outline: none;
-        border-color: var(--accent-color, #4f46e5);
-        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
-    }
-    .topic-wise-items-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        margin-left: 1.5rem;
-        padding-left: 1rem;
-        border-left: 2px solid rgba(79, 70, 229, 0.15);
-    }
-    .topic-wise-item {
-        padding: 0.75rem;
-        background: rgba(79, 70, 229, 0.03);
-        border: 1px solid rgba(79, 70, 229, 0.1);
-        border-radius: 8px;
-    }
-    .topic-wise-item-header {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.4rem;
-    }
-    .topic-wise-item-header input {
-        flex: 1;
-        padding: 0.4rem 0.7rem;
-        border: 1px solid rgba(79, 70, 229, 0.15);
-        border-radius: 6px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        background: #fff;
-        color: #1a1a2e;
-    }
-    .topic-wise-item-header input:focus {
-        outline: none;
-        border-color: var(--accent-color, #4f46e5);
-        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
-    }
-    .topic-wise-item textarea {
-        width: 100%;
-        min-height: 45px;
-        padding: 0.4rem 0.7rem;
-        border: 1px solid rgba(79, 70, 229, 0.15);
-        border-radius: 6px;
-        font-size: 0.85rem;
-        resize: vertical;
-        margin-bottom: 0.4rem;
-        background: #fff;
-        color: #1a1a2e;
-    }
-    .topic-wise-item textarea:focus {
-        outline: none;
-        border-color: var(--accent-color, #4f46e5);
-        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
-    }
-    .topic-wise-subtopics-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-        margin-left: 1rem;
-        padding-left: 0.75rem;
-        border-left: 2px solid rgba(16, 185, 129, 0.2);
-    }
-    .topic-wise-subtopic {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
-    .topic-wise-subtopic input {
-        flex: 1;
-        padding: 0.35rem 0.6rem;
-        border: 1px solid rgba(16, 185, 129, 0.2);
-        border-radius: 5px;
-        font-size: 0.82rem;
-        background: #fff;
-        color: #1a1a2e;
-    }
-    .topic-wise-subtopic input:focus {
-        outline: none;
-        border-color: rgba(16, 185, 129, 0.5);
-        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
-    }
-    .btn-remove-sm {
-        width: 26px;
-        height: 26px;
-        font-size: 0.7rem;
-    }
-    .btn-add-item {
-        margin-left: 1.5rem;
-        margin-top: 0.5rem;
-        font-size: 0.82rem;
-        padding: 0.4rem 0.8rem;
-        border-color: rgba(79, 70, 229, 0.3);
-    }
-    .btn-add-subtopic {
-        font-size: 0.78rem;
-        padding: 0.3rem 0.7rem;
-        margin-top: 0.35rem;
-        border-color: rgba(16, 185, 129, 0.3);
-        background: rgba(16, 185, 129, 0.05);
-        color: #10b981;
-    }
-    .btn-add-subtopic:hover {
-        background: rgba(16, 185, 129, 0.12);
-        border-color: rgba(16, 185, 129, 0.5);
-    }
-</style>
-
-<script>
-    // Auto-generate slug from title
-    document.getElementById('title').addEventListener('input', function() {
-        const slugField = document.getElementById('slug');
-        if (!slugField.value || slugField.dataset.auto === 'true') {
-            slugField.value = this.value.toLowerCase()
-                .replace(/&/g, 'and')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '');
-            slugField.dataset.auto = 'true';
-        }
-    });
-    document.getElementById('slug').addEventListener('input', function() {
-        this.dataset.auto = 'false';
-    });
-
-    // Price preview
-    function updatePreview() {
-        const price = parseInt(document.getElementById('price').value) || 0;
-        const original = parseInt(document.getElementById('original_price').value) || 0;
-        const preview = document.getElementById('pricePreview');
-        const text = document.getElementById('previewText');
-        
-        if (price > 0 && original > 0) {
-            const discount = Math.round(((original - price) / original) * 100);
-            text.innerHTML = `$${price.toLocaleString()} <del style="color:var(--text-secondary)">$${original.toLocaleString()}</del> — <strong>${discount}% OFF</strong>`;
-            preview.style.display = 'block';
-        } else {
-            preview.style.display = 'none';
-        }
-    }
-    document.getElementById('price').addEventListener('input', updatePreview);
-    document.getElementById('original_price').addEventListener('input', updatePreview);
-    updatePreview();
-
-    // ===== Image Upload Functions =====
-    document.addEventListener('DOMContentLoaded', function() {
-        initImagePreview('image');
-        initImagePreview('hero_image');
-        initDynamicFields();
-    });
-
-    function initImagePreview(fieldId) {
-        const hiddenInput = document.getElementById(fieldId);
-        const preview = document.getElementById(fieldId + '-preview');
-        if (hiddenInput && preview && hiddenInput.value) {
-            const img = preview.querySelector('img');
-            if (img) {
-                img.src = hiddenInput.value;
-                preview.classList.add('has-image');
-            }
-            if (hiddenInput.value.startsWith('http')) {
-                const urlInput = document.getElementById(fieldId + '_url_input');
-                if (urlInput) urlInput.value = hiddenInput.value;
-            }
-        }
-    }
-
-    function switchImageTab(tabBtn, tabName) {
-        const group = tabBtn.closest('.image-input-group');
-        group.querySelectorAll('.image-input-tab').forEach(t => t.classList.remove('active'));
-        tabBtn.classList.add('active');
-        group.querySelectorAll('.image-input-panel').forEach(p => p.classList.remove('active'));
-        group.querySelector('[data-panel="' + tabName + '"]').classList.add('active');
-    }
-
-    function handleImageUpload(fileInput, fieldId) {
-        const file = fileInput.files[0];
-        if (!file) return;
-        
-        const progressEl = document.getElementById(fieldId + '-upload-progress');
-        const errorEl = document.getElementById(fieldId + '-upload-error');
-        errorEl.style.display = 'none';
-        progressEl.classList.add('active');
-        progressEl.querySelector('div > div').style.width = '0%';
-        
-        const formData = new FormData();
-        formData.append('file', file);
-        
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/upload');
-        xhr.withCredentials = true;
-        
-        xhr.upload.onprogress = function(e) {
-            if (e.lengthComputable) {
-                const pct = Math.round((e.loaded / e.total) * 100);
-                progressEl.querySelector('div > div').style.width = pct + '%';
-            }
-        };
-        
-        xhr.onload = function() {
-            progressEl.classList.remove('active');
-            if (xhr.status === 200) {
-                const data = JSON.parse(xhr.responseText);
-                document.getElementById(fieldId).value = data.url;
-                const urlInput = document.getElementById(fieldId + '_url_input');
-                if (urlInput) urlInput.value = data.url;
-                updateImagePreview(fieldId, data.url, file.name, file.size);
-            } else {
-                try {
-                    const data = JSON.parse(xhr.responseText);
-                    errorEl.textContent = data.error || 'Upload failed';
-                } catch(e) {
-                    errorEl.textContent = 'Upload failed';
-                }
-                errorEl.style.display = 'block';
-            }
-        };
-        
-        xhr.onerror = function() {
-            progressEl.classList.remove('active');
-            errorEl.textContent = 'Network error during upload';
-            errorEl.style.display = 'block';
-        };
-        
-        xhr.send(formData);
-    }
-
-    function updateImagePreview(fieldId, url, filename, size) {
-        const preview = document.getElementById(fieldId + '-preview');
-        if (!preview) return;
-        const img = preview.querySelector('img');
-        const urlVal = url || document.getElementById(fieldId).value;
-        if (urlVal) {
-            img.src = urlVal;
-            img.onerror = function() { preview.classList.remove('has-image'); };
-            preview.classList.add('has-image');
-            if (filename) {
-                document.getElementById(fieldId + '-filename').textContent = filename;
-            }
-            if (size) {
-                const sizeStr = size < 1024 ? size + ' B' : size < 1048576 ? (size/1024).toFixed(1) + ' KB' : (size/1048576).toFixed(1) + ' MB';
-                document.getElementById(fieldId + '-size').textContent = sizeStr;
-            }
-        } else {
-            preview.classList.remove('has-image');
-        }
-    }
-
-    function removeImage(fieldId) {
-        document.getElementById(fieldId).value = '';
-        const urlInput = document.getElementById(fieldId + '_url_input');
-        if (urlInput) urlInput.value = '';
-        const preview = document.getElementById(fieldId + '-preview');
-        if (preview) preview.classList.remove('has-image');
-    }
-
-    // Drag and drop support
-    document.querySelectorAll('.image-drop-zone').forEach(zone => {
-        zone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.classList.add('dragover');
-        });
-        zone.addEventListener('dragleave', function() {
-            this.classList.remove('dragover');
-        });
-        zone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.classList.remove('dragover');
-            const fileInput = this.querySelector('input[type="file"]');
-            if (e.dataTransfer.files.length) {
-                fileInput.files = e.dataTransfer.files;
-                const fieldId = fileInput.getAttribute('onchange').match(/'(\w+)'/)[1];
-                handleImageUpload(fileInput, fieldId);
-            }
-        });
-    });
-
-    // ===== Dynamic Field Builder Functions =====
-    let detailStatCount = 0;
-    let moduleDetailCount = 0;
-    let learningPathCount = 0;
-    let faqCount = 0;
-    let topicWiseGroupCount = 0;
-    let projectCount = 0;
-    let benefitCount = 0;
-    let advisorCount = 0;
-    let reviewCount = 0;
-    let whyJoinCount = 0;
-    let certFaqCount = 0;
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/&/g, '&').replace(/"/g, '"').replace(/</g, '<').replace(/>/g, '>');
-    }
-
-    function addDetailStat(number, label) {
-        detailStatCount++;
-        const container = document.getElementById('detail_stats_container');
-        const item = document.createElement('div');
-        item.className = 'dynamic-field-item';
-        item.innerHTML = `
-            <span class="field-number">${detailStatCount}</span>
-            <div class="field-inputs">
-                <input type="text" placeholder="Number (e.g. 12,500+)" value="${escapeHtml(number || '')}" data-field="number">
-                <input type="text" placeholder="Label (e.g. Learners)" value="${escapeHtml(label || '')}" data-field="label">
-            </div>
-            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        `;
-        container.appendChild(item);
-    }
-
-    function addModuleDetail(title, description) {
-        moduleDetailCount++;
-        const container = document.getElementById('modules_detail_container');
-        const item = document.createElement('div');
-        item.className = 'dynamic-field-item';
-        item.innerHTML = `
-            <span class="field-number">${moduleDetailCount}</span>
-            <div class="field-inputs">
-                <input type="text" placeholder="Module title (e.g. Python for Data Science)" value="${escapeHtml(title || '')}" data-field="title">
-                <textarea placeholder="Module description..." data-field="description">${escapeHtml(description || '')}</textarea>
-            </div>
-            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        `;
-        container.appendChild(item);
-    }
-
-    function addLearningPath(step, title, description) {
-        learningPathCount++;
-        const container = document.getElementById('learning_path_container');
-        const item = document.createElement('div');
-        item.className = 'dynamic-field-item';
-        item.innerHTML = `
-            <span class="field-number">${step || learningPathCount}</span>
-            <div class="field-inputs">
-                <input type="number" class="field-small" placeholder="Step" value="${step || learningPathCount}" data-field="step" min="1">
-                <input type="text" placeholder="Step title (e.g. Python & Statistics)" value="${escapeHtml(title || '')}" data-field="title">
-                <textarea placeholder="Step description..." data-field="description">${escapeHtml(description || '')}</textarea>
-            </div>
-            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        `;
-        container.appendChild(item);
-    }
-
-    function addFaq(question, answer) {
-        faqCount++;
-        const container = document.getElementById('faq_container');
-        const item = document.createElement('div');
-        item.className = 'dynamic-field-item';
-        item.innerHTML = `
-            <span class="field-number">${faqCount}</span>
-            <div class="field-inputs">
-                <input type="text" placeholder="Question (e.g. Do I need prior experience?)" value="${escapeHtml(question || '')}" data-field="question">
-                <textarea placeholder="Answer..." data-field="answer">${escapeHtml(answer || '')}</textarea>
-            </div>
-            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        `;
-        container.appendChild(item);
-    }
-
-    function addProject(title, description) {
-        projectCount++;
-        const container = document.getElementById('projects_list_container');
-        const item = document.createElement('div');
-        item.className = 'dynamic-field-item';
-        item.innerHTML = `
-            <span class="field-number">${projectCount}</span>
-            <div class="field-inputs">
-                <input type="text" placeholder="Project title (e.g. Network Security Audit)" value="${escapeHtml(title || '')}" data-field="title">
-                <textarea placeholder="Project description..." data-field="description">${escapeHtml(description || '')}</textarea>
-            </div>
-            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        `;
-        container.appendChild(item);
-    }
-
-    function addBenefit(icon, title, description) {
-        benefitCount++;
-        const container = document.getElementById('benefits_container');
-        const item = document.createElement('div');
-        item.className = 'dynamic-field-item';
-        item.innerHTML = `
-            <span class="field-number">${benefitCount}</span>
-            <div class="field-inputs">
-                <input type="text" placeholder="Icon (e.g. fas fa-briefcase)" value="${escapeHtml(icon || '')}" data-field="icon">
-                <input type="text" placeholder="Benefit title (e.g. Industry Certification)" value="${escapeHtml(title || '')}" data-field="title">
-                <textarea placeholder="Benefit description..." data-field="description">${escapeHtml(description || '')}</textarea>
-            </div>
-            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        `;
-        container.appendChild(item);
-    }
-
-    function addAdvisor(name, role, bio, image) {
-        advisorCount++;
-        const container = document.getElementById('advisor_container');
-        const item = document.createElement('div');
-        item.className = 'dynamic-field-item';
-        item.innerHTML = `
-            <span class="field-number">${advisorCount}</span>
-            <div class="field-inputs">
-                <input type="text" placeholder="Advisor name (e.g. Dr. John Smith)" value="${escapeHtml(name || '')}" data-field="name">
-                <input type="text" placeholder="Role (e.g. Senior Cybersecurity Expert)" value="${escapeHtml(role || '')}" data-field="role">
-                <textarea placeholder="Bio..." data-field="bio">${escapeHtml(bio || '')}</textarea>
-                <input type="text" placeholder="Image URL" value="${escapeHtml(image || '')}" data-field="image">
-            </div>
-            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        `;
-        container.appendChild(item);
-    }
-
-    function addReview(name, role, text) {
-        reviewCount++;
-        const container = document.getElementById('reviews_list_container');
-        const item = document.createElement('div');
-        item.className = 'dynamic-field-item';
-        item.innerHTML = `
-            <span class="field-number">${reviewCount}</span>
-            <div class="field-inputs">
-                <input type="text" placeholder="Reviewer name (e.g. Sarah Johnson)" value="${escapeHtml(name || '')}" data-field="name">
-                <input type="text" placeholder="Role (e.g. Software Engineer, Google)" value="${escapeHtml(role || '')}" data-field="role">
-                <textarea placeholder="Review text..." data-field="text">${escapeHtml(text || '')}</textarea>
-            </div>
-            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        `;
-        container.appendChild(item);
-    }
-
-    function addWhyJoin(icon, title, description) {
-        whyJoinCount++;
-        const container = document.getElementById('why_join_container');
-        const item = document.createElement('div');
-        item.className = 'dynamic-field-item';
-        item.innerHTML = `
-            <span class="field-number">${whyJoinCount}</span>
-            <div class="field-inputs">
-                <input type="text" placeholder="Icon (e.g. fas fa-check)" value="${escapeHtml(icon || '')}" data-field="icon">
-                <input type="text" placeholder="Point title (e.g. Real-world Projects)" value="${escapeHtml(title || '')}" data-field="title">
-                <textarea placeholder="Point description..." data-field="description">${escapeHtml(description || '')}</textarea>
-            </div>
-            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        `;
-        container.appendChild(item);
-    }
-
-    function addCertFaq(title, text) {
-        certFaqCount++;
-        const container = document.getElementById('certification_container');
-        const item = document.createElement('div');
-        item.className = 'dynamic-field-item';
-        item.innerHTML = `
-            <span class="field-number">${certFaqCount}</span>
-            <div class="field-inputs">
-                <input type="text" placeholder="FAQ title (e.g. When is the exam?)" value="${escapeHtml(title || '')}" data-field="title">
-                <textarea placeholder="FAQ answer text..." data-field="text">${escapeHtml(text || '')}</textarea>
-            </div>
-            <button type="button" class="btn-remove-field" onclick="removeFieldItem(this)" title="Remove">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        `;
-        container.appendChild(item);
-    }
-
-    function removeFieldItem(btn) {
-        const item = btn.closest('.dynamic-field-item');
-        const container = item.parentElement;
-        item.remove();
-        renumberFields(container);
-    }
-
-    function renumberFields(container) {
-        const items = container.querySelectorAll('.dynamic-field-item');
-        items.forEach((item, index) => {
-            const numEl = item.querySelector('.field-number');
-            if (numEl) numEl.textContent = index + 1;
-        });
-    }
-
-    // ===== Topic-wise Content Distribution Functions =====
-    function addTopicWiseGroup(heading, items) {
-        topicWiseGroupCount++;
-        const container = document.getElementById('topic_wise_content_container');
-        const group = document.createElement('div');
-        group.className = 'dynamic-field-item topic-wise-group';
-        group.innerHTML = `
-            <div class="topic-wise-group-header">
-                <span class="field-number">${topicWiseGroupCount}</span>
-                <input type="text" placeholder="Group heading (e.g. Salesforce CRM Introduction)" value="${escapeHtml(heading || '')}" data-field="heading" class="topic-wise-heading-input">
-                <button type="button" class="btn-remove-field" onclick="removeTopicWiseGroup(this)" title="Remove Group">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-            </div>
-            <div class="topic-wise-items-container"></div>
-            <button type="button" class="btn-add-field btn-add-item" onclick="addTopicWiseItem(this)">
-                <i class="fas fa-plus"></i> Add Item
-            </button>
-        `;
-        container.appendChild(group);
-
-        // Add existing items if provided
-        if (items && Array.isArray(items)) {
-            items.forEach(item => {
-                addTopicWiseItem(group.querySelector('.btn-add-item'), item.title || '', item.description || '', item.subtopics || []);
-            });
-        }
-    }
-
-    function addTopicWiseItem(btn, title, description, subtopics) {
-        const group = btn.closest('.topic-wise-group');
-        const itemsContainer = group.querySelector('.topic-wise-items-container');
-        const itemCount = itemsContainer.querySelectorAll('.topic-wise-item').length + 1;
-        const item = document.createElement('div');
-        item.className = 'topic-wise-item';
-        item.innerHTML = `
-            <div class="topic-wise-item-header">
-                <span class="field-number">${itemCount}</span>
-                <input type="text" placeholder="Item title (e.g. Quote Templates)" value="${escapeHtml(title || '')}" data-field="title">
-                <button type="button" class="btn-remove-field btn-remove-sm" onclick="removeTopicWiseItem(this)" title="Remove Item">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <textarea placeholder="Item description (optional)..." data-field="description">${escapeHtml(description || '')}</textarea>
-            <div class="topic-wise-subtopics-container"></div>
-            <button type="button" class="btn-add-field btn-add-subtopic" onclick="addTopicWiseSubtopic(this)">
-                <i class="fas fa-plus"></i> Add Subtopic
-            </button>
-        `;
-        itemsContainer.appendChild(item);
-
-        // Add existing subtopics if provided
-        if (subtopics && Array.isArray(subtopics)) {
-            subtopics.forEach(st => addTopicWiseSubtopic(item.querySelector('.btn-add-subtopic'), st));
-        }
-
-        renumberTopicWiseItems(group);
-    }
-
-    function addTopicWiseSubtopic(btn, subtopic) {
-        const item = btn.closest('.topic-wise-item');
-        const subtopicsContainer = item.querySelector('.topic-wise-subtopics-container');
-        const stEl = document.createElement('div');
-        stEl.className = 'topic-wise-subtopic';
-        stEl.innerHTML = `
-            <input type="text" placeholder="Subtopic name" value="${escapeHtml(subtopic || '')}" data-field="subtopic">
-            <button type="button" class="btn-remove-field btn-remove-sm" onclick="removeTopicWiseSubtopic(this)" title="Remove Subtopic">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
-        subtopicsContainer.appendChild(stEl);
-    }
-
-    function removeTopicWiseGroup(btn) {
-        const group = btn.closest('.topic-wise-group');
-        group.remove();
-        renumberTopicWiseGroups();
-    }
-
-    function removeTopicWiseItem(btn) {
-        const item = btn.closest('.topic-wise-item');
-        const group = item.closest('.topic-wise-group');
-        item.remove();
-        renumberTopicWiseItems(group);
-    }
-
-    function removeTopicWiseSubtopic(btn) {
-        btn.closest('.topic-wise-subtopic').remove();
-    }
-
-    function renumberTopicWiseGroups() {
-        const groups = document.querySelectorAll('#topic_wise_content_container .topic-wise-group');
-        groups.forEach((g, i) => {
-            g.querySelector('.field-number').textContent = i + 1;
-        });
-        topicWiseGroupCount = groups.length;
-    }
-
-    function renumberTopicWiseItems(group) {
-        if (!group) return;
-        const items = group.querySelectorAll('.topic-wise-item');
-        items.forEach((item, i) => {
-            item.querySelector('.field-number').textContent = i + 1;
-        });
-    }
-
-    function initDynamicFields() {
-        try {
-            const statsVal = document.getElementById('detail_stats').value.trim();
-            if (statsVal) {
-                const stats = JSON.parse(statsVal);
-                if (Array.isArray(stats)) {
-                    stats.forEach(s => addDetailStat(s.number || '', s.label || ''));
-                }
-            }
-        } catch(e) { console.warn('Could not parse detail_stats:', e); }
-
-        try {
-            const modulesVal = document.getElementById('modules_detail').value.trim();
-            if (modulesVal) {
-                const modules = JSON.parse(modulesVal);
-                if (Array.isArray(modules)) {
-                    modules.forEach(m => addModuleDetail(m.title || '', m.description || ''));
-                }
-            }
-        } catch(e) { console.warn('Could not parse modules_detail:', e); }
-
-        try {
-            const pathVal = document.getElementById('learning_path').value.trim();
-            if (pathVal) {
-                const paths = JSON.parse(pathVal);
-                if (Array.isArray(paths)) {
-                    paths.forEach(p => addLearningPath(p.step || '', p.title || '', p.description || ''));
-                }
-            }
-        } catch(e) { console.warn('Could not parse learning_path:', e); }
-
-        try {
-            const faqVal = document.getElementById('faq').value.trim();
-            if (faqVal) {
-                const faqs = JSON.parse(faqVal);
-                if (Array.isArray(faqs)) {
-                    faqs.forEach(f => addFaq(f.question || '', f.answer || ''));
-                }
-            }
-        } catch(e) { console.warn('Could not parse faq:', e); }
-
-        try {
-            const twcVal = document.getElementById('topic_wise_content').value.trim();
-            if (twcVal) {
-                const twc = JSON.parse(twcVal);
-                if (Array.isArray(twc)) {
-                    twc.forEach(g => addTopicWiseGroup(g.heading || '', g.items || []));
-                }
-            }
-        } catch(e) { console.warn('Could not parse topic_wise_content:', e); }
-
-        try {
-            const projVal = document.getElementById('projects_list').value.trim();
-            if (projVal) {
-                const projects = JSON.parse(projVal);
-                if (Array.isArray(projects)) {
-                    projects.forEach(p => addProject(p.title || '', p.description || ''));
-                }
-            }
-        } catch(e) { console.warn('Could not parse projects_list:', e); }
-
-        try {
-            const benVal = document.getElementById('benefits').value.trim();
-            if (benVal) {
-                const benefits = JSON.parse(benVal);
-                if (Array.isArray(benefits)) {
-                    benefits.forEach(b => addBenefit(b.icon || '', b.title || '', b.description || ''));
-                }
-            }
-        } catch(e) { console.warn('Could not parse benefits:', e); }
-
-        try {
-            const advVal = document.getElementById('advisor').value.trim();
-            if (advVal) {
-                const advisors = JSON.parse(advVal);
-                if (Array.isArray(advisors)) {
-                    advisors.forEach(a => addAdvisor(a.name || '', a.role || '', a.bio || '', a.image || ''));
-                }
-            }
-        } catch(e) { console.warn('Could not parse advisor:', e); }
-
-        try {
-            const revVal = document.getElementById('reviews_list').value.trim();
-            if (revVal) {
-                const reviews = JSON.parse(revVal);
-                if (Array.isArray(reviews)) {
-                    reviews.forEach(r => addReview(r.name || '', r.role || '', r.text || ''));
-                }
-            }
-        } catch(e) { console.warn('Could not parse reviews_list:', e); }
-
-        try {
-            const wjVal = document.getElementById('why_join').value.trim();
-            if (wjVal) {
-                const whyJoin = JSON.parse(wjVal);
-                if (Array.isArray(whyJoin)) {
-                    whyJoin.forEach(w => addWhyJoin(w.icon || '', w.title || '', w.description || ''));
-                }
-            }
-        } catch(e) { console.warn('Could not parse why_join:', e); }
-
-        try {
-            const certVal = document.getElementById('certification').value.trim();
-            if (certVal) {
-                const certFaqs = JSON.parse(certVal);
-                if (Array.isArray(certFaqs)) {
-                    certFaqs.forEach(c => addCertFaq(c.title || '', c.text || ''));
-                }
-            }
-        } catch(e) { console.warn('Could not parse certification:', e); }
-    }
-
-    function serializeDynamicFields() {
-        // Serialize Detail Stats
-        const statsItems = document.querySelectorAll('#detail_stats_container .dynamic-field-item');
-        const statsArr = [];
-        statsItems.forEach(item => {
-            const number = item.querySelector('[data-field="number"]').value.trim();
-            const label = item.querySelector('[data-field="label"]').value.trim();
-            if (number || label) statsArr.push({ number, label });
-        });
-        document.getElementById('detail_stats').value = statsArr.length > 0 ? JSON.stringify(statsArr) : '';
-
-        // Serialize Modules Detail
-        const moduleItems = document.querySelectorAll('#modules_detail_container .dynamic-field-item');
-        const modulesArr = [];
-        moduleItems.forEach(item => {
-            const title = item.querySelector('[data-field="title"]').value.trim();
-            const description = item.querySelector('[data-field="description"]').value.trim();
-            if (title || description) modulesArr.push({ title, description });
-        });
-        document.getElementById('modules_detail').value = modulesArr.length > 0 ? JSON.stringify(modulesArr) : '';
-
-        // Serialize Learning Path
-        const pathItems = document.querySelectorAll('#learning_path_container .dynamic-field-item');
-        const pathArr = [];
-        pathItems.forEach((item, index) => {
-            const step = parseInt(item.querySelector('[data-field="step"]').value) || (index + 1);
-            const title = item.querySelector('[data-field="title"]').value.trim();
-            const description = item.querySelector('[data-field="description"]').value.trim();
-            if (title || description) pathArr.push({ step, title, description });
-        });
-        document.getElementById('learning_path').value = pathArr.length > 0 ? JSON.stringify(pathArr) : '';
-
-        // Serialize FAQ
-        const faqItems = document.querySelectorAll('#faq_container .dynamic-field-item');
-        const faqArr = [];
-        faqItems.forEach(item => {
-            const question = item.querySelector('[data-field="question"]').value.trim();
-            const answer = item.querySelector('[data-field="answer"]').value.trim();
-            if (question || answer) faqArr.push({ question, answer });
-        });
-        document.getElementById('faq').value = faqArr.length > 0 ? JSON.stringify(faqArr) : '';
-
-        // Serialize Topic-wise Content Distribution
-        const twcGroups = document.querySelectorAll('#topic_wise_content_container .topic-wise-group');
-        const twcArr = [];
-        twcGroups.forEach(group => {
-            const heading = group.querySelector('[data-field="heading"]').value.trim();
-            const itemEls = group.querySelectorAll('.topic-wise-item');
-            const items = [];
-            itemEls.forEach(itemEl => {
-                const title = itemEl.querySelector('[data-field="title"]').value.trim();
-                const description = itemEl.querySelector('[data-field="description"]').value.trim();
-                const subtopicEls = itemEl.querySelectorAll('.topic-wise-subtopic');
-                const subtopics = [];
-                subtopicEls.forEach(stEl => {
-                    const stVal = stEl.querySelector('[data-field="subtopic"]').value.trim();
-                    if (stVal) subtopics.push(stVal);
-                });
-                if (title || description) items.push({ title, description, subtopics });
-            });
-            if (heading || items.length > 0) twcArr.push({ heading, items });
-        });
-        document.getElementById('topic_wise_content').value = twcArr.length > 0 ? JSON.stringify(twcArr) : '';
-
-        // Serialize Projects
-        const projItems = document.querySelectorAll('#projects_list_container .dynamic-field-item');
-        const projArr = [];
-        projItems.forEach(item => {
-            const title = item.querySelector('[data-field="title"]').value.trim();
-            const description = item.querySelector('[data-field="description"]').value.trim();
-            if (title || description) projArr.push({ title, description });
-        });
-        document.getElementById('projects_list').value = projArr.length > 0 ? JSON.stringify(projArr) : '';
-
-        // Serialize Benefits
-        const benItems = document.querySelectorAll('#benefits_container .dynamic-field-item');
-        const benArr = [];
-        benItems.forEach(item => {
-            const icon = item.querySelector('[data-field="icon"]').value.trim();
-            const title = item.querySelector('[data-field="title"]').value.trim();
-            const description = item.querySelector('[data-field="description"]').value.trim();
-            if (icon || title || description) benArr.push({ icon, title, description });
-        });
-        document.getElementById('benefits').value = benArr.length > 0 ? JSON.stringify(benArr) : '';
-
-        // Serialize Advisors
-        const advItems = document.querySelectorAll('#advisor_container .dynamic-field-item');
-        const advArr = [];
-        advItems.forEach(item => {
-            const name = item.querySelector('[data-field="name"]').value.trim();
-            const role = item.querySelector('[data-field="role"]').value.trim();
-            const bio = item.querySelector('[data-field="bio"]').value.trim();
-            const image = item.querySelector('[data-field="image"]').value.trim();
-            if (name || role || bio || image) advArr.push({ name, role, bio, image });
-        });
-        document.getElementById('advisor').value = advArr.length > 0 ? JSON.stringify(advArr) : '';
-
-        // Serialize Reviews
-        const revItems = document.querySelectorAll('#reviews_list_container .dynamic-field-item');
-        const revArr = [];
-        revItems.forEach(item => {
-            const name = item.querySelector('[data-field="name"]').value.trim();
-            const role = item.querySelector('[data-field="role"]').value.trim();
-            const text = item.querySelector('[data-field="text"]').value.trim();
-            if (name || role || text) revArr.push({ name, role, text });
-        });
-        document.getElementById('reviews_list').value = revArr.length > 0 ? JSON.stringify(revArr) : '';
-
-        // Serialize Why Join
-        const wjItems = document.querySelectorAll('#why_join_container .dynamic-field-item');
-        const wjArr = [];
-        wjItems.forEach(item => {
-            const icon = item.querySelector('[data-field="icon"]').value.trim();
-            const title = item.querySelector('[data-field="title"]').value.trim();
-            const description = item.querySelector('[data-field="description"]').value.trim();
-            if (icon || title || description) wjArr.push({ icon, title, description });
-        });
-        document.getElementById('why_join').value = wjArr.length > 0 ? JSON.stringify(wjArr) : '';
-
-        // Serialize Certification FAQs
-        const certItems = document.querySelectorAll('#certification_container .dynamic-field-item');
-        const certArr = [];
-        certItems.forEach(item => {
-            const title = item.querySelector('[data-field="title"]').value.trim();
-            const text = item.querySelector('[data-field="text"]').value.trim();
-            if (title || text) certArr.push({ title, text });
-        });
-        document.getElementById('certification').value = certArr.length > 0 ? JSON.stringify(certArr) : '';
-    }
-
-    // Form validation + serialize dynamic fields
-    function validateCourseForm() {
-        // Serialize dynamic fields into hidden textareas before submit
-        serializeDynamicFields();
-        return true;
-    }
-</script>
 {% endblock %}

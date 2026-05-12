@@ -5646,20 +5646,20 @@ section {
   color: #475569;
 }
 
-/* Wikipedia Style - Plain Information Display */
+/* Wikipedia Style - Light Border & Padding */
 .wiki-course-detail {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: Georgia, 'Times New Roman', serif;
+  padding: 40px 30px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: #fff;
-  color: #202122;
+  color: #333;
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .wiki-course-detail a {
-  color: #3366cc;
+  color: #0066cc;
   text-decoration: none;
 }
 
@@ -5668,68 +5668,71 @@ section {
 }
 
 .wiki-course-header {
-  border-bottom: 1px solid #a2a9b1;
-  padding-bottom: 20px;
-  margin-bottom: 25px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 25px;
+  margin-bottom: 30px;
 }
 
 .wiki-course-header h1 {
-  font-size: 28px;
-  font-weight: normal;
-  margin: 0 0 10px 0;
-  color: #202122;
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: #111;
 }
 
 .wiki-course-header .tagline {
-  font-size: 14px;
-  color: #54595d;
+  font-size: 15px;
+  color: #666;
 }
 
 .wiki-section {
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  padding: 25px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
 }
 
 .wiki-section h2 {
-  font-size: 20px;
-  font-weight: normal;
-  border-bottom: 1px solid #a2a9b1;
-  padding-bottom: 5px;
-  margin-bottom: 15px;
-  color: #202122;
+  font-size: 22px;
+  font-weight: 600;
+  border-bottom: 2px solid #0066cc;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+  color: #111;
 }
 
 .wiki-section p {
-  margin: 0 0 10px 0;
-  color: #202122;
+  margin: 0 0 12px 0;
+  color: #444;
 }
 
 .wiki-section ul {
   margin: 0 0 15px 0;
-  padding-left: 25px;
+  padding-left: 30px;
 }
 
 .wiki-section li {
-  margin-bottom: 5px;
-  color: #202122;
+  margin-bottom: 8px;
+  color: #444;
 }
 
 .wiki-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 10px 0;
+  margin: 15px 0;
   font-size: 14px;
 }
 
 .wiki-table th,
 .wiki-table td {
-  padding: 8px 12px;
-  border: 1px solid #a2a9b1;
+  padding: 12px 15px;
+  border: 1px solid #e0e0e0;
   text-align: left;
 }
 
 .wiki-table th {
-  background: #eaecf0;
-  font-weight: normal;
+  background: #f5f5f5;
+  font-weight: 600;
 }
 
 .wiki-table td {
@@ -5740,20 +5743,21 @@ section {
   float: right;
   width: 280px;
   margin: 0 0 20px 20px;
-  border: 1px solid #a2a9b1;
-  background: #f8f9fa;
-  padding: 10px;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+  padding: 15px;
   font-size: 13px;
+  border-radius: 8px;
 }
 
 .wiki-info-box h3 {
   font-size: 16px;
-  font-weight: normal;
+  font-weight: 600;
   text-align: center;
-  padding: 10px;
-  background: #eaecf0;
-  margin: -10px -10px 10px -10px;
-  border-bottom: 1px solid #a2a9b1;
+  padding: 12px;
+  background: #f0f0f0;
+  margin: -15px -15px 15px -15px;
+  border-radius: 7px 7px 0 0;
 }
 
 .wiki-info-box table {
@@ -5762,14 +5766,14 @@ section {
 
 .wiki-info-box th,
 .wiki-info-box td {
-  padding: 5px 8px;
+  padding: 8px 10px;
   border: none;
   font-size: 12px;
 }
 
 .wiki-info-box th {
-  background: #eaecf0;
-  font-weight: normal;
+  background: #f0f0f0;
+  font-weight: 600;
   width: 40%;
 }
 
@@ -5778,42 +5782,47 @@ section {
 }
 
 .wiki-tags span {
-  background: #eaecf0;
-  padding: 2px 8px;
-  margin: 2px;
-  border-radius: 2px;
+  background: #f0f0f0;
+  padding: 4px 12px;
+  margin: 4px;
+  border-radius: 4px;
   font-size: 13px;
+  color: #333;
 }
 
 .wiki-faq {
-  margin-bottom: 10px;
-  border: 1px solid #a2a9b1;
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .wiki-faq-question {
-  background: #f8f9fa;
-  padding: 8px 12px;
-  font-weight: bold;
-  border-bottom: 1px solid #a2a9b1;
+  background: #f8f8f8;
+  padding: 12px 15px;
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .wiki-faq-answer {
-  padding: 10px 12px;
+  padding: 15px;
+  color: #444;
 }
 
 .wiki-review {
-  border: 1px solid #a2a9b1;
-  padding: 10px;
-  margin-bottom: 10px;
-  background: #f8f9fa;
+  border: 1px solid #e8e8e8;
+  padding: 15px;
+  margin-bottom: 12px;
+  background: #fafafa;
+  border-radius: 6px;
 }
 
 .wiki-review strong {
-  color: #202122;
+  color: #111;
 }
 
 .wiki-review span {
-  color: #54595d;
+  color: #666;
   font-size: 13px;
 }
 

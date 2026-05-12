@@ -53,7 +53,6 @@ const CourseDetail = () => {
           process: (data.learningPath && data.learningPath.length > 0)
             ? data.learningPath.map(s => ({ step: s.step, title: s.title, description: s.description }))
             : (localCourse && localCourse.process) || [],
-          technologies: (data.technologies && data.technologies.length > 0) ? data.technologies : (localCourse && localCourse.technologies) || [],
           faq: (data.faq && data.faq.length > 0) ? data.faq : (localCourse && localCourse.faq) || [],
           stats: (data.detailStats && data.detailStats.length > 0) ? data.detailStats : (localCourse && localCourse.stats) || [],
           topicWiseContent: (data.topicWiseContent && data.topicWiseContent.length > 0) ? data.topicWiseContent : (localCourse && localCourse.topicWiseContent) || [],
@@ -193,12 +192,6 @@ const CourseDetail = () => {
           ))}
         </ul>
       </div>
-      )}
-            </div>
-            )}
-          </div>
-        </div>
-      </section>
       )}
 
       

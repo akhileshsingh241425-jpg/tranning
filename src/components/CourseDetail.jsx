@@ -125,7 +125,7 @@ const CourseDetail = () => {
   const nextCourse = allSlugs.length > 0 ? allSlugs[(currentIndex + 1) % allSlugs.length] : null;
 
   return (
-    <div className="service-detail-page">
+    <div className="wiki-course-detail">
       <SEO
         title={`${course.title} Course | Online Training`}
         description={course.overview ? course.overview.slice(0, 155) : `Enroll in ${course.title} training at TrainingProtec.`}
@@ -134,108 +134,66 @@ const CourseDetail = () => {
         ogType="article"
       />
 
-      {/* 1. Hero Section */}
-      <section className="sd-hero">
-        <div className="sd-hero-bg">
-          <img 
-            src={course.heroImage || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=80'} 
-            alt={course.title}
-            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=80'; }}
-          />
-          <div className="sd-hero-overlay"></div>
-        </div>
-        <div className="sd-hero-content">
-          <Link to="/#courses" className="sd-back-link">
-            <FaArrowLeft /> Back to Courses
-          </Link>
-          <div className="sd-hero-icon">
-            <FaGraduationCap />
-          </div>
-          <h1 className="sd-hero-title">{course.title}</h1>
-          <p className="sd-hero-tagline">{course.tagline}</p>
-          <div className="sd-hero-stats">
-            {course.stats && course.stats.length > 0 && course.stats.map((stat, index) => (
-              <div key={index} className="sd-stat">
-                <span className="sd-stat-number">{stat.number}</span>
-                <span className="sd-stat-label">{stat.label}</span>
-              </div>
-            ))}
-          </div>
-          <div className="course-detail-meta">
-            <span className="course-meta-item"><FaTag /> {course.price}</span>
-            <span className="course-meta-item"><FaClock /> {course.duration}</span>
-            <span className="course-meta-item"><FaGraduationCap /> {course.level}</span>
-          </div>
-        </div>
-      </section>
+      {/* Back Link */}
+      <div style={{marginBottom: '20px'}}>
+        <Link to="/courses" style={{color: '#3366cc', textDecoration: 'none', fontSize: '14px'}}>← Back to Courses</Link>
+      </div>
 
-      {/* 2. Eligibility */}
-      <section className="sd-prerequisites">
-        <div className="sd-container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-          <div className="sd-prereq-box">
-            <h3><FaClipboardList /> Eligibility</h3>
-            <p>{course.eligibility || 'This course is ideal for professionals looking to enhance their skills. No prior experience required.'}</p>
-            <div className="sd-prereq-tags">
-              <span className="sd-prereq-tag"><FaCheckCircle /> Beginners</span>
-              <span className="sd-prereq-tag"><FaCheckCircle /> Working Professionals</span>
-              <span className="sd-prereq-tag"><FaCheckCircle /> Career Changers</span>
-              <span className="sd-prereq-tag"><FaCheckCircle /> Students & Graduates</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Header */}
+      <div className="wiki-course-header">
+        <h1>{course.title}</h1>
+        {course.tagline && <p className="tagline">{course.tagline}</p>}
+        
+        {/* Quick Info Table */}
+        <table className="wiki-table" style={{marginTop: '15px'}}>
+          <tbody>
+            <tr>
+              <th>Price</th>
+              <td>{course.price}</td>
+              <th>Duration</th>
+              <td>{course.duration}</td>
+            </tr>
+            <tr>
+              <th>Level</th>
+              <td>{course.level}</td>
+              <th>Rating</th>
+              <td>{course.rating || '4.5'} ⭐</td>
+            </tr>
+            <tr>
+              <th>Students</th>
+              <td>{course.learners || '0'}</td>
+              <th>Reviews</th>
+              <td>{course.reviews || '0'}</td>
+            </tr>
+            {course.mode && (
+            <tr>
+              <th>Mode</th>
+              <td colSpan="3">{course.mode}</td>
+            </tr>
+            )}
+          </tbody>
+        </table>
+</div>
 
-      {/* 3. Overview + CTA */}
+      {/* About Course */}
       {course.overview && (
-      <section className="sd-overview">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Overview</span>
-            <h2>About This Course</h2>
-          </div>
-          <div className="sd-overview-content">
-            {renderParagraphs(course.overview, 'sd-overview-text')}
-            {course.keyBenefits && course.keyBenefits.length > 0 && (
-            <div className="sd-overview-grid">
-              <div className="sd-benefits">
-                <h3>What You'll Learn</h3>
-                <ul className="sd-benefits-list">
-                  {course.keyBenefits.map((benefit, index) => (
-                    <li key={index}>
-                      <FaCheckCircle className="sd-check-icon" />
-                      <span>{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              {course.price && (
-              <div className="sd-cta-sidebar">
-                <div className="sd-cta-box">
-                  <div className="sd-cta-badge"><FaStar /> 41% Off</div>
-                  <h3>Enroll Now</h3>
-                  <ul className="sd-cta-list">
-                    <li><FaCheckCircle /> Lifetime access</li>
-                    <li><FaCheckCircle /> Industry projects</li>
-                    <li><FaCheckCircle /> Certificate</li>
-                    <li><FaCheckCircle /> Resume help</li>
-                    <li><FaCheckCircle /> Interview prep</li>
-                    <li><FaCheckCircle /> 24/7 support</li>
-                  </ul>
-                  <div className="sd-cta-price">
-                    <span className="sd-cur-price">{course.price}</span>
-                    <span className="sd-old-price">$25,424</span>
-                    <span className="sd-discount">41% OFF</span>
-                  </div>
-                  <a href={`mailto:contact@trainingprotec.com?subject=${encodeURIComponent(`Enrollment: ${course.title}`)}`} className="sd-btn-enroll">Enroll Now</a>
-                  <button 
-                    onClick={() => document.getElementById('course-detail-modal').style.display = 'flex'}
-                    className="sd-btn-download"
-                  >
-                    ⚡ Quick Overview
-                  </button>
-                </div>
-              </div>
-              )}
+      <div className="wiki-section">
+        <h2>About This Course</h2>
+        <p>{course.overview}</p>
+      </div>
+      )}
+
+      {/* What You'll Learn */}
+      {course.keyBenefits && course.keyBenefits.length > 0 && (
+      <div className="wiki-section">
+        <h2>What You'll Learn</h2>
+        <ul>
+          {course.keyBenefits.map((benefit, index) => (
+            <li key={index}>{benefit}</li>
+          ))}
+        </ul>
+      </div>
+      )}
             </div>
             )}
           </div>
@@ -245,333 +203,102 @@ const CourseDetail = () => {
 
       
 
-      {/* 4. Course Curriculum */}
+      {/* Course Curriculum - Simple List */}
       {course.topicWiseContent && course.topicWiseContent.length > 0 && (
-      <section className="sd-curriculum">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Curriculum</span>
-            <h2>Course Curriculum</h2>
-            <p>Complete syllabus with detailed lessons</p>
+      <div className="wiki-section">
+        <h2>Course Curriculum</h2>
+        {course.topicWiseContent.map((group, gIndex) => (
+          <div key={gIndex} style={{marginBottom: '20px'}}>
+            <h3 style={{fontSize: '16px', fontWeight: 'bold', marginBottom: '10px'}}>{gIndex + 1}. {group.heading}</h3>
+            {group.items && group.items.length > 0 && (
+              <ul style={{marginLeft: '20px'}}>
+                {group.items.map((item, iIndex) => (
+                  <li key={iIndex} style={{marginBottom: '5px'}}>{item.title}</li>
+                ))}
+              </ul>
+            )}
           </div>
-          <div className="sd-curriculum-sections">
-            {course.topicWiseContent.map((group, gIndex) => (
-              <div key={gIndex} className={`sd-curriculum-section ${curriculumOpen === gIndex ? 'active' : (curriculumOpen === -1 && gIndex === 0 ? 'active' : '')}`}>
-                <button className="sd-curriculum-section-header" onClick={() => setCurriculumOpen(curriculumOpen === gIndex ? -1 : gIndex)}>
-                  <div className="sd-section-num">{gIndex + 1}</div>
-                  <div className="sd-section-info">
-                    <h3>{group.heading}</h3>
-                    <div className="sd-section-meta">
-                      <span><FaBookOpen /> {group.items ? group.items.length : 0} Lessons</span>
-                      <span><FaClock /> {group.items ? Math.floor(group.items.length * 3.5) + ':00' : '0:00'}</span>
-                    </div>
-                  </div>
-                  <div className="sd-section-toggle"><FaChevronDown /></div>
-                </button>
-                <div className="sd-curriculum-body">
-                  <div className="sd-curriculum-inner">
-                    {group.items && group.items.map((item, iIndex) => (
-                      <div key={iIndex} className="sd-lesson-item">
-                        <i className="fas fa-play-circle sd-lesson-icon"></i>
-                        <span className="sd-lesson-name">{item.title}</span>
-                        <span className="sd-lesson-duration">{item.subtopics ? item.subtopics.length * 5 : 5}:00</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        ))}
+      </div>
       )}
 
-      {/* 4b. Hands-on Projects */}
+      {/* Projects - Simple */}
       {course.projectsList && course.projectsList.length > 0 && (
-      <section className="sd-projects">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Hands-on</span>
-            <h2>Industry <strong>Projects</strong></h2>
-            <p>Build real-world projects to gain practical experience</p>
-          </div>
-          <div className="sd-projects-grid">
-            {course.projectsList.map((project, index) => (
-              <div key={index} className="sd-project-card">
-                <div className="sd-project-icon">
-                  <FaBriefcase />
-                </div>
-                <div className="sd-project-content">
-                  <h3>{project.title}</h3>
-                  <p>{project.description}</p>
-                </div>
-                <div className="sd-project-number">{index + 1}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <div className="wiki-section">
+        <h2>Industry Projects</h2>
+        <ul>
+          {course.projectsList.map((project, index) => (
+            <li key={index}>
+              <strong>{project.title}</strong>: {project.description}
+            </li>
+          ))}
+        </ul>
+      </div>
       )}
 
-      {/* 5. How to Prepare */}
+      {/* Why Join - Simple */}
       {course.why_join && course.why_join.length > 0 && (
-      <section className="sd-prepare">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Career Prep</span>
-            <h2>How to Prepare for a Career</h2>
-          </div>
-          <div className="sd-prepare-grid">
-            {course.why_join.map((item, index) => (
-              <div key={index} className="sd-prepare-card">
-                <div className="sd-prepare-icon"><i className={`fas ${item.icon}`}></i></div>
-                <h3>{item.title}</h3>
-                <p>{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <div className="wiki-section">
+        <h2>Why Join This Program</h2>
+        <ul>
+          {course.why_join.map((item, index) => (
+            <li key={index}><strong>{item.title}</strong>: {item.description}</li>
+          ))}
+        </ul>
+      </div>
       )}
 
-      {/* 6. Certification */}
-      {course.certification && course.certification.title && (
-      <section className="sd-cert-simple">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Certification</span>
-            <h2>Exam & <strong>Certification</strong></h2>
-          </div>
-          <div className="sd-cert-simple-content">
-            <div className="sd-cert-main">
-              <FaCertificate className="sd-cert-icon" />
-              <h3>{course.certification.title}</h3>
-              <div className="sd-cert-points">
-                <ul>
-                  <li>Validates your ability to design and deploy scalable, secure systems on cloud</li>
-                  <li>Recognized by top companies worldwide</li>
-                  <li>Boosts your career with higher salary packages</li>
-                  <li>Demonstrates expert-level cloud architecture skills</li>
-                </ul>
-              </div>
-            </div>
-            <div className="sd-cert-details-grid">
-              <div className="sd-cert-detail"><FaClock /><div><h4>Duration</h4><p>130 min</p></div></div>
-              <div className="sd-cert-detail"><FaBookOpen /><div><h4>Questions</h4><p>65</p></div></div>
-              <div className="sd-cert-detail"><FaRedo /><div><h4>Validity</h4><p>2 Years</p></div></div>
-              <div className="sd-cert-detail"><FaMoneyBillWave /><div><h4>Avg Salary</h4><p>$113K/yr</p></div></div>
-            </div>
-            <div className="sd-cert-roles">
-              <h4><FaBriefcase /> Job Roles:</h4>
-              <div className="sd-cert-role-tags">
-                <span>Solutions Architect</span>
-                <span>Cloud Architect</span>
-                <span>DevOps Engineer</span>
-                <span>Cloud Engineer</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      
       )}
 
-      {/* 7. Skills Covered */}
-      {course.technologies && course.technologies.length > 0 && (
-      <section className="sd-skills-simple">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Skills</span>
-            <h2>Skills Covered</h2>
-          </div>
-          <div className="sd-skills-simple-grid">
-            {course.technologies.map((tech, index) => (
-              <div key={index} className="sd-skill-simple-item">
-                <FaCheckCircle />
-                <span>{tech}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      )}
-
-      {/* 7b. Tools & Technologies (Like Intellipaat) */}
-      {course.toolsCovered && course.toolsCovered.length > 0 && (
-      <section className="sd-tools-section">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Tools</span>
-            <h2>Tools & Technologies You'll <strong>Master</strong></h2>
-          </div>
-          <div className="sd-tools-grid">
-            {course.toolsCovered.map((tool, index) => (
-              <div key={index} className="sd-tool-card">
-                <FaCheckCircle />
-                <span>{tool}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      )}
-
-      {/* 7c. Skills Covered (if separate from technologies) */}
+      {/* Skills - Simple */}
       {course.skillsCovered && course.skillsCovered.length > 0 && (
-      <section className="sd-skills-section">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Capabilities</span>
-            <h2>What You'll Be <strong>Capable Of</strong></h2>
-          </div>
-          <div className="sd-skills-grid">
-            {course.skillsCovered.map((skill, index) => (
-              <div key={index} className="sd-skill-card">
-                <FaCheckCircle />
-                <span>{skill}</span>
-              </div>
-            ))}
-          </div>
+      <div className="wiki-section">
+        <h2>Skills You'll Gain</h2>
+        <div className="wiki-tags">
+          {course.skillsCovered.map((skill, index) => (
+            <span key={index}>{skill}</span>
+          ))}
         </div>
-      </section>
+      </div>
       )}
 
-      {/* 8. Why Join */}
-      <section className="sd-why-join-demo">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Why Join</span>
-            <h2>Why Join this <strong>Program</strong></h2>
-          </div>
-          <div className="sd-why-grid">
-            <div className="sd-why-card"><FaProjectDiagram /><h3>Expert Curriculum</h3><p>Designed with industry experts</p></div>
-            <div className="sd-why-card"><FaUsers /><h3>Expert Trainers</h3><p>Learn from practitioners</p></div>
-            <div className="sd-why-card"><FaBriefcase /><h3>Real Projects</h3><p>Hands-on experience</p></div>
-            <div className="sd-why-card"><FaHeadset /><h3>24/7 Support</h3><p>Mentor assistance</p></div>
-          </div>
-        </div>
-      </section>
-
-      {/* 8b. Prerequisites */}
-      {course.eligibility && (
-      <section className="sd-prerequisites">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Prerequisites</span>
-            <h2>What You Need to <strong>Know Before</strong></h2>
-          </div>
-          <div className="sd-prereq-content">
-            {renderParagraphs(course.eligibility, 'sd-prereq-text')}
-          </div>
-        </div>
-      </section>
-      )}
-
-      {/* 8c. Target Audience */}
-      {course.targetAudience && (
-      <section className="sd-target-audience">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Who Should Join</span>
-            <h2>Ideal <strong>Target Audience</strong></h2>
-          </div>
-          <div className="sd-target-content">
-            {renderParagraphs(course.targetAudience, 'sd-target-text')}
-          </div>
-        </div>
-      </section>
-      )}
-
-      {/* 8d. Student Reviews - What Students Say */}
+      {/* Student Reviews - Simple */}
       {course.reviewsList && course.reviewsList.length > 0 && (
-      <section className="sd-testimonials">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Testimonials</span>
-            <h2>What Our <strong>Students Say</strong></h2>
+      <div className="wiki-section">
+        <h2>Student Reviews</h2>
+        {course.reviewsList.map((review, index) => (
+          <div key={index} className="wiki-review">
+            <p>"{review.text}"</p>
+            <strong>{review.name}</strong>
+            <span> - {review.role}</span>
           </div>
-          <div className="sd-testimonials-grid">
-            {course.reviewsList.map((review, index) => (
-              <div key={index} className="sd-testimonial-card">
-                <div className="sd-testimonial-quote">
-                  <FaQuoteLeft />
-                </div>
-                <p className="sd-testimonial-text">{review.text}</p>
-                <div className="sd-testimonial-author">
-                  <div className="sd-author-avatar">
-                    {review.name.charAt(0)}
-                  </div>
-                  <div className="sd-author-info">
-                    <h4>{review.name}</h4>
-                    <span>{review.role}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        ))}
+      </div>
       )}
 
-      {/* 9. Technologies */}
-      {course.technologies && course.technologies.length > 0 && (
-      <section className="sd-technologies">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">Tools</span>
-            <h2>What You'll Work With</h2>
-          </div>
-          <div className="sd-tech-grid">
-            {course.technologies.map((tech, index) => (
-              <div key={index} className="sd-tech-tag">{tech}</div>
-            ))}
-          </div>
-        </div>
-      </section>
-      )}
-
-      {/* 10. FAQ */}
+      {/* FAQ - Simple */}
       {course.faq && course.faq.length > 0 && (
-      <section className="sd-faq">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <span className="sd-badge">FAQ</span>
-            <h2>Frequently Asked Questions</h2>
+      <div className="wiki-section">
+        <h2>Frequently Asked Questions</h2>
+        {course.faq.map((item, index) => (
+          <div key={index} className="wiki-faq">
+            <div className="wiki-faq-question">{item.question}</div>
+            <div className="wiki-faq-answer">{item.answer}</div>
           </div>
-          <div className="sd-faq-list">
-            {course.faq.map((item, index) => (
-              <div key={index} className={`sd-faq-item ${activeAccordion === index ? 'active' : ''}`}>
-                <button className="sd-faq-question" onClick={() => setActiveAccordion(activeAccordion === index ? null : index)}>
-                  <span>{item.question}</span>
-                  {activeAccordion === index ? <FaChevronUp /> : <FaChevronDown />}
-                </button>
-                <div className={`sd-faq-answer ${activeAccordion === index ? 'open' : ''}`}>
-                  {renderParagraphs(item.answer)}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        ))}
+      </div>
       )}
 
-      {/* 11. Final CTA */}
-      <section className="sd-cta">
-        <div className="sd-container">
-          <div className="sd-cta-content">
-            <FaQuoteLeft className="sd-cta-quote" />
-            <h2>Ready to Start Learning?</h2>
-            <p>Enroll in {course.title} today and take the first step toward mastering new skills.</p>
-            <div className="sd-cta-buttons">
-              <a href={`mailto:contact@trainingprotec.com?subject=${encodeURIComponent(`Enrollment: ${course.title}`)}`} className="sd-btn-primary">
-                <FaEnvelope /> Enroll Now — {course.price}
-              </a>
-              <a href="/#courses" className="sd-btn-secondary">
-                <FaArrowLeft /> Browse More Courses
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* CTA - Simple */}
+      <div className="wiki-section" style={{textAlign: 'center', background: '#f8f9fa', padding: '30px'}}>
+        <h2>Ready to Start?</h2>
+        <p>Enroll in this course today.</p>
+        <a href={`mailto:contact@trainingprotec.com?subject=${encodeURIComponent(`Enrollment: ${course.title}`)}`} 
+           style={{display: 'inline-block', background: '#0066cc', color: '#fff', padding: '12px 24px', borderRadius: '5px', textDecoration: 'none', marginTop: '10px'}}>
+          Enroll Now - {course.price}
+        </a>
+      </div>
 
       {/* Course Detail Modal */}
       <div id="course-detail-modal" className="course-modal" onClick={(e) => { if(e.target.id === 'course-detail-modal') e.target.style.display = 'none' }}>
@@ -667,26 +394,12 @@ const CourseDetail = () => {
         </div>
       </div>
 
-      {/* 12. Navigation */}
+      {/* Navigation - Simple */}
       {allSlugs.length > 1 && (
-      <section className="sd-navigation">
-        <div className="sd-container">
-          <div className="sd-nav-links">
-            {prevCourse && (
-            <Link to={`/courses/${prevCourse.slug}`} className="sd-nav-prev">
-              <FaArrowLeft />
-              <div><span>Previous</span><h4>{prevCourse.title}</h4></div>
-            </Link>
-            )}
-            {nextCourse && (
-            <Link to={`/courses/${nextCourse.slug}`} className="sd-nav-next">
-              <div><span>Next</span><h4>{nextCourse.title}</h4></div>
-              <FaArrowRight />
-            </Link>
-            )}
-          </div>
-        </div>
-      </section>
+      <div className="wiki-section" style={{display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #a2a9b1', paddingTop: '20px'}}>
+        {prevCourse && <Link to={`/courses/${prevCourse.slug}`} style={{color: '#3366cc'}}>← {prevCourse.title}</Link>}
+        {nextCourse && <Link to={`/courses/${nextCourse.slug}`} style={{color: '#3366cc'}}>{nextCourse.title} →</Link>}
+      </div>
       )}
     </div>
   );

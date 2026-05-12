@@ -684,6 +684,19 @@ class Course(db.Model):
     why_join = db.Column(db.Text, default='')            # JSON: [{icon, title, description}]
     certification = db.Column(db.Text, default='')      # JSON: {title, faqs: [{title, text}]}
 
+    # ---- New Fields for Detailed Course Page ----
+    tools_covered = db.Column(db.Text, default='')     # comma-separated or JSON
+    skills_covered = db.Column(db.Text, default='')    # comma-separated or JSON
+    target_audience = db.Column(db.Text, default='')  # Text for target audience description
+    training_schedule = db.Column(db.Text, default='') # Text for training schedule
+    mode = db.Column(db.String(100), default='')      # e.g. Live Online, Self-Paced
+    language = db.Column(db.String(50), default='English')
+    emi_options = db.Column(db.Text, default='')       # Text for EMI options
+    discount_percent = db.Column(db.Integer, default=0)
+    prerequisites = db.Column(db.Text, default='')     # Prerequisites text
+    start_date = db.Column(db.String(100), default='') # Start date
+    next_batch = db.Column(db.String(100), default='') # Next batch info
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -734,9 +747,22 @@ class Course(db.Model):
         base['advisor'] = json.loads(self.advisor) if self.advisor else {}
         base['reviewsList'] = json.loads(self.reviews_list) if self.reviews_list else []
         base['whyJoin'] = json.loads(self.why_join) if self.why_join else []
-        base['certification'] = json.loads(self.certification) if self.certification else {}
+base['certification'] = json.loads(self.certification) if self.certification else {}
+        
+        # New fields
+        base['tools_covered'] = self.tools_covered or ''
+        base['skills_covered'] = self.skills_covered or ''
+        base['target_audience'] = self.target_audience or ''
+        base['training_schedule'] = self.training_schedule or ''
+        base['mode'] = self.mode or ''
+        base['language'] = self.language or 'English'
+        base['emi_options'] = self.emi_options or ''
+        base['discount_percent'] = self.discount_percent or 0
+        base['prerequisites'] = self.prerequisites or ''
+        base['start_date'] = self.start_date or ''
+        base['next_batch'] = self.next_batch or ''
+        
         return base
-
 class Subscriber(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -1285,7 +1311,18 @@ def admin_course_new():
             advisor=request.form.get('advisor', ''),
             reviews_list=request.form.get('reviews_list', ''),
             why_join=request.form.get('why_join', ''),
-            certification=request.form.get('certification', '')
+            certification=request.form.get('certification', ''),
+            tools_covered=request.form.get('tools_covered', ''),
+            skills_covered=request.form.get('skills_covered', ''),
+            target_audience=request.form.get('target_audience', ''),
+            training_schedule=request.form.get('training_schedule', ''),
+            mode=request.form.get('mode', ''),
+            language=request.form.get('language', 'English'),
+            emi_options=request.form.get('emi_options', ''),
+            discount_percent=safe_int(request.form.get('discount_percent', ''), 0),
+            prerequisites=request.form.get('prerequisites', ''),
+            start_date=request.form.get('start_date', ''),
+            next_batch=request.form.get('next_batch', '')
         )
         try:
             db.session.add(course)
@@ -1344,6 +1381,20 @@ def admin_course_edit(id):
         course.reviews_list = request.form.get('reviews_list', '')
         course.why_join = request.form.get('why_join', '')
         course.certification = request.form.get('certification', '')
+        
+        # New fields
+        course.tools_covered = request.form.get('tools_covered', '')
+        course.skills_covered = request.form.get('skills_covered', '')
+        course.target_audience = request.form.get('target_audience', '')
+        course.training_schedule = request.form.get('training_schedule', '')
+        course.mode = request.form.get('mode', '')
+        course.language = request.form.get('language', 'English')
+        course.emi_options = request.form.get('emi_options', '')
+        course.discount_percent = safe_int(request.form.get('discount_percent', ''), 0)
+        course.prerequisites = request.form.get('prerequisites', '')
+        course.start_date = request.form.get('start_date', '')
+        course.next_batch = request.form.get('next_batch', '')
+        
         try:
             db.session.commit()
             flash('Course updated successfully!', 'success')

@@ -501,10 +501,10 @@ const CourseDetail = () => {
             <h3 style={{ margin: '0 0 16px 0', fontSize: '22px', fontWeight: '700', color: '#1e293b', fontFamily: 'Poppins, sans-serif' }}>Enroll Now</h3>
             
             <div style={{ marginBottom: '18px', display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '32px', fontWeight: '800', color: '#0066cc' }}>${course.price}</span>
+              <span style={{ fontSize: '32px', fontWeight: '800', color: '#0066cc' }}>{String(course.price).replace('$','')}</span>
               {course.originalPrice && (
                 <>
-                  <span style={{ fontSize: '18px', color: '#94a3b8', textDecoration: 'line-through' }}>${typeof course.originalPrice === 'string' ? course.originalPrice.replace('$','') : course.originalPrice}</span>
+                  <span style={{ fontSize: '18px', color: '#94a3b8', textDecoration: 'line-through' }}>{String(course.originalPrice).replace('$','')}</span>
                   <span style={{ background: '#dcfce7', color: '#16a34a', padding: '4px 10px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' }}>
                     {Math.round((1 - (parseInt(String(course.price).replace(/\D/g,'')) || 0) / (parseInt(String(course.originalPrice).replace(/\D/g,'')) || 1)) * 100)}% OFF
                   </span>

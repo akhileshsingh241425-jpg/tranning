@@ -506,7 +506,7 @@ const CourseDetail = () => {
                 <>
                   <span style={{ fontSize: '18px', color: '#94a3b8', textDecoration: 'line-through' }}>${typeof course.originalPrice === 'string' ? course.originalPrice.replace('$','') : course.originalPrice}</span>
                   <span style={{ background: '#dcfce7', color: '#16a34a', padding: '4px 10px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' }}>
-                    {Math.round((1 - (typeof course.price === 'string' ? parseInt(course.price) : course.price) / (typeof course.originalPrice === 'string' ? parseInt(course.originalPrice.replace('$','')) : course.originalPrice)) * 100)}% OFF
+                    {Math.round((1 - (parseInt(String(course.price).replace(/\D/g,'')) || 0) / (parseInt(String(course.originalPrice).replace(/\D/g,'')) || 1)) * 100)}% OFF
                   </span>
                 </>
               )}

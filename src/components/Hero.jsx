@@ -1,57 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { FaArrowRight, FaPlay, FaCheckCircle, FaChevronLeft, FaChevronRight, FaStar } from 'react-icons/fa';
-import hero1 from '../assets/images/hero/hero-1.jpg';
-import hero2 from '../assets/images/hero/hero-2.jpg';
-import hero3 from '../assets/images/hero/hero-3.jpg';
-import hero4 from '../assets/images/hero/hero-4.jpg';
-import hero5 from '../assets/images/hero/hero-5.jpg';
 
-const heroSlides = [
-  {
-    url: hero1,
-    title: "Data Science"
-  },
-  {
-    url: hero2,
-    title: "Cloud & DevOps"
-  },
-  {
-    url: hero3,
-    title: "AI & ML"
-  },
-  {
-    url: hero4,
-    title: "Cyber Security"
-  },
-  {
-    url: hero5,
-    title: "Full Stack Dev"
-  }
+const defaultSlides = [
+  { url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&q=80', title: 'Data Science' },
+  { url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80', title: 'Cloud & DevOps' },
+  { url: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1920&q=80', title: 'AI & ML' },
+  { url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&q=80', title: 'Cyber Security' },
+  { url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1920&q=80', title: 'Full Stack Dev' }
 ];
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slides, setSlides] = useState(defaultSlides);
+
+  useEffect(() => {
+    const apiUrl = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/api/hero-settings` : '/api/hero-settings';
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(data => {
+        if (data.slides && data.slides.length > 0) {
+          setSlides(data.slides);
+        }
+      })
+      .catch(err => console.log('Using default hero slides:', err.message));
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides]);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
   return (
     <section className="hero" id="home">
       {/* Background Slider */}
       <div className="hero-slider-bg">
-        {heroSlides.map((slide, index) => (
+        {slides.map((slide, index) => (
           <div 
             key={index}
             className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
@@ -128,7 +121,7 @@ const Hero = () => {
 
       {/* Slider Dots */}
       <div className="hero-slider-dots">
-        {heroSlides.map((slide, index) => (
+        {slides.map((slide, index) => (
           <button 
             key={index}
             className={`hero-dot ${index === currentSlide ? 'active' : ''}`}

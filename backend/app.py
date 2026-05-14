@@ -13,7 +13,12 @@ import logging
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from apscheduler.schedulers.background import BackgroundScheduler
+try:
+    from apscheduler.schedulers.background import BackgroundScheduler
+    APSCHEDULER_AVAILABLE = True
+except ImportError:
+    APSCHEDULER_AVAILABLE = False
+    BackgroundScheduler = None
 import atexit
 
 # Load environment variables from .env file (in same directory as app.py)
@@ -696,6 +701,13 @@ class Course(db.Model):
     prerequisites = db.Column(db.Text, default='')     # Prerequisites text
     start_date = db.Column(db.String(100), default='') # Start date
     next_batch = db.Column(db.String(100), default='') # Next batch info
+    exam_code = db.Column(db.String(50), default='')
+    exam_questions = db.Column(db.String(100), default='')
+    exam_format = db.Column(db.String(200), default='')
+    exam_duration = db.Column(db.String(50), default='')
+    exam_passing_score = db.Column(db.String(100), default='')
+    exam_languages = db.Column(db.String(200), default='')
+    course_objectives = db.Column(db.Text, default='') # Course objectives JSON
 
     def to_dict(self):
         return {
@@ -738,16 +750,21 @@ class Course(db.Model):
         base['modulesDetail'] = json.loads(self.modules_detail) if self.modules_detail else []
         base['learningPath'] = json.loads(self.learning_path) if self.learning_path else []
         base['technologies'] = [t.strip() for t in self.technologies_list.split(',')] if self.technologies_list else []
-        base['faq'] = json.loads(self.faq) if self.faq else []
+        faq_items = []
+        if self.faq:
+            for line in self.faq.split('\n'):
+                if '|' in line:
+                    parts = line.split('|', 1)
+                    faq_items.append({'question': parts[0].strip(), 'answer': parts[1].strip()})
+        base['faq'] = faq_items
         base['detailStats'] = json.loads(self.detail_stats) if self.detail_stats else []
-        base['topicWiseContent'] = json.loads(self.topic_wise_content) if self.topic_wise_content else []
+        base['topicWiseContent'] = [b.strip() for b in self.topic_wise_content.split('\n') if b.strip()] if self.topic_wise_content else []
         base['eligibility'] = self.eligibility or ''
-        base['projectsList'] = json.loads(self.projects_list) if self.projects_list else []
-        base['benefits'] = json.loads(self.benefits) if self.benefits else []
-        base['advisor'] = json.loads(self.advisor) if self.advisor else {}
-        base['reviewsList'] = json.loads(self.reviews_list) if self.reviews_list else []
-        base['whyJoin'] = json.loads(self.why_join) if self.why_join else []
-base['certification'] = json.loads(self.certification) if self.certification else {}
+        base['projectsList'] = [b.strip() for b in self.projects_list.split('\n') if b.strip()] if self.projects_list else []
+        base['benefits'] = [b.strip() for b in self.benefits.split('\n') if b.strip()] if self.benefits else []
+        base['reviewsList'] = [b.strip() for b in self.reviews_list.split('\n') if b.strip()] if self.reviews_list else []
+        base['whyJoin'] = [b.strip() for b in self.why_join.split('\n') if b.strip()] if self.why_join else []
+        base['certification'] = self.certification or ''
         
         # New fields
         base['tools_covered'] = self.tools_covered or ''
@@ -761,6 +778,16 @@ base['certification'] = json.loads(self.certification) if self.certification els
         base['prerequisites'] = self.prerequisites or ''
         base['start_date'] = self.start_date or ''
         base['next_batch'] = self.next_batch or ''
+        base['exam_code'] = self.exam_code or ''
+        base['exam_questions'] = self.exam_questions or ''
+        base['exam_format'] = self.exam_format or ''
+        base['exam_duration'] = self.exam_duration or ''
+        base['exam_passing_score'] = self.exam_passing_score or ''
+        base['exam_languages'] = self.exam_languages or ''
+        try:
+            base['courseObjectives'] = json.loads(self.course_objectives) if self.course_objectives else []
+        except:
+            base['courseObjectives'] = []
         
         return base
 class Subscriber(db.Model):
@@ -782,6 +809,27 @@ class Subscriber(db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return Admin.query.get(int(user_id))
+
+class SiteSettings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    hero_slide_1 = db.Column(db.String(500), default='')
+    hero_slide_2 = db.Column(db.String(500), default='')
+    hero_slide_3 = db.Column(db.String(500), default='')
+    hero_slide_4 = db.Column(db.String(500), default='')
+    hero_slide_5 = db.Column(db.String(500), default='')
+    hero_title_1 = db.Column(db.String(200), default='Data Science')
+    hero_title_2 = db.Column(db.String(200), default='Cloud & DevOps')
+    hero_title_3 = db.Column(db.String(200), default='AI & ML')
+    hero_title_4 = db.Column(db.String(200), default='Cyber Security')
+    hero_title_5 = db.Column(db.String(200), default='Full Stack Dev')
+
+def get_settings():
+    settings = SiteSettings.query.first()
+    if not settings:
+        settings = SiteSettings()
+        db.session.add(settings)
+        db.session.commit()
+    return settings
 
 # ==================== API ROUTES ====================
 
@@ -1008,6 +1056,23 @@ def get_testimonials():
     testimonials = Testimonial.query.filter_by(is_published=True).order_by(Testimonial.sort_order, Testimonial.created_at.desc()).all()
     return jsonify([t.to_dict() for t in testimonials])
 
+@app.route('/api/hero-settings', methods=['GET'])
+def get_hero_settings():
+    settings = get_settings()
+    slides = []
+    default_images = [
+        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&q=80',
+        'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80',
+        'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1920&q=80',
+        'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&q=80',
+        'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1920&q=80'
+    ]
+    for i in range(1, 6):
+        img = getattr(settings, f'hero_slide_{i}') or default_images[i-1]
+        title = getattr(settings, f'hero_title_{i}') or f'Slide {i}'
+        slides.append({'url': img, 'title': title})
+    return jsonify({'slides': slides})
+
 # ==================== IMAGE UPLOAD ====================
 
 def allowed_file(filename):
@@ -1094,6 +1159,33 @@ def admin_dashboard():
                          recent_contacts=recent_contacts,
                          recent_courses=recent_courses,
                          recent_subscribers=recent_subscribers)
+
+@app.route('/admin/settings', methods=['GET', 'POST'])
+@login_required
+def admin_settings():
+    settings = get_settings()
+    if request.method == 'POST':
+        # Handle file uploads
+        for i in range(1, 6):
+            file_obj = request.files.get(f'hero_image_{i}')
+            url_val = request.form.get(f'hero_url_{i}')
+            title_val = request.form.get(f'hero_title_{i}')
+            
+            if file_obj and file_obj.filename:
+                filename = secure_filename(f"hero_{i}_{int(datetime.now().timestamp())}_{file_obj.filename}")
+                file_obj.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                setattr(settings, f'hero_slide_{i}', f"/static/uploads/{filename}")
+            elif url_val:
+                setattr(settings, f'hero_slide_{i}', url_val)
+            
+            if title_val:
+                setattr(settings, f'hero_title_{i}', title_val)
+        
+        db.session.commit()
+        flash('Settings updated successfully!', 'success')
+        return redirect(url_for('admin_settings'))
+    
+    return render_template('admin/settings.html', settings=settings)
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -1272,11 +1364,28 @@ def admin_course_new():
     if request.method == 'POST':
         title = request.form.get('title', '').strip()
         slug = request.form.get('slug', '').strip() or title.lower().replace(' ', '-').replace('&', 'and')
+        
+        # Handle image upload
+        image_url = request.form.get('image', '')
+        image_file = request.files.get('image_file')
+        if image_file and image_file.filename:
+            filename = secure_filename(f"course_new_{int(datetime.now().timestamp())}_{image_file.filename}")
+            image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            image_url = f"/static/uploads/{filename}"
+        
+        # Handle hero image upload
+        hero_url = request.form.get('hero_image', '')
+        hero_file = request.files.get('hero_image_file')
+        if hero_file and hero_file.filename:
+            filename = secure_filename(f"hero_new_{int(datetime.now().timestamp())}_{hero_file.filename}")
+            hero_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            hero_url = f"/static/uploads/{filename}"
+        
         course = Course(
             title=title,
             slug=slug,
             description=request.form.get('description', ''),
-            image=request.form.get('image', ''),
+            image=image_url,
             icon=request.form.get('icon', 'FaBookOpen'),
             price=safe_int(request.form.get('price', ''), 0),
             original_price=safe_int(request.form.get('original_price', ''), 0),
@@ -1296,7 +1405,7 @@ def admin_course_new():
             is_published=request.form.get('is_published') == 'on',
             sort_order=safe_int(request.form.get('sort_order', ''), 0),
             tagline=request.form.get('tagline', ''),
-            hero_image=request.form.get('hero_image', ''),
+            hero_image=hero_url,
             overview=request.form.get('overview', ''),
             key_benefits=request.form.get('key_benefits', ''),
             modules_detail=request.form.get('modules_detail', ''),
@@ -1322,7 +1431,14 @@ def admin_course_new():
             discount_percent=safe_int(request.form.get('discount_percent', ''), 0),
             prerequisites=request.form.get('prerequisites', ''),
             start_date=request.form.get('start_date', ''),
-            next_batch=request.form.get('next_batch', '')
+            next_batch=request.form.get('next_batch', ''),
+            exam_code=request.form.get('exam_code', ''),
+            exam_questions=request.form.get('exam_questions', ''),
+            exam_format=request.form.get('exam_format', ''),
+            exam_duration=request.form.get('exam_duration', ''),
+            exam_passing_score=request.form.get('exam_passing_score', ''),
+            exam_languages=request.form.get('exam_languages', ''),
+            course_objectives=request.form.get('course_objectives', '')
         )
         try:
             db.session.add(course)
@@ -1340,12 +1456,27 @@ def admin_course_new():
 @login_required
 def admin_course_edit(id):
     course = Course.query.get_or_404(id)
+    
+    # File upload helper
+    def handle_upload(file_obj, old_url=''):
+        if file_obj and file_obj.filename:
+            filename = secure_filename(f"course_{id}_{int(datetime.now().timestamp())}_{file_obj.filename}")
+            file_obj.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return f"/static/uploads/{filename}"
+        return old_url
 
     if request.method == 'POST':
         course.title = request.form.get('title', '').strip()
         course.slug = request.form.get('slug', '').strip() or course.title.lower().replace(' ', '-').replace('&', 'and')
         course.description = request.form.get('description', '')
-        course.image = request.form.get('image', '')
+        
+        # Handle image upload (file takes priority over URL)
+        image_file = request.files.get('image_file')
+        if image_file and image_file.filename:
+            course.image = handle_upload(image_file, course.image)
+        elif request.form.get('image'):
+            course.image = request.form.get('image', '')
+        
         course.icon = request.form.get('icon', 'FaBookOpen')
         course.price = safe_int(request.form.get('price', ''), 0)
         course.original_price = safe_int(request.form.get('original_price', ''), 0)
@@ -1365,7 +1496,13 @@ def admin_course_edit(id):
         course.is_published = request.form.get('is_published') == 'on'
         course.sort_order = safe_int(request.form.get('sort_order', ''), 0)
         course.tagline = request.form.get('tagline', '')
-        course.hero_image = request.form.get('hero_image', '')
+        
+        # Handle hero image upload (file takes priority over URL)
+        hero_file = request.files.get('hero_image_file')
+        if hero_file and hero_file.filename:
+            course.hero_image = handle_upload(hero_file, course.hero_image)
+        elif request.form.get('hero_image'):
+            course.hero_image = request.form.get('hero_image', '')
         course.overview = request.form.get('overview', '')
         course.key_benefits = request.form.get('key_benefits', '')
         course.modules_detail = request.form.get('modules_detail', '')
@@ -1394,6 +1531,13 @@ def admin_course_edit(id):
         course.prerequisites = request.form.get('prerequisites', '')
         course.start_date = request.form.get('start_date', '')
         course.next_batch = request.form.get('next_batch', '')
+        course.exam_code = request.form.get('exam_code', '')
+        course.exam_questions = request.form.get('exam_questions', '')
+        course.exam_format = request.form.get('exam_format', '')
+        course.exam_duration = request.form.get('exam_duration', '')
+        course.exam_passing_score = request.form.get('exam_passing_score', '')
+        course.exam_languages = request.form.get('exam_languages', '')
+        course.course_objectives = request.form.get('course_objectives', '')
         
         try:
             db.session.commit()
@@ -2609,6 +2753,24 @@ def migrate_db():
             'reviews_list': "ALTER TABLE course ADD COLUMN reviews_list TEXT DEFAULT ''",
             'why_join': "ALTER TABLE course ADD COLUMN why_join TEXT DEFAULT ''",
             'certification': "ALTER TABLE course ADD COLUMN certification TEXT DEFAULT ''",
+            'tools_covered': "ALTER TABLE course ADD COLUMN tools_covered TEXT DEFAULT ''",
+            'skills_covered': "ALTER TABLE course ADD COLUMN skills_covered TEXT DEFAULT ''",
+            'target_audience': "ALTER TABLE course ADD COLUMN target_audience TEXT DEFAULT ''",
+            'training_schedule': "ALTER TABLE course ADD COLUMN training_schedule TEXT DEFAULT ''",
+            'mode': "ALTER TABLE course ADD COLUMN mode VARCHAR(100) DEFAULT ''",
+            'language': "ALTER TABLE course ADD COLUMN language VARCHAR(50) DEFAULT 'English'",
+            'emi_options': "ALTER TABLE course ADD COLUMN emi_options TEXT DEFAULT ''",
+            'discount_percent': "ALTER TABLE course ADD COLUMN discount_percent INTEGER DEFAULT 0",
+            'prerequisites': "ALTER TABLE course ADD COLUMN prerequisites TEXT DEFAULT ''",
+            'start_date': "ALTER TABLE course ADD COLUMN start_date VARCHAR(100) DEFAULT ''",
+            'next_batch': "ALTER TABLE course ADD COLUMN next_batch VARCHAR(100) DEFAULT ''",
+            'exam_code': "ALTER TABLE course ADD COLUMN exam_code VARCHAR(50) DEFAULT ''",
+            'exam_questions': "ALTER TABLE course ADD COLUMN exam_questions VARCHAR(100) DEFAULT ''",
+            'exam_format': "ALTER TABLE course ADD COLUMN exam_format VARCHAR(200) DEFAULT ''",
+            'exam_duration': "ALTER TABLE course ADD COLUMN exam_duration VARCHAR(50) DEFAULT ''",
+            'exam_passing_score': "ALTER TABLE course ADD COLUMN exam_passing_score VARCHAR(100) DEFAULT ''",
+            'exam_languages': "ALTER TABLE course ADD COLUMN exam_languages VARCHAR(200) DEFAULT ''",
+            'course_objectives': "ALTER TABLE course ADD COLUMN course_objectives TEXT DEFAULT ''",
         }
         for col_name, sql in course_new_columns.items():
             if col_name not in course_columns:
@@ -2737,7 +2899,7 @@ scheduler = None
 def start_scheduler():
     """Start the APScheduler (only for direct `python app.py` usage)."""
     global scheduler
-    if scheduler is not None:
+    if scheduler is not None or not APSCHEDULER_AVAILABLE:
         return
     scheduler = BackgroundScheduler()
     scheduler.add_job(

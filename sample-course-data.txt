@@ -1,0 +1,145 @@
+# Sample Data Science & AI Course - Admin Form Data (Simple Text Format)
+
+## 1. Basic Info
+- **Title**: Data Science & AI Course
+- **Slug**: data-science-ai
+- **Tagline**: Become a Data Scientist - Master Python, ML, Deep Learning & AI
+- **Image URL**: https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800
+
+## 2. Course Features
+- **Duration**: 6 Months
+- **Level**: Beginner to Advanced
+- **Modules**: 25
+- **Projects**: 18
+- **Mode**: Live Online / Self-Paced
+- **Language**: English
+
+## 3. Pricing
+- **Sale Price**: 299
+- **Original Price**: 799
+- **Discount %**: 63
+- **EMI Options**: No Cost EMI starting @ $50/month
+
+## 4. About This Course
+
+**Short Description**:
+Master Data Science & AI with Python, ML, Deep Learning, NLP and Computer Vision. Build 18+ real-world projects and get job-ready in 6 months.
+
+**Overview**:
+The Data Science & AI training program is designed to make you job-ready in one of the highest-paying careers in tech. This comprehensive course covers Python programming, statistics, machine learning, deep learning, NLP, and computer vision.
+
+You will work on real-world datasets and build 18+ industry projects including predictive models, recommendation systems, image classifiers, and AI chatbots.
+
+## 5. What You'll Learn (one per line)
+Master Python programming from scratch
+Learn statistics and probability for data science
+Build machine learning models with scikit-learn
+Create deep learning models with TensorFlow and Keras
+Work with natural language processing (NLP)
+Build computer vision applications
+Create recommendation systems
+Deploy ML models to production
+Work with big data tools like Spark and Hadoop
+Get career guidance and interview preparation
+
+## 6. Course Curriculum (one per line - heading | topics format)
+Module 1: Python Fundamentals | Introduction to Python, Variables, Control Flow, Functions, Data Structures
+Module 2: Python for Data Science | NumPy, Pandas, Data Visualization, Working with Files
+Module 3: Statistics & Probability | Descriptive Statistics, Probability, Hypothesis Testing, Correlation
+Module 4: Machine Learning | Linear Regression, Logistic Regression, Decision Trees, Random Forest, SVM
+Module 5: Deep Learning | Neural Networks, CNN, RNN & LSTM, TensorFlow & Keras
+Module 6: NLP & Computer Vision | NLP Basics, Text Embeddings, Sentiment Analysis, Computer Vision
+
+## 7. Industry Projects (one per line)
+House Price Prediction Model - Build a model to predict house prices based on various features
+Customer Churn Prediction - Predict customer churn using classification algorithms
+Credit Card Fraud Detection - Build anomaly detection system for fraud detection
+Customer Segmentation - Use clustering to segment customers based on behavior
+Movie Recommendation System - Build hybrid recommendation system for movies
+Sales Forecasting - Forecast future sales using time series analysis
+Face Recognition System - Build AI-powered attendance system using face recognition
+Object Detection - Implement YOLO for real-time object detection
+AI Chatbot - Build intelligent chatbot using NLP and deep learning
+Sentiment Analysis - Analyze customer sentiment from product reviews
+
+## 8. Why Join This Program (one per line)
+Expert Mentors - Learn from industry experts with 10+ years experience
+18+ Live Projects - Work on real-world projects with industry datasets
+Certificate - Get recognized certificate upon completion
+24/7 Support - Round-the-clock doubt resolution
+
+## 9. Skills You'll Gain
+Python Programming, Data Analysis, Data Visualization, Machine Learning, Deep Learning, NLP, Computer Vision, TensorFlow, Model Deployment, SQL
+
+## Tools Covered
+Python, NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn, TensorFlow, Keras, PyTorch, OpenCV, NLTK, SQL, MongoDB, Docker, AWS
+
+## 10. Pre-requisites
+This course is ideal for:
+- Beginners with no prior programming experience
+- Working professionals looking to switch to Data Science
+- IT professionals wanting to add AI/ML skills
+- Engineering and Science graduates
+
+No prior coding experience required. Basic computer knowledge is sufficient.
+
+## 11. Training Schedule
+Weekdays: Mon-Fri (7-10 PM IST)
+Weekends: Sat-Sun (10 AM-2 PM IST)
+
+**Start Date**: Every Monday
+**Next Batch**: Starting 1st June 2026
+
+## 12. Exam Details
+- **Exam Code**: DS-001
+- **Number of Questions**: Maximum 90 Questions
+- **Exam Format**: Multiple Choice and Performance-Based
+- **Exam Duration**: 90 Minutes
+- **Passing Score**: 750 (on a scale of 100-900)
+- **Languages**: English, Japanese, Portuguese, Spanish
+
+## 13. Course Objectives (one per line)
+Develop a comprehensive understanding of foundational security concepts and principles that serve as the cornerstone of cybersecurity.
+Learn to identify, assess, and mitigate various threats, vulnerabilities, and risks that can compromise the security of digital environments.
+Master the principles and practices of designing, implementing, and managing a robust security architecture.
+Gain expertise in day-to-day security operations, including incident response, monitoring, and safeguarding critical assets.
+Acquire the knowledge and skills required to oversee and manage a security program effectively.
+
+## 14. Student Reviews (one per line)
+Rahul Sharma | Data Scientist at Flipkart | Best course for Data Science! The projects are industry-relevant and helped me crack interviews.
+Priya Gupta | ML Engineer at Amazon | The curriculum is comprehensive. I transitioned from a non-tech background to ML Engineer within 6 months.
+Amit Kumar | Data Analyst at Google | Excellent teaching methodology. The Python to Deep Learning journey was smooth.
+Sneha Patel | AI Engineer at Microsoft | The NLP and Computer Vision sections are amazing. Got placed with 150% salary hike.
+
+## 15. FAQ (question | answer per line)
+Do I need prior coding experience? | No, this course starts from basics. We have dedicated Python modules for beginners.
+What is the course duration? | 6 months with weekday and weekend batch options. Lifetime access to course materials.
+Are there any prerequisites? | Basic mathematical knowledge (class 10 level) is sufficient. No prior programming needed.
+Do you provide job assistance? | Yes, we provide resume building, mock interviews, and have tie-ups with 200+ hiring partners.
+Can I learn at my own pace? | Yes, we provide self-paced learning option with lifetime access to all course materials.
+What tools will I learn? | Python, NumPy, Pandas, Scikit-learn, TensorFlow, Keras, NLP, Computer Vision, SQL.
+Is the certificate recognized? | Yes, our certificates are recognized by top companies and can be showcased on LinkedIn.
+Do you offer EMI options? | Yes, we offer easy EMI options starting at affordable monthly installments.
+
+## 16. Social Proof Stats
+- **Rating**: 4.8
+- **Reviews Count**: 15420
+- **Total Learners**: 25,000+
+
+## 17. Tags
+- **Badge**: Bestseller
+- **Curriculum Tags**: Python, Machine Learning, Deep Learning, AI, Data Science, NLP
+
+## 18. Target Audience
+Who should take this course:
+- Fresh graduates looking for a high-paying tech career
+- Working professionals in non-tech roles wanting to transition to Data Science
+- Software developers wanting to add AI/ML skills
+- Business analysts who want to make data-driven decisions
+- Anyone interested in artificial intelligence and machine learning
+
+## 19. Certification
+Data Science & AI Certification - Get recognized certificate upon completion
+
+## 20. Publish
+- **Publish Course**: ✓ (checked)

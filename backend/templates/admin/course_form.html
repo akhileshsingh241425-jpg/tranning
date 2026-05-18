@@ -66,11 +66,15 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <input type="text" name="tagline" class="form-control" value="{{ course.tagline if course else '' }}" placeholder="Brief tagline for the course">
             </div>
             <div class="form-group form-group-full">
-                <label>Course Image URL</label>
-                <input type="text" name="image" class="form-control" value="{{ course.image if course else '' }}" placeholder="https://example.com/course-image.jpg">
+                <label>Course Image (Upload)</label>
+                <input type="file" name="image_file" class="form-control" accept="image/*">
                 {% if course and course.image %}
                 <img src="{{ course.image }}" class="image-preview">
                 {% endif %}
+            </div>
+            <div class="form-group form-group-full">
+                <label>Or Course Image URL</label>
+                <input type="text" name="image" class="form-control" value="{{ course.image if course else '' }}" placeholder="https://example.com/course-image.jpg">
             </div>
         </div>
 

@@ -59,7 +59,7 @@ const CourseDetail = () => {
           projectsList: (data.projectsList && data.projectsList.length > 0) ? data.projectsList : (localCourse && localCourse.projectsList) || [],
           toolsCovered: (data.tools_covered && Array.isArray(data.tools_covered)) ? data.tools_covered : (typeof data.tools_covered === 'string' ? data.tools_covered.split(',').map(t => t.trim()).filter(t => t) : []) || (localCourse && localCourse.toolsCovered) || [],
           skillsCovered: (data.skills_covered && Array.isArray(data.skills_covered)) ? data.skills_covered : (typeof data.skills_covered === 'string' ? data.skills_covered.split(',').map(s => s.trim()).filter(s => s) : []) || (localCourse && localCourse.skillsCovered) || [],
-          targetAudience: data.target_audience || (localCourse && localCourse.targetAudience),
+          targetAudience: (data.target_audience && Array.isArray(data.target_audience)) ? data.target_audience : (typeof data.target_audience === 'string' ? data.target_audience.split('\n').filter(t => t.trim()) : []) || (localCourse && localCourse.targetAudience) || [],
           trainingSchedule: data.training_schedule || (localCourse && localCourse.trainingSchedule),
           start_date: data.start_date || (localCourse && localCourse.start_date),
           next_batch: data.next_batch || (localCourse && localCourse.next_batch),
@@ -504,6 +504,40 @@ const CourseDetail = () => {
                 <div style={{ padding: '18px 20px', color: '#475569', fontSize: '15px' }}>A: {item.answer || item.A || item.a || ''}</div>
               </div>
             ))}
+          </div>
+          )}
+
+          {/* Target Audience */}
+          {course.targetAudience && course.targetAudience.length > 0 && (
+          <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
+            <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Who Should Join?</h2>
+            <ul style={{ paddingLeft: '25px', color: '#475569' }}>
+              {course.targetAudience.map((item, index) => (
+                <li key={index} style={{ marginBottom: '8px' }}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          )}
+
+          {/* Benefits */}
+          {course.benefits && course.benefits.length > 0 && (
+          <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
+            <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Career Benefits</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+              {course.benefits.map((benefit, index) => (
+                <div key={index} style={{ padding: '15px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '10px' }}>
+                  <p style={{ margin: 0, color: '#166534', fontSize: '15px' }}>{benefit}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          )}
+
+          {/* EMI Options */}
+          {course.emiOptions && (
+          <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
+            <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>EMI Options</h2>
+            <p style={{ color: '#475569', fontSize: '16px' }}>{course.emiOptions}</p>
           </div>
           )}
 

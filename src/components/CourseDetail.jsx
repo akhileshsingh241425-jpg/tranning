@@ -53,7 +53,7 @@ const CourseDetail = () => {
           stats: (data.detailStats && data.detailStats.length > 0) ? data.detailStats : (localCourse && localCourse.stats) || [],
           topicWiseContent: (data.topicWiseContent && data.topicWiseContent.length > 0) ? data.topicWiseContent : (localCourse && localCourse.topicWiseContent) || [],
           eligibility: data.eligibility || data.prerequisites || (localCourse && localCourse.eligibility),
-          why_join: data.why_join || (localCourse && localCourse.why_join),
+          why_join: data.whyJoin || (localCourse && localCourse.why_join),
           certification: data.certification || (localCourse && localCourse.certification),
           reviewsList: (data.reviewsList && data.reviewsList.length > 0) ? data.reviewsList : (localCourse && localCourse.reviewsList) || [],
           projectsList: (data.projectsList && data.projectsList.length > 0) ? data.projectsList : (localCourse && localCourse.projectsList) || [],
@@ -411,6 +411,36 @@ const CourseDetail = () => {
             <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px 0' }}>
               {course.skillsCovered.map((skill, index) => (
                 <span key={index} style={{ display: 'inline-block', marginRight: '20px', marginBottom: '10px', color: '#0066cc', fontSize: '18px', fontWeight: '500' }}>{skill}</span>
+              ))}
+            </div>
+          </div>
+          )}
+
+          {/* Projects */}
+          {course.projectsList && course.projectsList.length > 0 && (
+          <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
+            <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Industry Projects</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '15px' }}>
+              {course.projectsList.map((project, index) => {
+                const parts = typeof project === 'string' ? project.split(' - ') : [project.title || '', project.description || ''];
+                return (
+                  <div key={index} style={{ padding: '18px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px' }}>
+                    <h4 style={{ margin: '0 0 8px', color: '#1e293b', fontSize: '16px' }}>{parts[0]}</h4>
+                    <p style={{ margin: 0, fontSize: '14px', color: '#64748b', lineHeight: '1.5' }}>{parts[1] || ''}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          )}
+
+          {/* Tools */}
+          {course.toolsCovered && course.toolsCovered.length > 0 && (
+          <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
+            <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Tools You'll Use</h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px 0' }}>
+              {course.toolsCovered.map((tool, index) => (
+                <span key={index} style={{ display: 'inline-block', marginRight: '20px', marginBottom: '10px', color: '#16a34a', fontSize: '18px', fontWeight: '500' }}>{tool}</span>
               ))}
             </div>
           </div>

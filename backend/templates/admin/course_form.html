@@ -157,7 +157,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <button type="button" class="line-item-add-btn" id="btn-key-benefits">
                     <span style="font-size:16px;font-weight:700;">+</span> Add Learning Point
                 </button>
-                <input type="hidden" name="key_benefits" id="key-benefits-data" value="">
+                <input type="hidden" name="key_benefits" id="key-benefits-data" value="{{ course.key_benefits if course else '' }}">
                 <div class="section-note">Click + to add each learning point as a separate row</div>
             </div>
         </div>
@@ -170,7 +170,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <button type="button" class="line-item-add-btn" id="btn-curriculum">
                     <span style="font-size:16px;font-weight:700;">+</span> Add Module
                 </button>
-                <input type="hidden" name="topic_wise_content" id="curriculum-data" value="">
+                <input type="hidden" name="topic_wise_content" id="curriculum-data" value="{{ course.topic_wise_content if course else '' }}">
                 <div class="section-note">Click + to add each module. Format: Module Name | Topic 1, Topic 2</div>
             </div>
         </div>
@@ -183,7 +183,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <button type="button" class="line-item-add-btn" id="btn-projects">
                     <span style="font-size:16px;font-weight:700;">+</span> Add Project
                 </button>
-                <input type="hidden" name="projects_list" id="projects-data" value="">
+                <input type="hidden" name="projects_list" id="projects-data" value="{{ course.projects_list if course else '' }}">
                 <div class="section-note">Click + to add each project. Format: Title - Description</div>
             </div>
         </div>
@@ -196,7 +196,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <button type="button" class="line-item-add-btn" id="btn-why-join">
                     <span style="font-size:16px;font-weight:700;">+</span> Add Point
                 </button>
-                <input type="hidden" name="why_join" id="why-join-data" value="">
+                <input type="hidden" name="why_join" id="why-join-data" value="{{ course.why_join if course else '' }}">
                 <div class="section-note">Click + to add each point. Format: Title - Description</div>
             </div>
         </div>
@@ -223,7 +223,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <button type="button" class="line-item-add-btn" id="btn-prerequisites">
                     <span style="font-size:16px;font-weight:700;">+</span> Add Pre-requisite
                 </button>
-                <input type="hidden" name="prerequisites" id="prerequisites-data" value="">
+                <input type="hidden" name="prerequisites" id="prerequisites-data" value="{{ course.prerequisites if course else '' }}">
                 <div class="section-note">Click + to add each pre-requisite as a separate row</div>
             </div>
         </div>
@@ -286,7 +286,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <button type="button" class="line-item-add-btn" id="btn-objectives">
                     <span style="font-size:16px;font-weight:700;">+</span> Add Objective
                 </button>
-                <input type="hidden" name="course_objectives" id="objectives-data" value="">
+                <input type="hidden" name="course_objectives" id="objectives-data" value="{{ course.course_objectives if course else '' }}">
                 <div class="section-note">Click + to add each objective as a separate row</div>
             </div>
         </div>
@@ -299,7 +299,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <button type="button" class="line-item-add-btn" id="btn-reviews">
                     <span style="font-size:16px;font-weight:700;">+</span> Add Review
                 </button>
-                <input type="hidden" name="reviews_list" id="reviews-data" value="">
+                <input type="hidden" name="reviews_list" id="reviews-data" value="{{ course.reviews_list if course else '' }}">
                 <div class="section-note">Click + to add each review</div>
             </div>
         </div>
@@ -312,7 +312,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <button type="button" class="line-item-add-btn" id="btn-faq">
                     <span style="font-size:16px;font-weight:700;">+</span> Add FAQ
                 </button>
-                <input type="hidden" name="faq" id="faq-data" value="">
+                <input type="hidden" name="faq" id="faq-data" value="{{ course.faq if course else '' }}">
                 <div class="section-note">Click + to add each FAQ</div>
             </div>
         </div>
@@ -550,11 +550,11 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         var hasTwo = [false, true, true, true, false, false];
         var field1Labels = ['', 'Module Name', 'Project Title', 'Title', '', ''];
         var field2Labels = ['', 'Topics (comma separated)', 'Short Description', 'Description', '', ''];
-        
+
         fields.forEach(function(field, idx) {
-            var textarea = document.querySelector('textarea[name="' + field + '"]');
-            if (!textarea || !textarea.value) return;
-            var lines = textarea.value.split('\n').filter(function(l) { return l.trim(); });
+            var hiddenInput = document.getElementById(field.replace('_', '-') + '-data');
+            if (!hiddenInput || !hiddenInput.value) return;
+            var lines = hiddenInput.value.split('\n').filter(function(l) { return l.trim(); });
             lines.forEach(function(line) {
                 addLineItem(ids[idx], labels[idx], hasTwo[idx], field1Labels[idx], field2Labels[idx]);
                 var rows = document.querySelectorAll('#' + ids[idx] + ' .line-item-row');
@@ -572,9 +572,9 @@ textarea.form-control { min-height: 100px; resize: vertical; }
     }
 
     function loadReviews() {
-        var textarea = document.querySelector('textarea[name="reviews_list"]');
-        if (!textarea || !textarea.value) return;
-        var lines = textarea.value.split('\n').filter(function(l) { return l.trim(); });
+        var hiddenInput = document.getElementById('reviews-data');
+        if (!hiddenInput || !hiddenInput.value) return;
+        var lines = hiddenInput.value.split('\n').filter(function(l) { return l.trim(); });
         lines.forEach(function(line) {
             var parts = line.split(' | ');
             if (parts.length >= 3) {
@@ -592,9 +592,9 @@ textarea.form-control { min-height: 100px; resize: vertical; }
     }
 
     function loadFaqs() {
-        var textarea = document.querySelector('textarea[name="faq"]');
-        if (!textarea || !textarea.value) return;
-        var lines = textarea.value.split('\n').filter(function(l) { return l.trim(); });
+        var hiddenInput = document.getElementById('faq-data');
+        if (!hiddenInput || !hiddenInput.value) return;
+        var lines = hiddenInput.value.split('\n').filter(function(l) { return l.trim(); });
         lines.forEach(function(line) {
             var parts = line.split(' | ');
             if (parts.length >= 2) {

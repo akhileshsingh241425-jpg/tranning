@@ -79,7 +79,8 @@ const CourseDetail = () => {
           exam_duration: data.exam_duration || (localCourse && localCourse.exam_duration),
           exam_passing_score: data.exam_passing_score || (localCourse && localCourse.exam_passing_score),
           exam_format: data.exam_format || (localCourse && localCourse.exam_format),
-          exam_languages: data.exam_languages || (localCourse && localCourse.exam_languages)
+          exam_languages: data.exam_languages || (localCourse && localCourse.exam_languages),
+          vendors: (data.vendors && Array.isArray(data.vendors)) ? data.vendors : (typeof data.vendors === 'string' ? data.vendors.split(',').map(v => v.trim()).filter(v => v) : []) || []
         });
         setLoading(false);
       })
@@ -424,6 +425,18 @@ const CourseDetail = () => {
             <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px 0' }}>
               {course.skillsCovered.map((skill, index) => (
                 <span key={index} style={{ display: 'inline-block', marginRight: '20px', marginBottom: '10px', color: '#0066cc', fontSize: '18px', fontWeight: '500' }}>{skill}</span>
+              ))}
+            </div>
+          </div>
+          )}
+
+          {/* Vendors / Certification Partners */}
+          {course.vendors && course.vendors.length > 0 && (
+          <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
+            <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Certification Partners</h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px 0', gap: '12px' }}>
+              {course.vendors.map((vendor, index) => (
+                <span key={index} style={{ display: 'inline-block', padding: '8px 16px', background: '#fef3c7', border: '1px solid #f59e0b', borderRadius: '20px', color: '#92400e', fontSize: '14px', fontWeight: '500' }}>{vendor}</span>
               ))}
             </div>
           </div>

@@ -544,15 +544,22 @@ textarea.form-control { min-height: 100px; resize: vertical; }
     }
 
     function loadLineItems() {
-        var fields = ['key_benefits', 'topic_wise_content', 'projects_list', 'why_join', 'prerequisites', 'course_objectives'];
+        var fieldDataMap = {
+            'key_benefits': 'key-benefits-data',
+            'topic_wise_content': 'curriculum-data',
+            'projects_list': 'projects-data',
+            'why_join': 'why-join-data',
+            'prerequisites': 'prerequisites-data',
+            'course_objectives': 'objectives-data'
+        };
         var ids = ['key-benefits-container', 'curriculum-container', 'projects-container', 'why-join-container', 'prerequisites-container', 'objectives-container'];
         var labels = ['Learning Point', 'Module', 'Project', 'Point', 'Prerequisite', 'Objective'];
         var hasTwo = [false, true, true, true, false, false];
         var field1Labels = ['', 'Module Name', 'Project Title', 'Title', '', ''];
         var field2Labels = ['', 'Topics (comma separated)', 'Short Description', 'Description', '', ''];
 
-        fields.forEach(function(field, idx) {
-            var hiddenInput = document.getElementById(field.replace('_', '-') + '-data');
+        Object.keys(fieldDataMap).forEach(function(field, idx) {
+            var hiddenInput = document.getElementById(fieldDataMap[field]);
             if (!hiddenInput || !hiddenInput.value) return;
             var lines = hiddenInput.value.split('\n').filter(function(l) { return l.trim(); });
             lines.forEach(function(line) {

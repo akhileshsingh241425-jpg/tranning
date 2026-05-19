@@ -80,7 +80,8 @@ const CourseDetail = () => {
           exam_passing_score: data.exam_passing_score || (localCourse && localCourse.exam_passing_score),
           exam_format: data.exam_format || (localCourse && localCourse.exam_format),
           exam_languages: data.exam_languages || (localCourse && localCourse.exam_languages),
-          vendors: (data.vendors && Array.isArray(data.vendors)) ? data.vendors : (typeof data.vendors === 'string' ? data.vendors.split(',').map(v => v.trim()).filter(v => v) : []) || []
+          vendors: (data.vendors && Array.isArray(data.vendors)) ? data.vendors : (typeof data.vendors === 'string' ? data.vendors.split(',').map(v => v.trim()).filter(v => v) : []) || [],
+          category: data.category || (localCourse && localCourse.category) || '',
         });
         setLoading(false);
       })

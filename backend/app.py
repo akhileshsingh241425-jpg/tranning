@@ -709,6 +709,7 @@ class Course(db.Model):
     exam_languages = db.Column(db.String(200), default='')
     course_objectives = db.Column(db.Text, default='') # Course objectives JSON
     vendors = db.Column(db.Text, default='')  # Vendor/Certification partners (comma-separated)
+    category = db.Column(db.String(100), default='')  # Course category
 
     def to_dict(self):
         return {
@@ -810,6 +811,7 @@ class Course(db.Model):
         
         # Vendors/Certification Partners
         base['vendors'] = [v.strip() for v in self.vendors.split(',')] if self.vendors else []
+        base['category'] = self.category or ''
         
         return base
 class Subscriber(db.Model):
@@ -1461,7 +1463,8 @@ def admin_course_new():
             exam_passing_score=request.form.get('exam_passing_score', ''),
             exam_languages=request.form.get('exam_languages', ''),
             course_objectives=request.form.get('course_objectives', ''),
-            vendors=request.form.get('vendors', '')
+            vendors=request.form.get('vendors', ''),
+            category=request.form.get('category', '')
         )
         try:
             db.session.add(course)
@@ -1562,6 +1565,7 @@ def admin_course_edit(id):
         course.exam_languages = request.form.get('exam_languages', '')
         course.course_objectives = request.form.get('course_objectives', '')
         course.vendors = request.form.get('vendors', '')
+        course.category = request.form.get('category', '')
         
         try:
             db.session.commit()
@@ -2796,6 +2800,7 @@ def migrate_db():
             'exam_languages': "ALTER TABLE course ADD COLUMN exam_languages VARCHAR(200) DEFAULT ''",
             'course_objectives': "ALTER TABLE course ADD COLUMN course_objectives TEXT DEFAULT ''",
             'vendors': "ALTER TABLE course ADD COLUMN vendors TEXT DEFAULT ''",
+            'category': "ALTER TABLE course ADD COLUMN category VARCHAR(100) DEFAULT ''",
         }
         for col_name, sql in course_new_columns.items():
             if col_name not in course_columns:

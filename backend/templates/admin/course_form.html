@@ -356,23 +356,24 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         </div>
 
         <div class="form-section">
-            <h3>Vendors / Certification Partners</h3>
+            <h3>Course Category</h3>
             <div class="form-group form-group-full">
-                <label>Select Certification Vendors</label>
-                <select name="vendors" class="form-control" multiple size="6">
-                    <option value="Infosectrain.AI" {{ 'selected' if course and 'Infosectrain.AI' in course.vendors }}>Infosectrain.AI</option>
-                    <option value="Infosectrain" {{ 'selected' if course and 'Infosectrain' in course.vendors }}>Infosectrain</option>
-                    <option value="EC Council" {{ 'selected' if course and 'EC Council' in course.vendors }}>EC Council</option>
-                    <option value="(ISC)2" {{ 'selected' if course and '(ISC)2' in course.vendors }}>(ISC)2</option>
-                    <option value="ISACA" {{ 'selected' if course and 'ISACA' in course.vendors }}>ISACA</option>
-                    <option value="IAPP" {{ 'selected' if course and 'IAPP' in course.vendors }}>IAPP</option>
-                    <option value="TUV SUD / Exemplar" {{ 'selected' if course and 'TUV SUD / Exemplar' in course.vendors }}>TUV SUD / Exemplar</option>
-                    <option value="CompTIA" {{ 'selected' if course and 'CompTIA' in course.vendors }}>CompTIA</option>
-                    <option value="AWS" {{ 'selected' if course and 'AWS' in course.vendors }}>AWS</option>
-                    <option value="Cloud Security Alliance" {{ 'selected' if course and 'Cloud Security Alliance' in course.vendors }}>Cloud Security Alliance</option>
-                    <option value="Microsoft" {{ 'selected' if course and 'Microsoft' in course.vendors }}>Microsoft</option>
+                <label>Select Course Category</label>
+                <select name="category" class="form-control">
+                    <option value="">-- Select Category --</option>
+                    <option value="Cyber Security" {{ 'selected' if course and course.category == 'Cyber Security' }}>Cyber Security</option>
+                    <option value="Data Science & AI" {{ 'selected' if course and course.category == 'Data Science & AI' }}>Data Science & AI</option>
+                    <option value="Cloud Computing" {{ 'selected' if course and course.category == 'Cloud Computing' }}>Cloud Computing</option>
+                    <option value="DevOps" {{ 'selected' if course and course.category == 'DevOps' }}>DevOps</option>
+                    <option value="Web Development" {{ 'selected' if course and course.category == 'Web Development' }}>Web Development</option>
+                    <option value="Mobile App Development" {{ 'selected' if course and course.category == 'Mobile App Development' }}>Mobile App Development</option>
+                    <option value="Digital Marketing" {{ 'selected' if course and course.category == 'Digital Marketing' }}>Digital Marketing</option>
+                    <option value="Blockchain" {{ 'selected' if course and course.category == 'Blockchain' }}>Blockchain</option>
+                    <option value="Big Data" {{ 'selected' if course and course.category == 'Big Data' }}>Big Data</option>
+                    <option value="Networking" {{ 'selected' if course and course.category == 'Networking' }}>Networking</option>
+                    <option value="Project Management" {{ 'selected' if course and course.category == 'Project Management' }}>Project Management</option>
+                    <option value="Business Analytics" {{ 'selected' if course and course.category == 'Business Analytics' }}>Business Analytics</option>
                 </select>
-                <div class="section-note">Hold Ctrl (Windows) or Cmd (Mac) to select multiple vendors</div>
             </div>
         </div>
 

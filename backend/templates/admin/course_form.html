@@ -662,10 +662,15 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         loadFaqs();
     });
 
-    document.querySelector('form').addEventListener('submit', function() {
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
         collectLineItems();
         collectReviewsData();
         collectFaqData();
+        // Small delay to ensure hidden fields are updated
+        setTimeout(function() {
+            document.querySelector('form').submit();
+        }, 100);
     });
 })();
 </script>

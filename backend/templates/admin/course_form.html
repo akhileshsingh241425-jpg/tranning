@@ -561,16 +561,36 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         Object.keys(fieldDataMap).forEach(function(field, idx) {
             var hiddenInput = document.getElementById(fieldDataMap[field]);
             if (!hiddenInput || !hiddenInput.value) return;
-            var lines = hiddenInput.value.split('\n').filter(function(l) { return l.trim(); });
+
+            // Get all lines - handle both \n and | separated formats
+            var allText = hiddenInput.value;
+            var lines = [];
+            
+            if (idx === 1) { // curriculum - check for | separator first
+                if (allText.includes(' | ')) {
+                    lines = allText.split('\n').filter(function(l) { return l.trim(); });
+                } else if (allText.includes('\n')) {
+                    lines = allText.split('\n').filter(function(l) { return l.trim(); });
+                }
+            } else if (idx === 2) { // projects - check for - separator
+                if (allText.includes(' - ')) {
+                    lines = allText.split('\n').filter(function(l) { return l.trim(); });
+                }
+            } else {
+                lines = allText.split('\n').filter(function(l) { return l.trim(); });
+            }
+
             lines.forEach(function(line) {
                 addLineItem(ids[idx], labels[idx], hasTwo[idx], field1Labels[idx], field2Labels[idx]);
                 var rows = document.querySelectorAll('#' + ids[idx] + ' .line-item-row');
                 var lastRow = rows[rows.length - 1];
                 var fields2 = lastRow.querySelectorAll('.line-item-field');
+                
                 if (hasTwo[idx]) {
-                    var parts = line.split(idx === 2 ? ' - ' : ' | ');
-                    if (fields2[0]) fields2[0].value = parts[0] || '';
-                    if (fields2[1]) fields2[1].value = parts.slice(1).join(idx === 2 ? ' - ' : ' | ') || '';
+                    var sep = idx === 2 ? ' - ' : ' | ';
+                    var parts = line.split(sep);
+                    if (fields2[0]) fields2[0].value = parts[0] ? parts[0].trim() : '';
+                    if (fields2[1]) fields2[1].value = parts.slice(1).join(sep).trim();
                 } else {
                     if (fields2[0]) fields2[0].value = line;
                 }

@@ -645,6 +645,43 @@ textarea.form-control { min-height: 100px; resize: vertical; }
     document.getElementById('btn-reviews').addEventListener('click', function() { addReviewRow(); });
     document.getElementById('btn-faq').addEventListener('click', function() { addFaqRow(); });
 
+    // Add Enter key support for all line item fields
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            var target = e.target;
+            if (target.classList.contains('line-item-field') || target.classList.contains('review-text') || target.classList.contains('faq-answer')) {
+                e.preventDefault();
+                var row = target.closest('.line-item-row');
+                var container = row.parentElement;
+                var allRows = Array.from(container.querySelectorAll('.line-item-row'));
+                var isLastRow = row === allRows[allRows.length - 1];
+                var isLastField = (target.classList.contains('field2') || target.classList.contains('review-text') || target.classList.contains('faq-answer'));
+
+                if (isLastRow && isLastField) {
+                    // Add new row based on container type
+                    var containerId = container.id;
+                    if (containerId === 'curriculum-container') {
+                        addLineItem('curriculum-container', 'Module', true, 'Module Name (e.g. Python Fundamentals)', 'Topics (comma separated)');
+                    } else if (containerId === 'projects-container') {
+                        addLineItem('projects-container', 'Project', true, 'Project Title', 'Short Description');
+                    } else if (containerId === 'why-join-container') {
+                        addLineItem('why-join-container', 'Point', true, 'Title', 'Description');
+                    } else if (containerId === 'key-benefits-container') {
+                        addLineItem('key-benefits-container', 'Learning Point', false, '', '');
+                    } else if (containerId === 'prerequisites-container') {
+                        addLineItem('prerequisites-container', 'Prerequisite', false, '', '');
+                    } else if (containerId === 'objectives-container') {
+                        addLineItem('objectives-container', 'Objective', false, '', '');
+                    } else if (containerId === 'reviews-container') {
+                        addReviewRow();
+                    } else if (containerId === 'faq-container') {
+                        addFaqRow();
+                    }
+                }
+            }
+        }
+    });
+
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('btn-add-inline')) {
             var row = e.target.closest('.line-item-row');

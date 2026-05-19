@@ -60,6 +60,7 @@ const CourseDetail = () => {
           toolsCovered: (data.tools_covered && Array.isArray(data.tools_covered)) ? data.tools_covered : (typeof data.tools_covered === 'string' ? data.tools_covered.split(',').map(t => t.trim()).filter(t => t) : []) || (localCourse && localCourse.toolsCovered) || [],
           skillsCovered: (data.skills_covered && Array.isArray(data.skills_covered)) ? data.skills_covered : (typeof data.skills_covered === 'string' ? data.skills_covered.split(',').map(s => s.trim()).filter(s => s) : []) || (localCourse && localCourse.skillsCovered) || [],
           targetAudience: (data.target_audience && Array.isArray(data.target_audience)) ? data.target_audience : (typeof data.target_audience === 'string' ? data.target_audience.split('\n').filter(t => t.trim()) : []) || (localCourse && localCourse.targetAudience) || [],
+          benefits: (data.benefits && Array.isArray(data.benefits)) ? data.benefits : (typeof data.benefits === 'string' ? data.benefits.split('\n').filter(b => b.trim()) : []) || (localCourse && localCourse.benefits) || [],
           trainingSchedule: data.training_schedule || (localCourse && localCourse.trainingSchedule),
           start_date: data.start_date || (localCourse && localCourse.start_date),
           next_batch: data.next_batch || (localCourse && localCourse.next_batch),

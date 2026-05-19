@@ -365,6 +365,18 @@ const CourseDetail = () => {
           </div>
           )}
 
+          {/* Target Audience */}
+          {course.targetAudience && course.targetAudience.length > 0 && (
+          <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
+            <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Who Should Join?</h2>
+            <ul style={{ paddingLeft: '25px', color: '#475569' }}>
+              {course.targetAudience.map((item, index) => (
+                <li key={index} style={{ marginBottom: '8px' }}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          )}
+
           {/* Course Curriculum */}
           {course.topicWiseContent && course.topicWiseContent.length > 0 && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
@@ -504,18 +516,6 @@ const CourseDetail = () => {
                 <div style={{ padding: '18px 20px', color: '#475569', fontSize: '15px' }}>A: {item.answer || item.A || item.a || ''}</div>
               </div>
             ))}
-          </div>
-          )}
-
-          {/* Target Audience */}
-          {course.targetAudience && course.targetAudience.length > 0 && (
-          <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
-            <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Who Should Join?</h2>
-            <ul style={{ paddingLeft: '25px', color: '#475569' }}>
-              {course.targetAudience.map((item, index) => (
-                <li key={index} style={{ marginBottom: '8px' }}>{item}</li>
-              ))}
-            </ul>
           </div>
           )}
 

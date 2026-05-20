@@ -413,19 +413,53 @@ const CourseDetail = () => {
                     </span>
                   </div>
                   {curriculumOpen === gIndex && group.items && group.items.length > 0 && (
-                    <div style={{ padding: '15px', background: '#f8fafc', marginTop: '8px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                      {group.items.map((item, iIndex) => (
-                        <div key={iIndex} style={{ padding: '10px', background: '#fff', border: '1px solid #eaecf0', marginBottom: '8px', borderRadius: '6px' }}>
-                          <h4 style={{ margin: '0 0 6px', color: '#1e293b', fontSize: '15px' }}>{item.title}</h4>
-                          {item.subtopics && item.subtopics.length > 0 && (
-                            <ul style={{ margin: 0, paddingLeft: '18px', color: '#54595d', fontSize: '14px' }}>
-                              {item.subtopics.map((sub, sIndex) => (
-                                <li key={sIndex}>{sub}</li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      ))}
+                    <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderTop: 'none', borderRadius: '0 0 8px 8px', padding: '20px', marginTop: '-1px' }}>
+                      {group.description && (
+                        <p style={{ color: '#475569', fontSize: '14px', marginBottom: '15px', lineHeight: '1.6', fontWeight: '500' }}>
+                          {group.description}
+                        </p>
+                      )}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '10px' }}>
+                        {group.items.map((item, iIndex) => (
+                          <div key={iIndex} style={{ 
+                            background: '#fff', 
+                            padding: '12px 16px', 
+                            borderRadius: '6px', 
+                            border: '1px solid #e2e8f0',
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '10px'
+                          }}>
+                            <div style={{
+                              width: '28px',
+                              height: '28px',
+                              minWidth: '28px',
+                              borderRadius: '50%',
+                              background: '#f8f9fa',
+                              border: '1px solid #d1d5db',
+                              color: '#1e293b',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '12px',
+                              fontWeight: '600',
+                              flexShrink: 0
+                            }}>
+                              {iIndex + 1}
+                            </div>
+                            <div style={{ flex: 1 }}>
+                              <h4 style={{ margin: '0 0 6px', color: '#1e293b', fontSize: '14px', fontWeight: '600' }}>{item.title}</h4>
+                              {item.subtopics && item.subtopics.length > 0 && (
+                                <ul style={{ margin: 0, paddingLeft: '16px', color: '#54595d', fontSize: '13px' }}>
+                                  {item.subtopics.map((sub, sIndex) => (
+                                    <li key={sIndex}>{sub}</li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>

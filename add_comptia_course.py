@@ -19,8 +19,8 @@ def add_comptia_course():
         # Check if course already exists
         existing = Course.query.filter_by(slug='comptia-a-certification-training').first()
         if existing:
-            print("Course already exists!")
-            return
+            print("Course exists, updating...")
+            course = existing
         course = Course(
             title="CompTIA A+ Certification Training",
             slug="comptia-a-certification-training",
@@ -83,6 +83,17 @@ Desktop Support Engineers""",
             exam_passing_score="675 (on a scale of 100-900)",
             exam_languages="English",
             certification="CompTIA A+ Certification - Industry-recognized entry-level IT certification",
+            course_objectives="""Prepare and pass the CompTIA A+ certification exams
+Install and configure the components of the PC system and peripheral devices
+Install, configure, and troubleshoot internal system components
+Understand how to identify, use, and connect hardware components and devices
+Understand the concepts of network infrastructure
+Understand how to set up network connections and troubleshoot them
+Learn laptop support and troubleshooting
+Understand how to troubleshoot and support mobile devices
+Understand how to set up, configure, and troubleshoot printing devices
+Understand how to put client virtualization and cloud computing into practice
+Learn how to identify and defend devices and their network connections against security risks""",
             faq="""Q: Is the CompTIA A+ certification a suitable place to start?|A: Yes, it helps you get entry-level IT roles such as Desktop Support, Help Desk Tech, etc.
 Q: What jobs can you obtain with CompTIA A+?|A: Service Desk Analyst, Help Desk Tech, Desktop Support Administrator, Technical Support Specialist, etc.
 Q: What does the CompTIA A+ certification cost?|A: The CompTIA A+ certification costs $232 USD per exam.

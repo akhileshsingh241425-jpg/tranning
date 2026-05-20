@@ -9,7 +9,7 @@ const CourseDetail = () => {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [allSlugs, setAllSlugs] = useState([]);
-  const [curriculumOpen, setCurriculumOpen] = useState(0);
+  const [curriculumOpen, setCurriculumOpen] = useState(-1);
   const [subtopicOpen, setSubtopicOpen] = useState({});
   const [showSchedule, setShowSchedule] = useState(true);
   const [showCorporate, setShowCorporate] = useState(false);

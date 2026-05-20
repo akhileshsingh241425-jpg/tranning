@@ -1,16 +1,26 @@
 import sys
 import os
 
-# Add backend to path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Get the project root directory
+project_root = os.path.dirname(os.path.abspath(__file__))
+backend_path = os.path.join(project_root, 'backend')
 
-# Change to backend directory
-os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backend'))
+# Add backend to path and change to backend directory
+sys.path.insert(0, backend_path)
+os.chdir(backend_path)
+
+# Set Flask environment
+os.environ['FLASK_ENV'] = 'production'
 
 from app import app, db, Course
 
 def add_comptia_course():
     with app.app_context():
+        # Check if course already exists
+        existing = Course.query.filter_by(slug='comptia-a-certification-training').first()
+        if existing:
+            print("Course already exists!")
+            return
         course = Course(
             title="CompTIA A+ Certification Training",
             slug="comptia-a-certification-training",

@@ -384,38 +384,53 @@ const CourseDetail = () => {
           {course.topicWiseContent && course.topicWiseContent.length > 0 && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Course Curriculum</h2>
-            {course.topicWiseContent.map((group, gIndex) => (
-              <div key={gIndex} style={{ border: '1px solid #a2a9b1', marginBottom: '12px', borderRadius: '6px', overflow: 'hidden' }}>
-                <div 
-                  style={{ background: '#f8f9fa', padding: '12px 15px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                  onClick={() => setCurriculumOpen(curriculumOpen === gIndex ? -1 : gIndex)}
-                >
-                  <span>Module {gIndex + 1}: {group.heading}</span>
-                  <FaChevronRight style={{ transform: curriculumOpen === gIndex ? 'rotate(90deg)' : 'rotate(0)', transition: 'transform 0.3s' }} />
-                </div>
-                {curriculumOpen === gIndex && group.items && group.items.length > 0 && (
-                  <div style={{ padding: '15px' }}>
-                    {group.items.map((item, iIndex) => (
-                      <div key={iIndex}>
-                        <div 
-                          style={{ padding: '8px', cursor: 'pointer', background: '#fff', border: '1px solid #eaecf0', marginBottom: '5px', borderRadius: '4px' }}
-                          onClick={() => setSubtopicOpen(prev => ({...prev, [`${gIndex}-${iIndex}`]: prev[`${gIndex}-${iIndex}`] ? false : true}))}
-                        >
-                          {item.title}
-                        </div>
-                        {subtopicOpen[`${gIndex}-${iIndex}`] && item.subtopics && item.subtopics.length > 0 && (
-                          <ul style={{ marginLeft: '20px', color: '#54595d', fontSize: '14px' }}>
-                            {item.subtopics.map((sub, sIndex) => (
-                              <li key={sIndex}>{sub}</li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    ))}
+            <div style={{ display: 'grid', gap: '10px' }}>
+              {course.topicWiseContent.map((group, gIndex) => (
+                <div key={gIndex}>
+                  <div 
+                    style={{ 
+                      background: 'linear-gradient(135deg, #0066cc, #7c3aed)', 
+                      color: '#fff',
+                      padding: '14px 18px', 
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      fontWeight: '600',
+                      fontSize: '16px'
+                    }}
+                    onClick={() => setCurriculumOpen(curriculumOpen === gIndex ? -1 : gIndex)}
+                  >
+                    <span>Module {gIndex + 1}: {group.heading}</span>
+                    <span style={{ fontSize: '20px' }}>{curriculumOpen === gIndex ? '−' : '+'}</span>
                   </div>
-                )}
-              </div>
-            ))}
+                  {curriculumOpen === gIndex && group.items && group.items.length > 0 && (
+                    <div style={{ padding: '15px', background: '#f8fafc', marginTop: '8px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {group.items.map((item, iIndex) => (
+                          <span 
+                            key={iIndex}
+                            style={{ 
+                              display: 'inline-block',
+                              padding: '8px 14px', 
+                              background: '#fff', 
+                              border: '1px solid #0066cc',
+                              borderRadius: '20px',
+                              color: '#0066cc',
+                              fontSize: '14px',
+                              fontWeight: '500'
+                            }}
+                          >
+                            {item.title}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
           )}
 

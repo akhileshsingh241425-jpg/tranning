@@ -21,6 +21,10 @@ def add_comptia_course():
         if existing:
             print("Course exists, updating...")
             course = existing
+        else:
+            db.session.add(course)
+            print("Course added successfully!")
+        db.session.commit()
         course = Course(
             title="CompTIA A+ Certification Training",
             slug="comptia-a-certification-training",
@@ -107,10 +111,12 @@ Q: How much can I earn with CompTIA A+?|A: Salaries range from $40,000 to $67,00
             image="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800"
         )
         
-        db.session.add(course)
+        if not existing:
+            db.session.add(course)
+        
         db.session.commit()
         
-        print("Course added successfully!")
+        print("Course updated successfully!")
         print("Title:", course.title)
         print("Slug:", course.slug)
         print("Category:", course.category)

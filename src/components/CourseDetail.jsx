@@ -51,7 +51,14 @@ const CourseDetail = () => {
             : (localCourse && localCourse.process) || [],
           faq: (data.faq && data.faq.length > 0) ? data.faq : (localCourse && localCourse.faq) || [],
           stats: (data.detailStats && data.detailStats.length > 0) ? data.detailStats : (localCourse && localCourse.stats) || [],
-          topicWiseContent: (data.topicWiseContent && data.topicWiseContent.length > 0) ? data.topicWiseContent : (localCourse && localCourse.topicWiseContent) || [],
+          topicWiseContent: (() => {
+            const twc = data.topicWiseContent || (localCourse && localCourse.topicWiseContent);
+            if (Array.isArray(twc)) return twc;
+            if (typeof twc === 'string') {
+              try { return JSON.parse(twc); } catch { return []; }
+            }
+            return [];
+          })(),
           eligibility: data.eligibility || data.prerequisites || (localCourse && localCourse.eligibility),
           why_join: data.whyJoin || (localCourse && localCourse.why_join),
           certification: data.certification || (localCourse && localCourse.certification),

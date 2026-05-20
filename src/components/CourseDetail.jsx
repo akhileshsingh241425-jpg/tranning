@@ -389,8 +389,9 @@ const CourseDetail = () => {
                 <div key={gIndex}>
                   <div 
                     style={{ 
-                      background: 'linear-gradient(135deg, #0066cc, #7c3aed)', 
-                      color: '#fff',
+                      background: '#f8f9fa', 
+                      border: '1px solid #d1d5db',
+                      color: '#1e293b',
                       padding: '14px 18px', 
                       borderRadius: '8px',
                       cursor: 'pointer',
@@ -404,9 +405,7 @@ const CourseDetail = () => {
                   >
                     <span>Module {gIndex + 1}: {group.heading}</span>
                     <span style={{ 
-                      background: 'rgba(255,255,255,0.2)', 
-                      padding: '4px 10px', 
-                      borderRadius: '12px', 
+                      color: '#64748b', 
                       fontSize: '13px',
                       fontWeight: '500'
                     }}>

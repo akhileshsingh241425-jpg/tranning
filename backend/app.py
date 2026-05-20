@@ -805,7 +805,13 @@ class Course(db.Model):
         base['exam_passing_score'] = self.exam_passing_score or ''
         base['exam_languages'] = self.exam_languages or ''
         try:
-            base['courseObjectives'] = json.loads(self.course_objectives) if self.course_objectives else []
+            if self.course_objectives:
+                if self.course_objectives.startswith('['):
+                    base['courseObjectives'] = json.loads(self.course_objectives)
+                else:
+                    base['courseObjectives'] = [x.strip() for x in self.course_objectives.split('\n') if x.strip()]
+            else:
+                base['courseObjectives'] = []
         except:
             base['courseObjectives'] = []
         

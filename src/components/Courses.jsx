@@ -261,7 +261,7 @@ const Courses = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const displayedCourses = showAll ? filteredCourses : filteredCourses.slice(0, 4);
+  const displayedCourses = showAll ? filteredCourses : filteredCourses.slice(0, 12);
 
   const getDiscount = (price, original) => {
     const p = parseInt(price.replace(/[₹$,]/g, ''));

@@ -16,15 +16,31 @@ from app import app, db, Course
 
 def add_comptia_course():
     with app.app_context():
+        # Define objectives
+        course_objectives_text = """Prepare and pass the CompTIA A+ certification exams
+Install and configure the components of the PC system and peripheral devices
+Install, configure, and troubleshoot internal system components
+Understand how to identify, use, and connect hardware components and devices
+Understand the concepts of network infrastructure
+Understand how to set up network connections and troubleshoot them
+Learn laptop support and troubleshooting
+Understand how to troubleshoot and support mobile devices
+Understand how to set up, configure, and troubleshoot printing devices
+Understand how to put client virtualization and cloud computing into practice
+Learn how to identify and defend devices and their network connections against security risks"""
+        
         # Check if course already exists
         existing = Course.query.filter_by(slug='comptia-a-certification-training').first()
         if existing:
             print("Course exists, updating...")
-            course = existing
-        else:
-            db.session.add(course)
-            print("Course added successfully!")
-        db.session.commit()
+            # Update the existing course
+            existing.course_objectives = course_objectives_text
+            db.session.commit()
+            print("Course updated successfully!")
+            print("Title:", existing.title)
+            print("Objectives:", existing.course_objectives[:100] if existing.course_objectives else "EMPTY")
+            return
+        
         course = Course(
             title="CompTIA A+ Certification Training",
             slug="comptia-a-certification-training",

@@ -403,27 +403,55 @@ const CourseDetail = () => {
                     onClick={() => setCurriculumOpen(curriculumOpen === gIndex ? -1 : gIndex)}
                   >
                     <span>Module {gIndex + 1}: {group.heading}</span>
-                    <span style={{ fontSize: '20px' }}>{curriculumOpen === gIndex ? '−' : '+'}</span>
+                    <span style={{ 
+                      background: 'rgba(255,255,255,0.2)', 
+                      padding: '4px 10px', 
+                      borderRadius: '12px', 
+                      fontSize: '13px',
+                      fontWeight: '500'
+                    }}>
+                      {group.items ? group.items.length : 0} topics {curriculumOpen === gIndex ? '−' : '+'}
+                    </span>
                   </div>
                   {curriculumOpen === gIndex && group.items && group.items.length > 0 && (
                     <div style={{ padding: '15px', background: '#f8fafc', marginTop: '8px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         {group.items.map((item, iIndex) => (
-                          <span 
-                            key={iIndex}
-                            style={{ 
-                              display: 'inline-block',
-                              padding: '8px 14px', 
-                              background: '#fff', 
-                              border: '1px solid #0066cc',
-                              borderRadius: '20px',
-                              color: '#0066cc',
+                          <div key={iIndex} style={{ 
+                            background: '#fff', 
+                            padding: '15px', 
+                            borderRadius: '8px', 
+                            border: '1px solid #e2e8f0',
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '12px'
+                          }}>
+                            <div style={{ 
+                              width: '32px', 
+                              height: '32px', 
+                              borderRadius: '50%', 
+                              background: 'linear-gradient(135deg, #0066cc, #7c3aed)', 
+                              color: '#fff',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
                               fontSize: '14px',
-                              fontWeight: '500'
-                            }}
-                          >
-                            {item.title}
-                          </span>
+                              fontWeight: '600',
+                              flexShrink: 0
+                            }}>
+                              {iIndex + 1}
+                            </div>
+                            <div style={{ flex: 1 }}>
+                              <h4 style={{ margin: '0 0 8px', color: '#1e293b', fontSize: '15px', fontWeight: '600' }}>{item.title}</h4>
+                              {item.subtopics && item.subtopics.length > 0 && (
+                                <ul style={{ margin: 0, paddingLeft: '18px', color: '#475569', fontSize: '14px' }}>
+                                  {item.subtopics.map((sub, sIndex) => (
+                                    <li key={sIndex} style={{ marginBottom: '4px' }}>{sub}</li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </div>

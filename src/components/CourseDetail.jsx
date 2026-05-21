@@ -436,10 +436,9 @@ const CourseDetail = () => {
                               const isOpen = topicOpen[topicKey];
                               return (
                               <div key={iIndex} style={{ 
-                                background: '#fff', 
-                                padding: '12px 16px', 
-                                borderRadius: '6px', 
+                                background: '#f8fafc', 
                                 border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
                               }}>
                                 <div 
                                   onClick={() => setTopicOpen(prev => ({...prev, [topicKey]: !isOpen}))}
@@ -447,7 +446,12 @@ const CourseDetail = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '10px',
-                                    cursor: item.description ? 'pointer' : 'default'
+                                    cursor: 'pointer',
+                                    padding: '12px 16px',
+                                    background: isOpen ? '#f1f5f9' : '#fff',
+                                    borderRadius: '8px',
+                                    borderBottom: isOpen ? '1px solid #e2e8f0' : 'none',
+                                    transition: 'all 0.2s'
                                   }}
                                 >
                                   <div style={{
@@ -455,14 +459,13 @@ const CourseDetail = () => {
                                     height: '28px',
                                     minWidth: '28px',
                                     borderRadius: '50%',
-                                    background: '#f8f9fa',
-                                    border: '1px solid #d1d5db',
-                                    color: '#1e293b',
+                                    background: '#0066cc',
+                                    color: '#fff',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     fontSize: '12px',
-                                    fontWeight: '600',
+                                    fontWeight: '700',
                                     flexShrink: 0
                                   }}>
                                     {iIndex + 1}
@@ -470,21 +473,33 @@ const CourseDetail = () => {
                                   <div style={{ flex: 1 }}>
                                     <h4 style={{ margin: 0, color: '#1e293b', fontSize: '14px', fontWeight: '600' }}>{item.title}</h4>
                                   </div>
-                                  {item.description && (
-                                    <span style={{ color: '#64748b', fontSize: '13px', fontWeight: '500', flexShrink: 0 }}>{isOpen ? '−' : '+'}</span>
-                                  )}
+                                  <span style={{ color: '#64748b', fontSize: '16px', fontWeight: '700', flexShrink: 0 }}>{isOpen ? '−' : '+'}</span>
                                 </div>
-                                {isOpen && item.description && (
-                                  <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #e2e8f0', color: '#475569', fontSize: '13px', lineHeight: '1.6' }}>
-                                    {item.description}
+                                {isOpen && (
+                                  <div style={{ padding: '12px 16px 16px 16px' }}>
+                                    {item.description && (
+                                      <div style={{ color: '#475569', fontSize: '13px', lineHeight: '1.6', marginBottom: '10px' }}>
+                                        {item.description}
+                                      </div>
+                                    )}
+                                    {item.subtopics && item.subtopics.length > 0 && (
+                                      <div>
+                                        {item.subtopics.map((sub, sIndex) => (
+                                          <div key={sIndex} style={{ 
+                                            background: '#fff', 
+                                            border: '1px solid #cbd5e0', 
+                                            borderRadius: '6px', 
+                                            padding: '8px 12px', 
+                                            marginBottom: '6px',
+                                            fontSize: '13px',
+                                            color: '#475569'
+                                          }}>
+                                            {sub}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
                                   </div>
-                                )}
-                                {item.subtopics && item.subtopics.length > 0 && (
-                                  <ul style={{ margin: '8px 0 0', paddingLeft: '38px', color: '#54595d', fontSize: '13px' }}>
-                                    {item.subtopics.map((sub, sIndex) => (
-                                      <li key={sIndex} style={{ marginBottom: '4px' }}>{sub}</li>
-                                    ))}
-                                  </ul>
                                 )}
                               </div>
                               );

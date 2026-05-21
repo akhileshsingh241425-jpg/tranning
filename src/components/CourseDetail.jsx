@@ -61,6 +61,7 @@ const CourseDetail = () => {
             return [];
           })(),
           eligibility: data.eligibility || data.prerequisites || (localCourse && localCourse.eligibility),
+          curriculumHtml: data.curriculumHtml || (localCourse && localCourse.curriculumHtml) || '',
           why_join: data.whyJoin || (localCourse && localCourse.why_join),
           certification: data.certification || (localCourse && localCourse.certification),
           reviewsList: (data.reviewsList && data.reviewsList.length > 0) ? data.reviewsList : (localCourse && localCourse.reviewsList) || [],
@@ -394,7 +395,13 @@ const CourseDetail = () => {
           )}
 
           {/* Course Curriculum */}
-          {course.topicWiseContent && course.topicWiseContent.length > 0 && (
+          {course.curriculumHtml && (
+          <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
+            <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Course Curriculum</h2>
+            <div className="curriculum-html-content" style={{ color: '#334155', fontSize: '15px', lineHeight: '1.8' }} dangerouslySetInnerHTML={{ __html: course.curriculumHtml }} />
+          </div>
+          )}
+          {!course.curriculumHtml && course.topicWiseContent && course.topicWiseContent.length > 0 && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Course Curriculum</h2>
             <div style={{ display: 'grid', gap: '10px' }}>

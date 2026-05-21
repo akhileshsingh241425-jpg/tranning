@@ -3,7 +3,14 @@
 {% block title %}{% if course %}Edit{% else %}New{% endif %} Course{% endblock %}
 
 {% block body %}
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <style>
+.curriculum-mode-toggle { display: flex; gap: 10px; margin-bottom: 15px; }
+.curriculum-mode-btn { padding: 8px 20px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; background: #fff; color: #64748b; }
+.curriculum-mode-btn.active { border-color: #0066cc; background: #0066cc; color: #fff; }
+#curriculum-editor-wrap .ql-editor { min-height: 300px; font-size: 15px; line-height: 1.7; }
+#curriculum-editor-wrap { display: none; }
 .admin-form-container { max-width: 95%; margin: 0 auto; padding: 30px 40px; min-height: calc(100vh - 40px); background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%); }
 .form-section { background: #fff; border-radius: 16px; padding: 30px 35px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05); }
 .form-section h3 { color: #1a1a2e; margin-top: 0; padding-bottom: 15px; border-bottom: 3px solid #0066cc; font-size: 20px; font-weight: 700; }
@@ -168,14 +175,28 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         <div class="form-section">
             <h3>Course Curriculum</h3>
             <div class="form-group form-group-full">
+                <label>Mode</label>
+                <div class="curriculum-mode-toggle">
+                    <button type="button" class="curriculum-mode-btn active" id="curriculum-mode-simple" onclick="switchCurriculumMode('simple')">Simple (Structured)</button>
+                    <button type="button" class="curriculum-mode-btn" id="curriculum-mode-editor" onclick="switchCurriculumMode('editor')">Editor (WYSIWYG)</button>
+                </div>
+            </div>
+            <div class="form-group form-group-full" id="curriculum-simple-wrap">
                 <label>Modules</label>
                 <div id="curriculum-container"></div>
                 <button type="button" class="line-item-add-btn" id="btn-curriculum">
                     <span style="font-size:16px;font-weight:700;">+</span> Add Module
                 </button>
                 <input type="hidden" name="topic_wise_content" id="curriculum-data" value="{{ course.topic_wise_content if course else '' }}">
-                <div class="section-note">Click + to add each module. Format: Module Name | Topic 1, Topic 2</div>
+                <div class="section-note">Click + to add each module. Format: Topic Name | Description | Subtopic1::Desc1, Subtopic2</div>
             </div>
+            <div class="form-group form-group-full" id="curriculum-editor-wrap">
+                <label>Curriculum Editor</label>
+                <div id="curriculum-editor">{#- Editor content loaded by JS -#}</div>
+                <input type="hidden" name="curriculum_html" id="curriculum-html-data" value="{{ course.curriculum_html if course else '' }}">
+                <div class="section-note">Type any way you want. Bold, lists, headings — jo likhoge waisa hi UI mein dikhega.</div>
+            </div>
+        </div>
         </div>
 
         <div class="form-section">
@@ -843,14 +864,52 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         }
     });
 
+    var quill = null;
+    var currentMode = localStorage.getItem('curriculumMode') || 'simple';
+
+    window.switchCurriculumMode = function(mode) {
+        currentMode = mode;
+        localStorage.setItem('curriculumMode', mode);
+        document.getElementById('curriculum-mode-simple').className = 'curriculum-mode-btn' + (mode === 'simple' ? ' active' : '');
+        document.getElementById('curriculum-mode-editor').className = 'curriculum-mode-btn' + (mode === 'editor' ? ' active' : '');
+        document.getElementById('curriculum-simple-wrap').style.display = mode === 'simple' ? 'block' : 'none';
+        document.getElementById('curriculum-editor-wrap').style.display = mode === 'editor' ? 'block' : 'none';
+    };
+
+    function initQuill() {
+        if (quill) return;
+        quill = new Quill('#curriculum-editor', {
+            theme: 'snow',
+            placeholder: 'Type your curriculum here... Use headings, bold, lists, etc.',
+            modules: {
+                toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['link'],
+                    ['clean']
+                ]
+            }
+        });
+        var savedHtml = document.getElementById('curriculum-html-data').value;
+        if (savedHtml) {
+            quill.root.innerHTML = savedHtml;
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         loadLineItems();
         loadReviews();
         loadFaqs();
+        initQuill();
+        switchCurriculumMode(currentMode);
     });
 
     document.querySelector('form').addEventListener('submit', function(e) {
         e.preventDefault();
+        if (quill) {
+            document.getElementById('curriculum-html-data').value = quill.root.innerHTML;
+        }
         collectLineItems();
         collectReviewsData();
         collectFaqData();

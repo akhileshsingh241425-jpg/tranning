@@ -681,6 +681,7 @@ class Course(db.Model):
     faq = db.Column(db.Text, default='')                   # JSON: [{question, answer}]
     detail_stats = db.Column(db.Text, default='')          # JSON: [{number, label}]
     topic_wise_content = db.Column(db.Text, default='')    # JSON: [{heading, items: [{title, description, subtopics: []}]}]
+    curriculum_html = db.Column(db.Text, default='')       # HTML from WYSIWYG editor
     eligibility = db.Column(db.Text, default='')           # for Prerequisites/Eligibility section
     projects_list = db.Column(db.Text, default='')      # JSON: [{title, description}]
     benefits = db.Column(db.Text, default='')           # JSON: [{icon, title, description}]
@@ -814,6 +815,7 @@ class Course(db.Model):
                     elif line:
                         topic_content.append({'heading': line, 'items': []})
         base['topicWiseContent'] = topic_content
+        base['curriculumHtml'] = self.curriculum_html or ''
         base['eligibility'] = self.eligibility or self.prerequisites or ''
         base['prerequisites'] = self.prerequisites or ''
         base['projectsList'] = [b.strip() for b in self.projects_list.split('\n') if b.strip()] if self.projects_list else []
@@ -1104,6 +1106,7 @@ def sync_course():
     course.faq = json.dumps(data.get('faq', []))
     course.detail_stats = json.dumps(data.get('detailStats', []))
     course.topic_wise_content = json.dumps(data.get('topicWiseContent', []))
+    course.curriculum_html = data.get('curriculumHtml', data.get('curriculum_html', ''))
     course.eligibility = data.get('eligibility', course.eligibility or '')
     course.projects_list = json.dumps(data.get('projectsList', []))
     course.benefits = json.dumps(data.get('benefits', []))
@@ -1480,6 +1483,7 @@ def admin_course_new():
             faq=request.form.get('faq', ''),
             detail_stats=request.form.get('detail_stats', ''),
             topic_wise_content=request.form.get('topic_wise_content', ''),
+            curriculum_html=request.form.get('curriculum_html', ''),
             eligibility=request.form.get('eligibility', ''),
             projects_list=request.form.get('projects_list', ''),
             benefits=request.form.get('benefits', ''),
@@ -1579,6 +1583,7 @@ def admin_course_edit(id):
         course.faq = request.form.get('faq', '')
         course.detail_stats = request.form.get('detail_stats', '')
         course.topic_wise_content = request.form.get('topic_wise_content', '')
+        course.curriculum_html = request.form.get('curriculum_html', '')
         course.eligibility = request.form.get('eligibility', '')
         course.projects_list = request.form.get('projects_list', '')
         course.benefits = request.form.get('benefits', '')

@@ -5,6 +5,18 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 from app import app, db, Course
 
+# Add curriculum_html column if missing (for existing databases)
+with app.app_context():
+    try:
+        import sqlalchemy
+        insp = sqlalchemy.inspect(db.engine)
+        if 'curriculum_html' not in [c['name'] for c in insp.get_columns('course')]:
+            db.session.execute('ALTER TABLE course ADD COLUMN curriculum_html TEXT DEFAULT \'\'')
+            db.session.commit()
+            print("Added curriculum_html column")
+    except Exception as e:
+        print(f"Note: curriculum_html column check: {e}")
+
 GENERAL_COURSES = [
   {
     "slug": "data-science-ai",

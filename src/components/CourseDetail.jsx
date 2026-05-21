@@ -473,7 +473,9 @@ const CourseDetail = () => {
                                   <div style={{ flex: 1 }}>
                                     <h4 style={{ margin: 0, color: '#1e293b', fontSize: '14px', fontWeight: '600' }}>{item.title}</h4>
                                   </div>
-                                  <span style={{ color: '#64748b', fontSize: '16px', fontWeight: '700', flexShrink: 0 }}>{isOpen ? '−' : '+'}</span>
+                                  {item.description && (
+                                    <span style={{ color: '#64748b', fontSize: '16px', fontWeight: '700', flexShrink: 0 }}>{isOpen ? '−' : '+'}</span>
+                                  )}
                                 </div>
                                 {isOpen && (
                                   <div style={{ padding: '12px 16px 16px 16px' }}>

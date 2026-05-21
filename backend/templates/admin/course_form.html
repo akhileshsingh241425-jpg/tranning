@@ -461,7 +461,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         row.className = 'line-item-row';
         row.innerHTML = '<div class="line-item-header"><span class="line-item-label">Module</span><div class="line-item-controls"><button type="button" class="line-item-btn line-item-btn-add btn-add-inline">+</button><button type="button" class="line-item-btn line-item-btn-remove btn-remove-inline">-</button></div></div>' +
             '<input type="text" class="line-item-field field1" placeholder="Module Name (e.g. Python Fundamentals)" value="' + (moduleName || '') + '">' +
-            '<textarea class="line-item-field field2" placeholder="Topic Name | Description | Subtopic1, Subtopic2 (one per line)" style="min-height:80px;resize:vertical;width:100%;">' + (topicsText || '') + '</textarea>';
+            '<textarea class="line-item-field field2" placeholder="Topic Name | Description | Subtopic1::SubDesc1, Subtopic2 (one per line)" style="min-height:80px;resize:vertical;width:100%;">' + (topicsText || '') + '</textarea>';
         container.appendChild(row);
     }
 
@@ -543,7 +543,12 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                         var title = parts[0] ? parts[0].trim() : '';
                         var desc = parts[1] ? parts[1].trim() : '';
                         var subText = parts.slice(2).join('|').trim();
-                        var subtopics = subText ? subText.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s; }) : [];
+                        var subtopics = subText ? subText.split(',').map(function(s) { 
+                            var sp = s.trim().split('::');
+                            var st = { title: sp[0].trim() };
+                            if (sp[1]) st.description = sp.slice(1).join('::').trim();
+                            return st;
+                        }).filter(function(s) { return s.title; }) : [];
                         return { title: title, description: desc, subtopics: subtopics }; 
                     });
                     items.push({ heading: t1, items: topicItems });
@@ -569,7 +574,12 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                             var title = parts[0] ? parts[0].trim() : '';
                             var desc = parts[1] ? parts[1].trim() : '';
                             var subText = parts.slice(2).join('|').trim();
-                            var subtopics = subText ? subText.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s; }) : [];
+                            var subtopics = subText ? subText.split(',').map(function(s) { 
+                                var sp = s.trim().split('::');
+                                var st = { title: sp[0].trim() };
+                                if (sp[1]) st.description = sp.slice(1).join('::').trim();
+                                return st;
+                            }).filter(function(s) { return s.title; }) : [];
                             return { title: title, description: desc, subtopics: subtopics }; 
                         });
                         items.push(JSON.stringify({ heading: t1, items: topicItems }));
@@ -645,7 +655,15 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                             var topics = (g.items || []).map(function(it) { 
                                 var line = it.title;
                                 if (it.description) line += ' | ' + it.description;
-                                if (it.subtopics && it.subtopics.length > 0) line += ' | ' + it.subtopics.join(', ');
+                                if (it.subtopics && it.subtopics.length > 0) {
+                                    var subStr = it.subtopics.map(function(s) {
+                                        if (typeof s === 'string') return s;
+                                        var st = s.title || '';
+                                        if (s.description) st += '::' + s.description;
+                                        return st;
+                                    }).join(', ');
+                                    line += ' | ' + subStr;
+                                }
                                 return line; 
                             }).join('\n');
                             addCurriculumModule(g.heading || '', topics);

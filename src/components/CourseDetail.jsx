@@ -470,16 +470,34 @@ const CourseDetail = () => {
                                 </div>
                                 {isOpen && item.subtopics && item.subtopics.length > 0 && (
                                   <div style={{ padding: '2px 0 6px 28px' }}>
-                                    {item.subtopics.map((sub, sIndex) => (
-                                      <div key={sIndex} style={{ 
-                                        fontSize: '13px',
-                                        color: '#475569',
-                                        lineHeight: '1.8',
-                                        padding: '2px 0'
-                                      }}>
-                                        • {sub}
-                                      </div>
-                                    ))}
+                                    {item.subtopics.map((sub, sIndex) => {
+                                      if (typeof sub === 'string') {
+                                        return (
+                                          <div key={sIndex} style={{ fontSize: '13px', color: '#475569', lineHeight: '1.8', padding: '2px 0' }}>
+                                            • {sub}
+                                          </div>
+                                        );
+                                      }
+                                      var subKey = topicKey + '-sub-' + sIndex;
+                                      var subDescOpen = subtopicOpen[subKey];
+                                      return (
+                                        <div key={sIndex} style={{ padding: '2px 0' }}>
+                                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: sub.description ? 'pointer' : 'default' }}
+                                            onClick={sub.description ? () => setSubtopicOpen(function(prev) { var n = {}; for (var k in prev) n[k] = prev[k]; n[subKey] = !prev[subKey]; return n; }) : undefined}
+                                          >
+                                            <span style={{ fontSize: '13px', color: '#475569', lineHeight: '1.8' }}>• {sub.title}</span>
+                                            {sub.description && (
+                                              <span style={{ color: '#64748b', fontSize: '13px', fontWeight: '700', marginLeft: '4px' }}>{subDescOpen ? '−' : '+'}</span>
+                                            )}
+                                          </div>
+                                          {subDescOpen && sub.description && (
+                                            <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.6', padding: '4px 0 4px 16px' }}>
+                                              {sub.description}
+                                            </div>
+                                          )}
+                                        </div>
+                                      );
+                                    })}
                                   </div>
                                 )}
                               </div>

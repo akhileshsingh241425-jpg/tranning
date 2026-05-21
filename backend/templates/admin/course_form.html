@@ -454,6 +454,17 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         if (container.children.length > 1) { row.remove(); }
     }
 
+    function addCurriculumModule(moduleName, topicsText) {
+        var container = document.getElementById('curriculum-container');
+        if (!container) { return; }
+        var row = document.createElement('div');
+        row.className = 'line-item-row';
+        row.innerHTML = '<div class="line-item-header"><span class="line-item-label">Module</span><div class="line-item-controls"><button type="button" class="line-item-btn line-item-btn-add btn-add-inline">+</button><button type="button" class="line-item-btn line-item-btn-remove btn-remove-inline">-</button></div></div>' +
+            '<input type="text" class="line-item-field field1" placeholder="Module Name (e.g. Python Fundamentals)" value="' + (moduleName || '') + '">' +
+            '<textarea class="line-item-field field2" placeholder="Topics (one per line)" style="min-height:80px;resize:vertical;width:100%;">' + (topicsText || '') + '</textarea>';
+        container.appendChild(row);
+    }
+
     function addReviewRow() {
         var container = document.getElementById('reviews-container');
         if (!container) { console.error('Container not found: reviews-container'); return; }
@@ -517,7 +528,24 @@ textarea.form-control { min-height: 100px; resize: vertical; }
     }
 
     function collectLineItems() {
-        var types = ['key-benefits', 'curriculum', 'projects', 'why-join', 'prerequisites', 'objectives'];
+        // Curriculum: serialize as JSON array
+        (function() {
+            var container = document.getElementById('curriculum-container');
+            var dataField = document.getElementById('curriculum-data');
+            var items = [];
+            container.querySelectorAll('.line-item-row').forEach(function(row) {
+                var t1 = row.querySelector('.field1') ? row.querySelector('.field1').value.trim() : '';
+                var t2 = row.querySelector('.field2') ? row.querySelector('.field2').value.trim() : '';
+                if (t1) {
+                    var topicLines = t2.split('\n').filter(function(l) { return l.trim(); });
+                    var topicItems = topicLines.map(function(l) { return { title: l.trim(), subtopics: [] }; });
+                    items.push({ heading: t1, items: topicItems });
+                }
+            });
+            dataField.value = items.length > 0 ? JSON.stringify(items) : '';
+        })();
+
+        var types = ['key-benefits', 'projects', 'why-join', 'prerequisites', 'objectives'];
         types.forEach(function(type) {
             var container = document.getElementById(type + '-container');
             var dataField = document.getElementById(type + '-data');
@@ -527,7 +555,11 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 if (type === 'curriculum') {
                     var t1 = fields[0] ? fields[0].value.trim() : '';
                     var t2 = fields[1] ? fields[1].value.trim() : '';
-                    if (t1) items.push(t1 + ' | ' + t2);
+                    if (t1) {
+                        var topicLines = t2.split('\n').filter(function(l) { return l.trim(); });
+                        var topicItems = topicLines.map(function(l) { return { title: l.trim(), subtopics: [] }; });
+                        items.push(JSON.stringify({ heading: t1, items: topicItems }));
+                    }
                 } else if (type === 'projects') {
                     var t1 = fields[0] ? fields[0].value.trim() : '';
                     var t2 = fields[1] ? fields[1].value.trim() : '';
@@ -591,12 +623,18 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             var allText = hiddenInput.value;
             var lines = [];
             
-            if (idx === 1) { // curriculum - check for | separator first
-                if (allText.includes(' | ')) {
-                    lines = allText.split('\n').filter(function(l) { return l.trim(); });
-                } else if (allText.includes('\n')) {
-                    lines = allText.split('\n').filter(function(l) { return l.trim(); });
-                }
+            if (idx === 1) { // curriculum - try JSON first, fallback to legacy
+                try {
+                    var parsed = JSON.parse(allText);
+                    if (Array.isArray(parsed)) {
+                        parsed.forEach(function(g) {
+                            var topics = (g.items || []).map(function(it) { return it.title; }).join('\n');
+                            addCurriculumModule(g.heading || '', topics);
+                        });
+                        return;
+                    }
+                } catch(e) {}
+                lines = allText.split('\n').filter(function(l) { return l.trim(); });
             } else if (idx === 2) { // projects - check for - separator
                 if (allText.includes(' - ')) {
                     lines = allText.split('\n').filter(function(l) { return l.trim(); });
@@ -612,10 +650,20 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 var fields2 = lastRow.querySelectorAll('.line-item-field');
                 
                 if (hasTwo[idx]) {
-                    var sep = idx === 2 ? ' - ' : ' | ';
-                    var parts = line.split(sep);
-                    if (fields2[0]) fields2[0].value = parts[0] ? parts[0].trim() : '';
-                    if (fields2[1]) fields2[1].value = parts.slice(1).join(sep).trim();
+                    if (idx === 1) { // curriculum
+                        var sep2 = line.includes(' || ') ? ' || ' : ' | ';
+                        var parts = line.split(sep2);
+                        if (fields2[0]) fields2[0].value = parts[0] ? parts[0].trim() : '';
+                        if (fields2[1]) {
+                            var topicsVal = parts.slice(1).join(sep2).trim();
+                            fields2[1].value = topicsVal.split(',').join('\n');
+                        }
+                    } else {
+                        var sep = idx === 2 ? ' - ' : ' | ';
+                        var parts = line.split(sep);
+                        if (fields2[0]) fields2[0].value = parts[0] ? parts[0].trim() : '';
+                        if (fields2[1]) fields2[1].value = parts.slice(1).join(sep).trim();
+                    }
                 } else {
                     if (fields2[0]) fields2[0].value = line;
                 }
@@ -662,7 +710,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
     }
 
     document.getElementById('btn-key-benefits').addEventListener('click', function() { addLineItem('key-benefits-container', 'Learning Point', false, '', ''); });
-    document.getElementById('btn-curriculum').addEventListener('click', function() { addLineItem('curriculum-container', 'Module', true, 'Module Name (e.g. Python Fundamentals)', 'Topics (comma separated)'); });
+    document.getElementById('btn-curriculum').addEventListener('click', function() { addCurriculumModule(); });
     document.getElementById('btn-projects').addEventListener('click', function() { addLineItem('projects-container', 'Project', true, 'Project Title', 'Short Description'); });
     document.getElementById('btn-why-join').addEventListener('click', function() { addLineItem('why-join-container', 'Point', true, 'Title', 'Description'); });
     document.getElementById('btn-prerequisites').addEventListener('click', function() { addLineItem('prerequisites-container', 'Prerequisite', false, '', ''); });
@@ -686,7 +734,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                     // Add new row based on container type
                     var containerId = container.id;
                     if (containerId === 'curriculum-container') {
-                        addLineItem('curriculum-container', 'Module', true, 'Module Name (e.g. Python Fundamentals)', 'Topics (comma separated)');
+                        addCurriculumModule();
                     } else if (containerId === 'projects-container') {
                         addLineItem('projects-container', 'Project', true, 'Project Title', 'Short Description');
                     } else if (containerId === 'why-join-container') {
@@ -712,16 +760,26 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             var row = e.target.closest('.line-item-row');
             var container = row.parentElement;
             var label = row.querySelector('.line-item-label') ? row.querySelector('.line-item-label').textContent.split(' ').slice(0, -1).join(' ') : 'Item';
+            var containerId = container.id;
             var hasTwo = row.querySelector('.field2') !== null;
             var f1Label = row.querySelector('.field1') ? row.querySelector('.field1').placeholder : '';
             var f2Label = row.querySelector('.field2') ? row.querySelector('.field2').placeholder : '';
+            var isTextarea = row.querySelector('.field2') && row.querySelector('.field2').tagName === 'TEXTAREA';
             var inputCount = Array.from(container.children).indexOf(row) + 2;
+            if (containerId === 'curriculum-container') {
+                addCurriculumModule();
+                return;
+            }
             var newRow = document.createElement('div');
             newRow.className = 'line-item-row';
             var html = '<div class="line-item-header"><span class="line-item-label">' + label + ' ' + inputCount + '</span><div class="line-item-controls"><button type="button" class="line-item-btn line-item-btn-add btn-add-inline">+</button><button type="button" class="line-item-btn line-item-btn-remove btn-remove-inline">-</button></div></div>';
             if (hasTwo) {
                 html += '<input type="text" class="line-item-field field1" placeholder="' + f1Label + '">';
-                html += '<input type="text" class="line-item-field field2" placeholder="' + f2Label + '">';
+                if (isTextarea) {
+                    html += '<textarea class="line-item-field field2" placeholder="' + f2Label + '" style="min-height:80px;resize:vertical;width:100%;"></textarea>';
+                } else {
+                    html += '<input type="text" class="line-item-field field2" placeholder="' + f2Label + '">';
+                }
             } else {
                 html += '<input type="text" class="line-item-field" placeholder="Enter ' + label.toLowerCase() + '...">';
             }

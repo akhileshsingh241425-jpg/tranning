@@ -760,23 +760,38 @@ class Course(db.Model):
                     faq_items.append({'question': parts[0].strip(), 'answer': parts[1].strip()})
         base['faq'] = faq_items
         base['detailStats'] = json.loads(self.detail_stats) if self.detail_stats else []
-        # Transform topic_wise_content from "Module Name | Topic 1, Topic 2" format to objects
+        # Parse topic_wise_content (JSON or legacy format)
         topic_content = []
         if self.topic_wise_content:
-            for line in self.topic_wise_content.split('\n'):
-                line = line.strip()
-                if line and '|' in line:
-                    parts = line.split('|', 1)
-                    module_name = parts[0].strip()
-                    topics_str = parts[1].strip() if len(parts) > 1 else ''
-                    items = []
-                    if topics_str:
-                        topic_list = [t.strip() for t in topics_str.split(',') if t.strip()]
-                        for t in topic_list:
-                            items.append({'title': t, 'subtopics': []})
-                    topic_content.append({'heading': module_name, 'items': items})
-                elif line:
-                    topic_content.append({'heading': line, 'items': []})
+            try:
+                parsed = json.loads(self.topic_wise_content)
+                if isinstance(parsed, list):
+                    topic_content = parsed
+            except (json.JSONDecodeError, TypeError):
+                for line in self.topic_wise_content.split('\n'):
+                    line = line.strip()
+                    if line and '||' in line:
+                        parts = line.split('||', 1)
+                        module_name = parts[0].strip()
+                        topics_str = parts[1].strip() if len(parts) > 1 else ''
+                        items = []
+                        if topics_str:
+                            topic_list = [t.strip() for t in topics_str.split('\n') if t.strip()]
+                            for t in topic_list:
+                                items.append({'title': t, 'subtopics': []})
+                        topic_content.append({'heading': module_name, 'items': items})
+                    elif line and '|' in line:
+                        parts = line.split('|', 1)
+                        module_name = parts[0].strip()
+                        topics_str = parts[1].strip() if len(parts) > 1 else ''
+                        items = []
+                        if topics_str:
+                            topic_list = [t.strip() for t in topics_str.split(',') if t.strip()]
+                            for t in topic_list:
+                                items.append({'title': t, 'subtopics': []})
+                        topic_content.append({'heading': module_name, 'items': items})
+                    elif line:
+                        topic_content.append({'heading': line, 'items': []})
         base['topicWiseContent'] = topic_content
         base['eligibility'] = self.eligibility or self.prerequisites or ''
         base['prerequisites'] = self.prerequisites or ''

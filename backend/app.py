@@ -711,6 +711,17 @@ class Course(db.Model):
     vendors = db.Column(db.Text, default='')  # Vendor/Certification partners (comma-separated)
     category = db.Column(db.String(100), default='')  # Course category
 
+    def _parse_json_or_lines(self, text):
+        if not text:
+            return []
+        try:
+            parsed = json.loads(text)
+            if isinstance(parsed, list):
+                return parsed
+        except (json.JSONDecodeError, TypeError):
+            pass
+        return [b.strip() for b in text.split('\n') if b.strip()]
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -806,7 +817,7 @@ class Course(db.Model):
         base['projectsList'] = [b.strip() for b in self.projects_list.split('\n') if b.strip()] if self.projects_list else []
         base['benefits'] = [b.strip() for b in self.benefits.split('\n') if b.strip()] if self.benefits else []
         base['reviewsList'] = [b.strip() for b in self.reviews_list.split('\n') if b.strip()] if self.reviews_list else []
-        base['whyJoin'] = [b.strip() for b in self.why_join.split('\n') if b.strip()] if self.why_join else []
+        base['whyJoin'] = self._parse_json_or_lines(self.why_join) if self.why_join else []
         base['certification'] = self.certification or ''
         
         # New fields

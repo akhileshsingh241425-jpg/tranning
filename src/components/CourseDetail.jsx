@@ -345,14 +345,17 @@ const CourseDetail = () => {
           {course.why_join && course.why_join.length > 0 && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Course Features</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-              {course.why_join.map((item, index) => (
-                <div key={index} style={{ padding: '15px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px' }}>
-                  <h4 style={{ margin: '0 0 5px', color: '#1e293b' }}>{typeof item === 'object' ? item.title : item.split(' - ')[0]}</h4>
-                  <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>{typeof item === 'object' ? item.description : item.split(' - ')[1] || ''}</p>
-                </div>
-              ))}
-            </div>
+            <ul style={{ paddingLeft: '25px', color: '#475569' }}>
+              {course.why_join.map((item, index) => {
+                const title = typeof item === 'object' ? item.title : item.split(' | ')[0];
+                const desc = typeof item === 'object' ? item.description : item.split(' | ')[1] || '';
+                return (
+                <li key={index} style={{ marginBottom: '10px', lineHeight: '1.6' }}>
+                  <strong>{title}</strong>{desc ? ` - ${desc}` : ''}
+                </li>
+                );
+              })}
+            </ul>
           </div>
           )}
 

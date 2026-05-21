@@ -563,7 +563,7 @@ const CourseDetail = () => {
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Tools You'll Use</h2>
             <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px 0' }}>
               {course.toolsCovered.map((tool, index) => (
-                <span key={index} style={{ display: 'inline-block', marginRight: '20px', marginBottom: '10px', color: '#16a34a', fontSize: '18px', fontWeight: '500' }}>{tool}</span>
+                <span key={index} style={{ display: 'inline-block', marginRight: '20px', marginBottom: '10px', color: '#0066cc', fontSize: '18px', fontWeight: '500' }}>{tool}</span>
               ))}
             </div>
           </div>

@@ -224,6 +224,7 @@ const Courses = () => {
             icon: iconMap[c.icon] || <FaBookOpen />,
             title: c.title,
             description: c.description,
+            description_html: c.description_html || '',
             image: c.image,
             slug: c.slug,
             price: c.price ? `$${c.price}` : '$0',
@@ -336,7 +337,7 @@ const Courses = () => {
                   <span className="tp-course-duration"><FaClock /> {course.duration}</span>
                 </div>
                 <h3 className="tp-course-title">{course.title}</h3>
-                <p className="tp-course-desc">{course.description}</p>
+                <p className="tp-course-desc" dangerouslySetInnerHTML={{ __html: course.description_html || course.description }} />
                 
                 <div className="tp-course-bottom">
                   <div className="tp-course-rating">

@@ -689,6 +689,11 @@ class Course(db.Model):
     reviews_list = db.Column(db.Text, default='')       # JSON: [{name, role, text, avatar}]
     why_join = db.Column(db.Text, default='')            # JSON: [{icon, title, description}]
     certification = db.Column(db.Text, default='')      # JSON: {title, faqs: [{title, text}]}
+    description_html = db.Column(db.Text, default='')     # WYSIWYG HTML
+    overview_html = db.Column(db.Text, default='')         # WYSIWYG HTML
+    training_schedule_html = db.Column(db.Text, default='') # WYSIWYG HTML
+    target_audience_html = db.Column(db.Text, default='')  # WYSIWYG HTML
+    certification_html = db.Column(db.Text, default='')    # WYSIWYG HTML
 
     # ---- New Fields for Detailed Course Page ----
     tools_covered = db.Column(db.Text, default='')     # comma-separated or JSON
@@ -751,7 +756,8 @@ class Course(db.Model):
             'is_published': self.is_published,
             'sort_order': self.sort_order,
             'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            'updated_at': self.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+            'updated_at': self.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'description_html': self.description_html or ''
         }
 
     def to_detail_dict(self):
@@ -856,6 +862,13 @@ class Course(db.Model):
         # Vendors/Certification Partners
         base['vendors'] = [v.strip() for v in self.vendors.split(',')] if self.vendors else []
         base['category'] = self.category or ''
+        
+        # Rich text HTML fields
+        base['description_html'] = self.description_html or ''
+        base['overview_html'] = self.overview_html or ''
+        base['training_schedule_html'] = self.training_schedule_html or ''
+        base['target_audience_html'] = self.target_audience_html or ''
+        base['certification_html'] = self.certification_html or ''
         
         return base
 class Subscriber(db.Model):
@@ -1510,7 +1523,12 @@ def admin_course_new():
             exam_languages=request.form.get('exam_languages', ''),
             course_objectives=request.form.get('course_objectives', ''),
             vendors=request.form.get('vendors', ''),
-            category=request.form.get('category', '')
+            category=request.form.get('category', ''),
+            description_html=request.form.get('description_html', ''),
+            overview_html=request.form.get('overview_html', ''),
+            training_schedule_html=request.form.get('training_schedule_html', ''),
+            target_audience_html=request.form.get('target_audience_html', ''),
+            certification_html=request.form.get('certification_html', '')
         )
         try:
             db.session.add(course)
@@ -1613,6 +1631,11 @@ def admin_course_edit(id):
         course.course_objectives = request.form.get('course_objectives', '')
         course.vendors = request.form.get('vendors', '')
         course.category = request.form.get('category', '')
+        course.description_html = request.form.get('description_html', '')
+        course.overview_html = request.form.get('overview_html', '')
+        course.training_schedule_html = request.form.get('training_schedule_html', '')
+        course.target_audience_html = request.form.get('target_audience_html', '')
+        course.certification_html = request.form.get('certification_html', '')
         
         try:
             db.session.commit()

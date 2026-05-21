@@ -11,6 +11,24 @@
 .curriculum-mode-btn.active { border-color: #0066cc; background: #0066cc; color: #fff; }
 #curriculum-editor-wrap .ql-editor { min-height: 300px; font-size: 15px; line-height: 1.7; }
 #curriculum-editor-wrap { display: none; }
+
+.rich-toggle-bar { display: flex; gap: 10px; margin-bottom: 12px; }
+.rich-mode-btn { padding: 6px 18px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; background: #fff; color: #64748b; }
+.rich-mode-btn.active { border-color: #0066cc; background: #0066cc; color: #fff; }
+.rich-editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.rich-editor-col .ql-editor { min-height: 200px; font-size: 15px; line-height: 1.7; }
+.rich-preview-col { border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; background: #fff; min-height: 200px; }
+.rich-preview-header { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+.rich-preview { color: #334155; font-size: 15px; line-height: 1.8; }
+.rich-preview h1 { font-size: 22px; font-weight: 700; margin: 16px 0 8px; color: #1e293b; }
+.rich-preview h2 { font-size: 19px; font-weight: 600; margin: 14px 0 8px; color: #1e293b; }
+.rich-preview h3 { font-size: 17px; font-weight: 600; margin: 12px 0 6px; color: #334155; }
+.rich-preview ul, .rich-preview ol { padding-left: 24px; margin: 8px 0; }
+.rich-preview li { margin-bottom: 4px; }
+.rich-preview p { margin: 8px 0; line-height: 1.8; }
+.rich-preview blockquote { border-left: 4px solid #0066cc; padding-left: 16px; margin: 12px 0; color: #475569; font-style: italic; }
+.rich-preview pre { background: #f1f5f9; padding: 14px; border-radius: 8px; overflow-x: auto; font-size: 14px; }
+
 .admin-form-container { max-width: 95%; margin: 0 auto; padding: 30px 40px; min-height: calc(100vh - 40px); background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%); }
 .form-section { background: #fff; border-radius: 16px; padding: 30px 35px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05); }
 .form-section h3 { color: #1a1a2e; margin-top: 0; padding-bottom: 15px; border-bottom: 3px solid #0066cc; font-size: 20px; font-weight: 700; }
@@ -151,11 +169,37 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             <h3>About This Course</h3>
             <div class="form-group form-group-full">
                 <label>Short Description</label>
-                <textarea name="description" class="form-control" rows="3" placeholder="Brief description for course listing">{{ course.description if course else '' }}</textarea>
+                <div class="rich-toggle-bar">
+                    <button type="button" class="rich-mode-btn active" onclick="switchRichMode('description','simple')">Simple</button>
+                    <button type="button" class="rich-mode-btn" onclick="switchRichMode('description','editor')">Editor</button>
+                </div>
+                <div id="description-simple-wrap">
+                    <textarea name="description" class="form-control" rows="3" placeholder="Brief description for course listing">{{ course.description if course else '' }}</textarea>
+                </div>
+                <div id="description-editor-wrap" style="display:none">
+                    <div class="rich-editor-grid">
+                        <div class="rich-editor-col"><div id="description-editor"></div></div>
+                        <div class="rich-preview-col"><div class="rich-preview-header">👁️ Live Preview</div><div class="rich-preview" id="description-preview"></div></div>
+                    </div>
+                    <input type="hidden" name="description_html" id="description-html-data" value="{{ course.description_html if course else '' }}">
+                </div>
             </div>
             <div class="form-group form-group-full">
                 <label>Overview</label>
-                <textarea name="overview" class="form-control" rows="5" placeholder="Detailed course description">{{ course.overview if course else '' }}</textarea>
+                <div class="rich-toggle-bar">
+                    <button type="button" class="rich-mode-btn active" onclick="switchRichMode('overview','simple')">Simple</button>
+                    <button type="button" class="rich-mode-btn" onclick="switchRichMode('overview','editor')">Editor</button>
+                </div>
+                <div id="overview-simple-wrap">
+                    <textarea name="overview" class="form-control" rows="5" placeholder="Detailed course description">{{ course.overview if course else '' }}</textarea>
+                </div>
+                <div id="overview-editor-wrap" style="display:none">
+                    <div class="rich-editor-grid">
+                        <div class="rich-editor-col"><div id="overview-editor"></div></div>
+                        <div class="rich-preview-col"><div class="rich-preview-header">👁️ Live Preview</div><div class="rich-preview" id="overview-preview"></div></div>
+                    </div>
+                    <input type="hidden" name="overview_html" id="overview-html-data" value="{{ course.overview_html if course else '' }}">
+                </div>
             </div>
         </div>
 
@@ -192,9 +236,12 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             </div>
             <div class="form-group form-group-full" id="curriculum-editor-wrap">
                 <label>Curriculum Editor</label>
-                <div id="curriculum-editor">{#- Editor content loaded by JS -#}</div>
+                <div class="rich-editor-grid">
+                    <div class="rich-editor-col"><div id="curriculum-editor">{#- Editor content loaded by JS -#}</div></div>
+                    <div class="rich-preview-col"><div class="rich-preview-header">👁️ Live Preview — exactly jaisa frontend par dikhega</div><div class="rich-preview" id="curriculum-preview"></div></div>
+                </div>
                 <input type="hidden" name="curriculum_html" id="curriculum-html-data" value="{{ course.curriculum_html if course else '' }}">
-                <div class="section-note">Type any way you want. Bold, lists, headings — jo likhoge waisa hi UI mein dikhega.</div>
+                <div class="section-note">Type any way you want left side, right side mein live preview dikhega ki UI par exactly kaisa show hoga.</div>
             </div>
         </div>
         </div>
@@ -256,7 +303,20 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             <h3>Training Schedule</h3>
             <div class="form-group form-group-full">
                 <label>Schedule Details</label>
-                <textarea name="training_schedule" class="form-control" rows="3" placeholder="Weekdays: Mon-Fri (7-10 PM IST)&#10;Weekends: Sat-Sun (10 AM-2 PM IST)">{{ course.training_schedule if course else '' }}</textarea>
+                <div class="rich-toggle-bar">
+                    <button type="button" class="rich-mode-btn active" onclick="switchRichMode('training_schedule','simple')">Simple</button>
+                    <button type="button" class="rich-mode-btn" onclick="switchRichMode('training_schedule','editor')">Editor</button>
+                </div>
+                <div id="training_schedule-simple-wrap">
+                    <textarea name="training_schedule" class="form-control" rows="3" placeholder="Weekdays: Mon-Fri (7-10 PM IST)&#10;Weekends: Sat-Sun (10 AM-2 PM IST)">{{ course.training_schedule if course else '' }}</textarea>
+                </div>
+                <div id="training_schedule-editor-wrap" style="display:none">
+                    <div class="rich-editor-grid">
+                        <div class="rich-editor-col"><div id="training_schedule-editor"></div></div>
+                        <div class="rich-preview-col"><div class="rich-preview-header">👁️ Live Preview</div><div class="rich-preview" id="training_schedule-preview"></div></div>
+                    </div>
+                    <input type="hidden" name="training_schedule_html" id="training_schedule-html-data" value="{{ course.training_schedule_html if course else '' }}">
+                </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
@@ -404,14 +464,42 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         <div class="form-section">
             <h3>Target Audience</h3>
             <div class="form-group form-group-full">
-                <textarea name="target_audience" class="form-control" rows="4" placeholder="Fresh graduates looking for tech career&#10;Working professionals">{{ course.target_audience if course else '' }}</textarea>
+                <label>Target Audience Details</label>
+                <div class="rich-toggle-bar">
+                    <button type="button" class="rich-mode-btn active" onclick="switchRichMode('target_audience','simple')">Simple</button>
+                    <button type="button" class="rich-mode-btn" onclick="switchRichMode('target_audience','editor')">Editor</button>
+                </div>
+                <div id="target_audience-simple-wrap">
+                    <textarea name="target_audience" class="form-control" rows="4" placeholder="Fresh graduates looking for tech career&#10;Working professionals">{{ course.target_audience if course else '' }}</textarea>
+                </div>
+                <div id="target_audience-editor-wrap" style="display:none">
+                    <div class="rich-editor-grid">
+                        <div class="rich-editor-col"><div id="target_audience-editor"></div></div>
+                        <div class="rich-preview-col"><div class="rich-preview-header">👁️ Live Preview</div><div class="rich-preview" id="target_audience-preview"></div></div>
+                    </div>
+                    <input type="hidden" name="target_audience_html" id="target_audience-html-data" value="{{ course.target_audience_html if course else '' }}">
+                </div>
             </div>
         </div>
 
         <div class="form-section">
             <h3>Certification</h3>
             <div class="form-group form-group-full">
-                <textarea name="certification" class="form-control" rows="3" placeholder="Data Science & AI Certification - Get recognized certificate upon completion">{{ course.certification if course else '' }}</textarea>
+                <label>Certification Details</label>
+                <div class="rich-toggle-bar">
+                    <button type="button" class="rich-mode-btn active" onclick="switchRichMode('certification','simple')">Simple</button>
+                    <button type="button" class="rich-mode-btn" onclick="switchRichMode('certification','editor')">Editor</button>
+                </div>
+                <div id="certification-simple-wrap">
+                    <textarea name="certification" class="form-control" rows="3" placeholder="Certification details">{{ course.certification if course else '' }}</textarea>
+                </div>
+                <div id="certification-editor-wrap" style="display:none">
+                    <div class="rich-editor-grid">
+                        <div class="rich-editor-col"><div id="certification-editor"></div></div>
+                        <div class="rich-preview-col"><div class="rich-preview-header">👁️ Live Preview</div><div class="rich-preview" id="certification-preview"></div></div>
+                    </div>
+                    <input type="hidden" name="certification_html" id="certification-html-data" value="{{ course.certification_html if course else '' }}">
+                </div>
             </div>
         </div>
 
@@ -864,7 +952,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         }
     });
 
-    var quill = null;
+    var fieldEditors = {};
     var currentMode = localStorage.getItem('curriculumMode') || 'simple';
 
     window.switchCurriculumMode = function(mode) {
@@ -876,44 +964,68 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         document.getElementById('curriculum-editor-wrap').style.display = mode === 'editor' ? 'block' : 'none';
     };
 
-    function initQuill() {
-        if (quill) return;
-        quill = new Quill('#curriculum-editor', {
-            theme: 'snow',
-            placeholder: 'Type your curriculum here... Use headings, bold, lists, etc.',
-            modules: {
-                toolbar: [
-                    [{ header: [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline'],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['link'],
-                    ['clean']
-                ]
-            }
+    window.switchRichMode = function(field, mode) {
+        document.getElementById(field + '-simple-wrap').style.display = mode === 'simple' ? 'block' : 'none';
+        document.getElementById(field + '-editor-wrap').style.display = mode === 'editor' ? 'block' : 'none';
+        var btns = document.getElementById(field + '-editor-wrap').parentElement.querySelectorAll('.rich-mode-btn');
+        btns.forEach(function(b) {
+            b.className = 'rich-mode-btn' + (b.getAttribute('onclick').includes("'" + mode + "'") ? ' active' : '');
         });
-        var savedHtml = document.getElementById('curriculum-html-data').value;
-        if (savedHtml) {
-            quill.root.innerHTML = savedHtml;
+        if (mode === 'editor' && fieldEditors[field]) {
+            document.getElementById(field + '-preview').innerHTML = fieldEditors[field].root.innerHTML;
         }
+    };
+
+    var advancedToolbar = [
+        [{ header: [1, 2, 3, 4, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ color: [] }, { background: [] }],
+        [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
+        [{ align: [] }],
+        ['blockquote', 'code-block'],
+        ['link'],
+        ['clean']
+    ];
+
+    function initFieldEditor(id, placeholder) {
+        var editor = new Quill('#' + id + '-editor', {
+            theme: 'snow',
+            placeholder: placeholder || 'Type your content here...',
+            modules: { toolbar: advancedToolbar }
+        });
+        var saved = document.getElementById(id + '-html-data').value;
+        if (saved) { editor.root.innerHTML = saved; }
+        editor.on('text-change', function() {
+            document.getElementById(id + '-preview').innerHTML = editor.root.innerHTML;
+        });
+        fieldEditors[id] = editor;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         loadLineItems();
         loadReviews();
         loadFaqs();
-        initQuill();
+
+        // Init curriculum editor
+        initFieldEditor('curriculum', 'Type your curriculum here... Use headings, bold, lists, etc.');
         switchCurriculumMode(currentMode);
+
+        // Init textarea field editors
+        initFieldEditor('description', 'Write a short course description...');
+        initFieldEditor('overview', 'Write a detailed course overview...');
+        initFieldEditor('training_schedule', 'Describe training schedule...');
+        initFieldEditor('target_audience', 'Describe target audience...');
+        initFieldEditor('certification', 'Describe certification details...');
     });
 
     document.querySelector('form').addEventListener('submit', function(e) {
         e.preventDefault();
-        if (quill) {
-            document.getElementById('curriculum-html-data').value = quill.root.innerHTML;
-        }
+        Object.keys(fieldEditors).forEach(function(id) {
+            document.getElementById(id + '-html-data').value = fieldEditors[id].root.innerHTML;
+        });
         collectLineItems();
         collectReviewsData();
         collectFaqData();
-        // Small delay to ensure hidden fields are updated
         setTimeout(function() {
             document.querySelector('form').submit();
         }, 100);

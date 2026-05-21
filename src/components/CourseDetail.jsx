@@ -39,6 +39,7 @@ const CourseDetail = () => {
           duration: data.duration || (localCourse && localCourse.duration),
           level: data.level || (localCourse && localCourse.level),
           overview: data.overview || (localCourse && localCourse.overview) || data.description,
+          overview_html: data.overview_html || '',
           keyBenefits: (data.keyBenefits && data.keyBenefits.length > 0) ? data.keyBenefits : (localCourse && localCourse.keyBenefits) || [],
           subServices: (data.modulesDetail && data.modulesDetail.length > 0)
             ? data.modulesDetail.map((m, i) => ({
@@ -71,6 +72,7 @@ const CourseDetail = () => {
           targetAudience: (data.target_audience && Array.isArray(data.target_audience)) ? data.target_audience : (typeof data.target_audience === 'string' ? data.target_audience.split('\n').filter(t => t.trim()) : []) || (localCourse && localCourse.targetAudience) || [],
           benefits: (data.benefits && Array.isArray(data.benefits)) ? data.benefits : (typeof data.benefits === 'string' ? data.benefits.split('\n').filter(b => b.trim()) : []) || (localCourse && localCourse.benefits) || [],
           trainingSchedule: data.training_schedule || (localCourse && localCourse.trainingSchedule),
+          training_schedule_html: data.training_schedule_html || '',
           start_date: data.start_date || (localCourse && localCourse.start_date),
           next_batch: data.next_batch || (localCourse && localCourse.next_batch),
           mode: data.mode || (localCourse && localCourse.mode),
@@ -326,7 +328,7 @@ const CourseDetail = () => {
           {course.overview && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>About This Course</h2>
-            <p style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }}>{course.overview}</p>
+            <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.overview_html || course.overview }} />
           </div>
           )}
 
@@ -742,7 +744,7 @@ const CourseDetail = () => {
                       <span style={{ fontSize: '13px', color: '#475569' }}>Weekdays (Mon-Fri): <strong style={{ color: '#1e293b' }}>{course.start_date || 'Every Monday'}</strong></span>
                     </div>
                     <div style={{ fontSize: '12px', color: '#64748b', marginLeft: '16px' }}>
-                      {course.trainingSchedule ? course.trainingSchedule.replace(/\n/g, ' | ') : '07:00 PM - 10:00 PM IST'}
+                      <span dangerouslySetInnerHTML={{ __html: course.training_schedule_html || course.trainingSchedule || '07:00 PM - 10:00 PM IST' }} />
                     </div>
                   </div>
                 )}

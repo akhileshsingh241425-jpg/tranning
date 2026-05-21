@@ -789,11 +789,12 @@ class Course(db.Model):
                         if topics_str:
                             topic_list = [t.strip() for t in topics_str.split('\n') if t.strip()]
                             for t in topic_list:
-                                if '|' in t:
-                                    tp = t.split('|', 1)
-                                    items.append({'title': tp[0].strip(), 'description': tp[1].strip(), 'subtopics': []})
-                                else:
-                                    items.append({'title': t, 'subtopics': []})
+                                    parts = t.split('|')
+                                    title = parts[0].strip()
+                                    desc = parts[1].strip() if len(parts) > 1 else ''
+                                    subText = '|'.join(parts[2:]).strip() if len(parts) > 2 else ''
+                                    subs = [s.strip() for s in subText.split(',') if s.strip()] if subText else []
+                                    items.append({'title': title, 'description': desc, 'subtopics': subs})
                         topic_content.append({'heading': module_name, 'items': items})
                     elif line and '|' in line:
                         parts = line.split('|', 1)
@@ -803,11 +804,12 @@ class Course(db.Model):
                         if topics_str:
                             topic_list = [t.strip() for t in topics_str.split(',') if t.strip()]
                             for t in topic_list:
-                                if '|' in t:
-                                    tp = t.split('|', 1)
-                                    items.append({'title': tp[0].strip(), 'description': tp[1].strip(), 'subtopics': []})
-                                else:
-                                    items.append({'title': t, 'subtopics': []})
+                                    parts = t.split('|')
+                                    title = parts[0].strip()
+                                    desc = parts[1].strip() if len(parts) > 1 else ''
+                                    subText = '|'.join(parts[2:]).strip() if len(parts) > 2 else ''
+                                    subs = [s.strip() for s in subText.split(',') if s.strip()] if subText else []
+                                    items.append({'title': title, 'description': desc, 'subtopics': subs})
                         topic_content.append({'heading': module_name, 'items': items})
                     elif line:
                         topic_content.append({'heading': line, 'items': []})

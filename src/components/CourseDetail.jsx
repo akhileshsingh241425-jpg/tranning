@@ -375,7 +375,9 @@ const CourseDetail = () => {
           {course.eligibility && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Pre-requisites</h2>
-            <div dangerouslySetInnerHTML={{ __html: course.eligibility }} />
+            <ul style={{ paddingLeft: '25px', color: '#475569', margin: '8px 0 0 0' }}>
+              {course.eligibility.split('\n').filter(function(l) { return l.trim(); }).map(function(item, i) { return <li key={i} style={{ marginBottom: '8px', lineHeight: '1.5' }}>{item.trim()}</li>; })}
+            </ul>
           </div>
           )}
 

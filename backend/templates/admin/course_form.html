@@ -744,7 +744,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
     document.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             var target = e.target;
-            if (target.classList.contains('line-item-field') || target.classList.contains('review-text') || target.classList.contains('faq-answer')) {
+            if (target.classList.contains('line-item-field') && target.tagName !== 'TEXTAREA' || target.classList.contains('review-text') || target.classList.contains('faq-answer')) {
                 e.preventDefault();
                 var row = target.closest('.line-item-row');
                 var container = row.parentElement;

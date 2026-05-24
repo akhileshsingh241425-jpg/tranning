@@ -1286,36 +1286,34 @@ def admin_settings():
     
     return render_template('admin/settings.html', settings=settings)
 
-def _ensure_category_table():
-    try:
-        Category.query.first()
-    except Exception:
-        db.session.rollback()
-        try:
-            db.session.execute(db.text("""
-                CREATE TABLE IF NOT EXISTS category (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name VARCHAR(100) NOT NULL,
-                    slug VARCHAR(100) UNIQUE,
-                    sort_order INTEGER DEFAULT 0,
-                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            """))
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
-
 @app.route('/admin/categories')
 @login_required
 def admin_categories():
-    _ensure_category_table()
-    categories = Category.query.order_by(Category.sort_order, Category.name).all()
-    return render_template('admin/categories.html', categories=categories)
+    import traceback, sys
+    try:
+        db.session.execute(db.text("CREATE TABLE IF NOT EXISTS category (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(100) NOT NULL, slug VARCHAR(100) UNIQUE, sort_order INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)"))
+        db.session.commit()
+        categories = Category.query.order_by(Category.sort_order, Category.name).all()
+    except Exception:
+        db.session.rollback()
+        tb = traceback.format_exc()
+        print("ADMIN CATEGORIES ERROR:", tb, file=sys.stderr)
+        return f"<h2>Query Error</h2><pre>{tb}</pre>"
+    try:
+        return render_template('admin/categories.html', categories=categories)
+    except Exception:
+        tb = traceback.format_exc()
+        print("TEMPLATE RENDER ERROR:", tb, file=sys.stderr)
+        return f"<h2>Template Error</h2><pre>{tb}</pre>"
 
 @app.route('/admin/categories/new', methods=['GET', 'POST'])
 @login_required
 def admin_category_new():
-    _ensure_category_table()
+    try:
+        db.session.execute(db.text("CREATE TABLE IF NOT EXISTS category (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(100) NOT NULL, slug VARCHAR(100) UNIQUE, sort_order INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
         slug = request.form.get('slug', '').strip() or name.lower().replace(' ', '-').replace('&', 'and')
@@ -1334,7 +1332,11 @@ def admin_category_new():
 @app.route('/admin/categories/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def admin_category_edit(id):
-    _ensure_category_table()
+    try:
+        db.session.execute(db.text("CREATE TABLE IF NOT EXISTS category (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(100) NOT NULL, slug VARCHAR(100) UNIQUE, sort_order INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
     category = Category.query.get_or_404(id)
     if request.method == 'POST':
         category.name = request.form.get('name', '').strip()
@@ -1352,7 +1354,11 @@ def admin_category_edit(id):
 @app.route('/admin/categories/delete/<int:id>')
 @login_required
 def admin_category_delete(id):
-    _ensure_category_table()
+    try:
+        db.session.execute(db.text("CREATE TABLE IF NOT EXISTS category (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(100) NOT NULL, slug VARCHAR(100) UNIQUE, sort_order INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
     category = Category.query.get_or_404(id)
     db.session.delete(category)
     db.session.commit()
@@ -1361,8 +1367,13 @@ def admin_category_delete(id):
 
 @app.route('/api/categories', methods=['GET'])
 def get_categories():
-    _ensure_category_table()
-    categories = Category.query.order_by(Category.sort_order, Category.name).all()
+    try:
+        db.session.execute(db.text("CREATE TABLE IF NOT EXISTS category (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(100) NOT NULL, slug VARCHAR(100) UNIQUE, sort_order INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)"))
+        db.session.commit()
+        categories = Category.query.order_by(Category.sort_order, Category.name).all()
+    except Exception:
+        db.session.rollback()
+        categories = []
     return jsonify([c.to_dict() for c in categories])
 
 @app.route('/admin/login', methods=['GET', 'POST'])

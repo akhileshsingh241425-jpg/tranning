@@ -70,7 +70,7 @@ const CourseDetail = () => {
           projectsList: (data.projectsList && data.projectsList.length > 0) ? data.projectsList : (localCourse && localCourse.projectsList) || [],
           toolsCovered: (data.tools_covered && Array.isArray(data.tools_covered)) ? data.tools_covered : (typeof data.tools_covered === 'string' ? data.tools_covered.split(',').map(t => t.trim()).filter(t => t) : []) || (localCourse && localCourse.toolsCovered) || [],
           skillsCovered: (data.skills_covered && Array.isArray(data.skills_covered)) ? data.skills_covered : (typeof data.skills_covered === 'string' ? data.skills_covered.split(',').map(s => s.trim()).filter(s => s) : []) || (localCourse && localCourse.skillsCovered) || [],
-          targetAudience: (data.target_audience && Array.isArray(data.target_audience)) ? data.target_audience : (typeof data.target_audience === 'string' ? data.target_audience.split('\n').filter(t => t.trim()) : []) || (localCourse && localCourse.targetAudience) || [],
+          targetAudience: (data.target_audience && Array.isArray(data.target_audience)) ? data.target_audience : (typeof data.target_audience === 'string' ? data.target_audience.split('\n').filter(t => t.trim()) : []) || (localCourse && localCourse.target_audience ? localCourse.target_audience.split('\n').filter(t => t.trim()) : []) || [],
           targetAudienceHtml: data.target_audience_html || '',
           benefits: (data.benefits && Array.isArray(data.benefits)) ? data.benefits : (typeof data.benefits === 'string' ? data.benefits.split('\n').filter(b => b.trim()) : []) || (localCourse && localCourse.benefits) || [],
           trainingSchedule: data.training_schedule || (localCourse && localCourse.trainingSchedule),
@@ -101,7 +101,7 @@ const CourseDetail = () => {
       .catch(() => {
         const localCourse = coursesDetailData.find(c => c.slug === slug);
         if (localCourse) {
-          setCourse({ ...localCourse, price: localCourse.price });
+          setCourse({ ...localCourse, price: localCourse.price, targetAudience: typeof localCourse.target_audience === 'string' ? localCourse.target_audience.split('\n').filter(t => t.trim()) : [] });
         }
         setLoading(false);
       });

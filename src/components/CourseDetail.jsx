@@ -278,7 +278,7 @@ const CourseDetail = () => {
           {(course.overview || course.overview_html) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>About This Course</h2>
-            <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.overview_html || course.overview }} />
+            <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.overview_html || (course.overview ? function(t){var inList=false,r='',lines=t.split('\n');for(var i=0;i<lines.length;i++){var l=lines[i].trim();if(!l)continue;var m=l.match(/^\*\s(.+)/);if(m){if(!inList){r+='<ul>';inList=true}r+='<li>'+m[1]+'</li>'}else{if(inList){r+='</ul>';inList=false}r+='<p>'+l+'</p>'}}if(inList)r+='</ul>';return r}(course.overview) : '') }} />
           </div>
           )}
 

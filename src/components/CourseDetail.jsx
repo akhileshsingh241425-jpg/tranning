@@ -65,6 +65,7 @@ const CourseDetail = () => {
           curriculumHtml: data.curriculumHtml || (localCourse && localCourse.curriculumHtml) || '',
           why_join: data.whyJoin || (localCourse && localCourse.why_join),
           certification: data.certification || (localCourse && localCourse.certification),
+          certificationHtml: data.certification_html || '',
           reviewsList: (data.reviewsList && data.reviewsList.length > 0) ? data.reviewsList : (localCourse && localCourse.reviewsList) || [],
           projectsList: (data.projectsList && data.projectsList.length > 0) ? data.projectsList : (localCourse && localCourse.projectsList) || [],
           toolsCovered: (data.tools_covered && Array.isArray(data.tools_covered)) ? data.tools_covered : (typeof data.tools_covered === 'string' ? data.tools_covered.split(',').map(t => t.trim()).filter(t => t) : []) || (localCourse && localCourse.toolsCovered) || [],
@@ -317,7 +318,7 @@ const CourseDetail = () => {
                 <span style={{ fontSize: '15px', color: '#475569' }}><strong style={{ color: '#1e293b' }}>Language:</strong> {course.language}</span>
               </div>
             )}
-            {course.certification && (
+            {(course.certification || course.certificationHtml) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#fff', border: '1px solid #e2e8f0', padding: '10px 18px', borderRadius: '10px', flex: 1, minWidth: '150px' }}>
                 <FaCertificate style={{ color: '#0066cc', fontSize: '18px' }} />
                 <span style={{ fontSize: '15px', color: '#475569' }}>Certificate</span>
@@ -583,7 +584,7 @@ const CourseDetail = () => {
           )}
 
           {/* Exam Details */}
-          {(course.exam_code || course.certification) && (
+          {(course.exam_code || course.certification || course.certificationHtml) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Exam Details</h2>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>

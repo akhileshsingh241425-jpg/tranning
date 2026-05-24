@@ -738,19 +738,7 @@ const CourseDetail = () => {
               </button>
             </form>
 
-            <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid #f1f5f9' }}>
-              <div style={{ marginBottom: '12px' }}>
-                <h4 style={{ margin: '0 0 12px 0', fontSize: '15px', fontWeight: '600', color: '#1e293b' }}>Course Features</h4>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                  {['Lifetime Access', 'Industry Projects', 'Certificate of Completion', '24/7 Support'].map((item) => (
-                    <li key={item} style={{ padding: '6px 0', borderBottom: '1px solid #f1f5f9', fontSize: '14px', color: '#475569', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ color: '#16a34a', fontSize: '16px' }}>&#10003;</span> {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div 
+            <div
                 onClick={() => setShowCorporate(!showCorporate)}
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
               >

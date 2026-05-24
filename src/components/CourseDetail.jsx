@@ -242,68 +242,6 @@ const CourseDetail = () => {
         <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start' }}>
           {/* Left Content */}
           <div style={{ flex: '1', minWidth: 0 }}>
-          {/* Quick Info Stats Cards */}
-          <div style={{
-            display: 'flex',
-            gap: '16px',
-            margin: '25px 0',
-            flexWrap: 'wrap',
-            justifyContent: 'center'
-          }}>
-            <div style={{
-              background: '#fff',
-              border: '2px solid #e2e8f0',
-              padding: '20px 25px',
-              textAlign: 'center',
-              borderRadius: '12px',
-              flex: 1,
-              minWidth: '140px'
-            }}>
-              <FaClock style={{ fontSize: '24px', color: '#0066cc', marginBottom: '8px' }} />
-              <strong style={{ display: 'block', fontSize: '26px', fontWeight: '700', color: '#1e293b' }}>{course.duration}</strong>
-              <span style={{ fontSize: '15px', color: '#64748b', fontWeight: '500' }}>Duration</span>
-            </div>
-            <div style={{
-              background: '#fff',
-              border: '2px solid #e2e8f0',
-              padding: '20px 25px',
-              textAlign: 'center',
-              borderRadius: '12px',
-              flex: 1,
-              minWidth: '140px'
-            }}>
-              <FaGraduationCap style={{ fontSize: '24px', color: '#0066cc', marginBottom: '8px' }} />
-              <strong style={{ display: 'block', fontSize: '26px', fontWeight: '700', color: '#1e293b' }}>{course.level}</strong>
-              <span style={{ fontSize: '15px', color: '#64748b', fontWeight: '500' }}>Level</span>
-            </div>
-            <div style={{
-              background: '#fff',
-              border: '2px solid #e2e8f0',
-              padding: '20px 25px',
-              textAlign: 'center',
-              borderRadius: '12px',
-              flex: 1,
-              minWidth: '140px'
-            }}>
-              <FaUsers style={{ fontSize: '24px', color: '#0066cc', marginBottom: '8px' }} />
-              <strong style={{ display: 'block', fontSize: '26px', fontWeight: '700', color: '#1e293b' }}>{typeof course.learners === 'number' ? course.learners.toLocaleString() : course.learners}</strong>
-              <span style={{ fontSize: '15px', color: '#64748b', fontWeight: '500' }}>Students</span>
-            </div>
-<div style={{
-              background: '#fff',
-              border: '1px solid #e2e8f0',
-              padding: '20px 25px',
-              textAlign: 'center',
-              borderRadius: '12px',
-              flex: 1,
-              minWidth: '140px'
-            }}>
-              <FaStar style={{ fontSize: '24px', color: '#f59e0b', marginBottom: '8px' }} />
-              <strong style={{ display: 'block', fontSize: '26px', fontWeight: '700', color: '#1e293b' }}>{course.rating}</strong>
-              <span style={{ fontSize: '15px', color: '#64748b', fontWeight: '500' }}>{typeof course.reviews === 'number' ? course.reviews.toLocaleString() : course.reviews} Reviews</span>
-            </div>
-          </div>
-
           {/* Course Features Bar */}
           <div style={{ display: 'flex', gap: '12px', marginBottom: '25px', flexWrap: 'wrap' }}>
             {course.mode && (

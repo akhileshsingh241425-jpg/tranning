@@ -2982,6 +2982,7 @@ def migrate_db():
             'category': "ALTER TABLE course ADD COLUMN category VARCHAR(100) DEFAULT ''",
             'description_html': "ALTER TABLE course ADD COLUMN description_html TEXT DEFAULT ''",
             'overview_html': "ALTER TABLE course ADD COLUMN overview_html TEXT DEFAULT ''",
+            'curriculum_html': "ALTER TABLE course ADD COLUMN curriculum_html TEXT DEFAULT ''",
             'training_schedule_html': "ALTER TABLE course ADD COLUMN training_schedule_html TEXT DEFAULT ''",
             'target_audience_html': "ALTER TABLE course ADD COLUMN target_audience_html TEXT DEFAULT ''",
             'certification_html': "ALTER TABLE course ADD COLUMN certification_html TEXT DEFAULT ''",

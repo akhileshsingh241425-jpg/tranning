@@ -738,7 +738,8 @@ const CourseDetail = () => {
               </button>
             </form>
 
-            <div
+            <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid #f1f5f9' }}>
+              <div
                 onClick={() => setShowCorporate(!showCorporate)}
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
               >

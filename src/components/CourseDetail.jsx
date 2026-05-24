@@ -68,6 +68,13 @@ const CourseDetail = () => {
           why_join_html: data.why_join_html || '',
           certification: data.certification || (localCourse && localCourse.certification),
           certificationHtml: data.certification_html || '',
+          parsedCertification: (function() {
+            try {
+              var c = data.certification || (localCourse && localCourse.certification);
+              if (typeof c === 'string') return JSON.parse(c);
+              return c || null;
+            } catch(e) { return null; }
+          })(),
           reviewsList: (data.reviewsList && data.reviewsList.length > 0) ? data.reviewsList : (localCourse && localCourse.reviewsList) || [],
           projectsList: (data.projectsList && data.projectsList.length > 0) ? data.projectsList : (localCourse && localCourse.projectsList) || [],
           toolsCovered: (data.tools_covered && Array.isArray(data.tools_covered)) ? data.tools_covered : (typeof data.tools_covered === 'string' ? data.tools_covered.split(',').map(t => t.trim()).filter(t => t) : []) || (localCourse && localCourse.toolsCovered) || [],
@@ -545,6 +552,23 @@ const CourseDetail = () => {
                 {course.exam_languages && <tr><td style={{ padding: '8px', border: '1px solid #e2e8f0' }}><strong>Languages</strong></td><td style={{ padding: '8px', border: '1px solid #e2e8f0' }}>{course.exam_languages}</td></tr>}
               </tbody>
             </table>
+          </div>
+          )}
+
+          {/* Certification Details */}
+          {course.parsedCertification && (
+          <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
+            <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>
+              {course.parsedCertification.title || 'Certification'}
+            </h2>
+            {course.parsedCertification.faqs && course.parsedCertification.faqs.length > 0 && course.parsedCertification.faqs.map(function(faq, idx) {
+              return (
+                <div key={idx} style={{ marginBottom: '12px', border: '1px solid #e2e8f0', borderRadius: '10px', overflow: 'hidden' }}>
+                  <div style={{ background: 'linear-gradient(135deg, #f8fafc, #f1f5f9)', padding: '12px 18px', fontWeight: '600', color: '#1e293b', fontSize: '15px' }}>{faq.title || faq.question || ''}</div>
+                  <div style={{ padding: '14px 18px', color: '#475569', fontSize: '15px', lineHeight: '1.6' }}>{faq.text || faq.answer || ''}</div>
+                </div>
+              );
+            })}
           </div>
           )}
 

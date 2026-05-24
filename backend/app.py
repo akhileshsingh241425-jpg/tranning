@@ -2224,6 +2224,7 @@ def create_sample_courses():
                     {'question': 'Will I get a certificate?', 'answer': 'Yes, you will receive an industry-recognized Data Science & AI certification upon successful completion.'}
                 ]),
                 eligibility='This course is ideal for:\n\n- Beginners looking to start a career in Data Science\n- IT professionals wanting to transition into AI/ML roles\n- Graduates from any background (science, commerce, arts)\n- Business professionals seeking data-driven decision making skills',
+                target_audience='Fresh graduates looking for a high-paying tech career\nWorking professionals wanting to transition to Data Science\nSoftware developers wanting to add AI/ML skills\nBusiness analysts who want to make data-driven decisions',
                 projects_list=json.dumps([
                     {'title': 'Customer Churn Prediction', 'description': 'Build a machine learning model to predict customer churn for a telecom company using classification algorithms.'},
                     {'title': 'House Price Prediction', 'description': 'Develop a regression model to predict house prices based on various features using linear regression and ensemble methods.'},
@@ -2309,6 +2310,7 @@ def create_sample_courses():
                     {'question': 'What job roles can I apply for after this course?', 'answer': 'You can become a Cloud Engineer, DevOps Engineer, AWS Solutions Architect, or Site Reliability Engineer.'}
                 ]),
                 eligibility='This course is ideal for:\n\n- Software developers wanting to learn cloud and DevOps\n- System administrators transitioning to cloud roles\n- IT professionals seeking AWS certification\n- Anyone wanting to deploy applications at scale',
+                target_audience='IT professionals looking to transition into cloud and DevOps roles\nSoftware developers wanting to learn Docker and Kubernetes\nSystem administrators looking to enhance cloud skills\nNetwork engineers wanting to transition to cloud roles',
                 projects_list=json.dumps([
                     {'title': 'Custom VPC Creation', 'description': 'Create a custom VPC with public and private subnets across two availability zones and launch instances.'},
                     {'title': 'Load Balancer Configuration', 'description': 'Launch two web servers and configure Application Load Balancer with auto-scaling for high availability.'},
@@ -2394,6 +2396,7 @@ def create_sample_courses():
                     {'question': 'What career paths are available?', 'answer': 'You can become an Ethical Hacker, Penetration Tester, Security Analyst, SOC Analyst, or CISO.'}
                 ]),
                 eligibility='This course is ideal for:\n\n- IT professionals looking to specialize in security\n- Graduates wanting to enter cyber security field\n- System administrators securing infrastructure\n- Anyone interested in ethical hacking careers',
+                target_audience='IT professionals wanting to transition into cybersecurity\nNetwork administrators looking to add security skills\nSystem administrators wanting to enhance security knowledge\nAnyone interested in ethical hacking and penetration testing',
                 projects_list=json.dumps([
                     {'title': 'Network Vulnerability Assessment', 'description': 'Conduct a comprehensive vulnerability scan on a mock corporate network using Nessus and Nmap.'},
                     {'title': 'Web Application Pen Test', 'description': 'Perform a full penetration test on a vulnerable web application using Burp Suite.'},
@@ -2479,6 +2482,7 @@ def create_sample_courses():
                     {'question': 'What job roles can I apply for?', 'answer': 'You can become a Frontend Developer, Backend Developer, Full Stack Developer, or MERN Stack Developer.'}
                 ]),
                 eligibility='This course is ideal for:\n\n- Beginners wanting to become web developers\n- Those looking to switch careers to tech\n- Students and graduates seeking practical skills\n- Anyone wanting to build their own web applications',
+                target_audience='Beginners wanting to become full-stack developers\nStudents and graduates seeking practical skills\nProfessionals looking to switch careers to tech\nFreelancers wanting to offer web development services',
                 projects_list=json.dumps([
                     {'title': 'E-Commerce Platform', 'description': 'Build a full e-commerce app with product catalog, shopping cart, payment integration, and admin panel.'},
                     {'title': 'Social Media App', 'description': 'Create a Twitter-like social platform with posts, likes, comments, followers, and real-time chat.'},
@@ -2564,6 +2568,7 @@ def create_sample_courses():
                     {'question': 'What jobs can I get after this course?', 'answer': 'You can become a Digital Marketing Specialist, SEO Analyst, PPC Manager, or Social Media Manager.'}
                 ]),
                 eligibility='This course is ideal for:\n\n- Business owners wanting to market online\n- Students and graduates starting their career\n- Marketing professionals upgrading their skills\n- Anyone interested in the digital marketing field',
+                target_audience='Complete beginners wanting to start a digital marketing career\nMarketing professionals wanting to learn digital strategies\nBusiness owners wanting to grow their business online\nContent creators wanting to grow their audience',
                 projects_list=json.dumps([
                     {'title': 'SEO Audit & Strategy', 'description': 'Conduct a complete SEO audit of a website and create a 6-month SEO strategy.'},
                     {'title': 'Google Ads Campaign', 'description': 'Create and manage a real Google Ads campaign with $100 credits and analyze results.'},
@@ -2649,6 +2654,7 @@ def create_sample_courses():
                     {'question': 'What jobs can I get?', 'answer': 'You can become a Business Analyst, Data Analyst, BI Developer, or Analytics Manager.'}
                 ]),
                 eligibility='This course is ideal for:\n\n- Professionals looking to add analytics skills\n- Graduates from any background wanting data careers\n- Business managers making data-driven decisions\n- Anyone interested in the growing field of analytics',
+                target_audience='Professionals wanting to become data-driven decision makers\nBusiness users wanting to leverage data for business\nManagers wanting to make data-driven decisions\nStudents looking for analytics career',
                 projects_list=json.dumps([
                     {'title': 'Sales Analytics Dashboard', 'description': 'Build an interactive Tableau dashboard analyzing sales data from a retail company.'},
                     {'title': 'Customer Churn Analysis', 'description': 'Perform SQL analysis to identify customer churn patterns and build a prediction model.'},
@@ -2734,6 +2740,7 @@ def create_sample_courses():
                     {'question': 'What jobs can I get after this course?', 'answer': 'You can become a UI Designer, UX Designer, Product Designer, or UX Researcher.'}
                 ]),
                 eligibility='This course is ideal for:\n\n- Creative individuals wanting to design digital products\n- Anyone interested in the growing field of UX design\n- Graphic designers transitioning to digital product design\n- Product managers wanting to improve their design skills',
+                target_audience='Beginners wanting to launch a design career\nDevelopers wanting to add design skills\nGraphic designers wanting to transition to UI/UX\nStudents looking for design career',
                 projects_list=json.dumps([
                     {'title': 'Mobile App Redesign', 'description': 'Redesign a popular mobile app with improved UX and modern UI following design thinking process.'},
                     {'title': 'E-Commerce Website Design', 'description': 'Design a complete e-commerce website including product pages, cart, checkout, and account flows.'},
@@ -2819,6 +2826,7 @@ def create_sample_courses():
                     {'question': 'What jobs can I get?', 'answer': 'You can become a Mobile Developer, React Native Developer, Flutter Developer, or iOS/Android Developer.'}
                 ]),
                 eligibility='This course is ideal for:\n\n- Developers wanting to build mobile apps\n- Web developers expanding to mobile\n- Students and graduates entering mobile development\n- Anyone wanting to publish their own app',
+                target_audience='Developers who want to build mobile apps\nStudents looking for mobile development career\nEntrepreneurs wanting to build their own app\nWeb developers wanting to expand to mobile',
                 projects_list=json.dumps([
                     {'title': 'Social Media App', 'description': 'Build a complete social media app with posts, likes, comments, stories, and real-time chat.'},
                     {'title': 'E-Commerce Mobile App', 'description': 'Create an e-commerce app with product catalog, cart, payments, and order tracking.'},

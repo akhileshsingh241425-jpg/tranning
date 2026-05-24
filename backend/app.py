@@ -696,6 +696,7 @@ class Course(db.Model):
     certification_html = db.Column(db.Text, default='')    # WYSIWYG HTML
     prerequisites_html = db.Column(db.Text, default='')    # WYSIWYG HTML
     why_join_html = db.Column(db.Text, default='')         # WYSIWYG HTML
+    reviews_html = db.Column(db.Text, default='')          # WYSIWYG HTML for Reviews
 
     # ---- New Fields for Detailed Course Page ----
     tools_covered = db.Column(db.Text, default='')     # comma-separated or JSON
@@ -873,6 +874,7 @@ class Course(db.Model):
         base['certification_html'] = self.certification_html or ''
         base['prerequisites_html'] = self.prerequisites_html or ''
         base['why_join_html'] = self.why_join_html or ''
+        base['reviews_html'] = self.reviews_html or ''
 
         return base
 
@@ -1634,7 +1636,8 @@ def admin_course_new():
             target_audience_html=request.form.get('target_audience_html', ''),
             certification_html=request.form.get('certification_html', ''),
             prerequisites_html=request.form.get('prerequisites_html', ''),
-            why_join_html=request.form.get('why_join_html', '')
+            why_join_html=request.form.get('why_join_html', ''),
+            reviews_html=request.form.get('reviews_html', '')
         )
         try:
             db.session.add(course)
@@ -1745,6 +1748,7 @@ def admin_course_edit(id):
         course.certification_html = request.form.get('certification_html', '')
         course.prerequisites_html = request.form.get('prerequisites_html', '')
         course.why_join_html = request.form.get('why_join_html', '')
+        course.reviews_html = request.form.get('reviews_html', '')
         
         try:
             db.session.commit()
@@ -2996,6 +3000,7 @@ def migrate_db():
             'certification_html': "ALTER TABLE course ADD COLUMN certification_html TEXT DEFAULT ''",
             'prerequisites_html': "ALTER TABLE course ADD COLUMN prerequisites_html TEXT DEFAULT ''",
             'why_join_html': "ALTER TABLE course ADD COLUMN why_join_html TEXT DEFAULT ''",
+            'reviews_html': "ALTER TABLE course ADD COLUMN reviews_html TEXT DEFAULT ''",
         }
         for col_name, sql in course_new_columns.items():
             if col_name not in course_columns:

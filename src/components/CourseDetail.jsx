@@ -76,6 +76,7 @@ const CourseDetail = () => {
             } catch(e) { return null; }
           })(),
           reviewsList: (data.reviewsList && data.reviewsList.length > 0) ? data.reviewsList : (localCourse && localCourse.reviewsList) || [],
+          reviewsHtml: data.reviews_html || '',
           projectsList: (data.projectsList && data.projectsList.length > 0) ? data.projectsList : (localCourse && localCourse.projectsList) || [],
           toolsCovered: (data.tools_covered && Array.isArray(data.tools_covered)) ? data.tools_covered : (typeof data.tools_covered === 'string' ? data.tools_covered.split(',').map(t => t.trim()).filter(t => t) : []) || (localCourse && localCourse.toolsCovered) || [],
           skillsCovered: (data.skills_covered && Array.isArray(data.skills_covered)) ? data.skills_covered : (typeof data.skills_covered === 'string' ? data.skills_covered.split(',').map(s => s.trim()).filter(s => s) : []) || (localCourse && localCourse.skillsCovered) || [],
@@ -345,15 +346,15 @@ const CourseDetail = () => {
           {(course.targetAudience && course.targetAudience.length > 0 || course.targetAudienceHtml) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Who Should Join?</h2>
-            {course.targetAudienceHtml ? (
-              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} dangerouslySetInnerHTML={{ __html: course.targetAudienceHtml }} />
-            ) : (
+            {course.targetAudience && course.targetAudience.length > 0 ? (
               <ul style={{ paddingLeft: '25px', color: '#475569' }}>
                 {course.targetAudience.map((item, index) => (
                   <li key={index} style={{ marginBottom: '8px' }}>{item}</li>
                 ))}
               </ul>
-            )}
+            ) : course.targetAudienceHtml ? (
+              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} dangerouslySetInnerHTML={{ __html: course.targetAudienceHtml }} />
+            ) : null}
           </div>
           )}
 
@@ -573,33 +574,37 @@ const CourseDetail = () => {
           )}
 
           {/* Reviews */}
-          {course.reviewsList && course.reviewsList.length > 0 && (
+          {(course.reviewsHtml || (course.reviewsList && course.reviewsList.length > 0)) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Reviews</h2>
-            {course.reviewsList.map((review, index) => (
-              <div key={index} style={{ border: '1px solid #e2e8f0', padding: '18px', marginBottom: '14px', background: '#fafafa', borderRadius: '10px' }}>
-                <p>"{typeof review === 'object' ? review.text : review.split(' | ')[2] || ''}"</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
-                  <div style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
-                    background: '#a2a9b1',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#fff',
-                    fontWeight: 'bold'
-                  }}>
-                    {(typeof review === 'object' ? review.name : review.split(' | ')[0] || 'U').charAt(0)}
-                  </div>
-                  <div>
-                    <strong>{typeof review === 'object' ? review.name : review.split(' | ')[0] || ''}</strong>
-                    <span style={{ display: 'block', color: '#64748b', fontSize: '14px' }}>{typeof review === 'object' ? review.role : review.split(' | ')[1] || ''}</span>
+            {course.reviewsHtml ? (
+              <div style={{ color: '#475569', fontSize: '15px', lineHeight: '1.8' }} dangerouslySetInnerHTML={{ __html: course.reviewsHtml }} />
+            ) : (
+              course.reviewsList.map((review, index) => (
+                <div key={index} style={{ border: '1px solid #e2e8f0', padding: '18px', marginBottom: '14px', background: '#fafafa', borderRadius: '10px' }}>
+                  <p>"{typeof review === 'object' ? review.text : review.split(' | ')[2] || ''}"</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      background: '#a2a9b1',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      fontWeight: 'bold'
+                    }}>
+                      {(typeof review === 'object' ? review.name : review.split(' | ')[0] || 'U').charAt(0)}
+                    </div>
+                    <div>
+                      <strong>{typeof review === 'object' ? review.name : review.split(' | ')[0] || ''}</strong>
+                      <span style={{ display: 'block', color: '#64748b', fontSize: '14px' }}>{typeof review === 'object' ? review.role : review.split(' | ')[1] || ''}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
           )}
 

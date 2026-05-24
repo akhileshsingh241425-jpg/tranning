@@ -406,12 +406,25 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             <h3>Student Reviews</h3>
             <div class="form-group form-group-full">
                 <label>Reviews</label>
-                <div id="reviews-container"></div>
-                <button type="button" class="line-item-add-btn" id="btn-reviews">
-                    <span style="font-size:16px;font-weight:700;">+</span> Add Review
-                </button>
-                <input type="hidden" name="reviews_list" id="reviews-data" value="{{ course.reviews_list if course else '' }}">
-                <div class="section-note">Click + to add each review</div>
+                <div class="rich-toggle-bar">
+                    <button type="button" class="rich-mode-btn active" onclick="switchRichMode('reviews','simple')">Simple</button>
+                    <button type="button" class="rich-mode-btn" onclick="switchRichMode('reviews','editor')">Editor</button>
+                </div>
+                <div id="reviews-simple-wrap">
+                    <div id="reviews-container"></div>
+                    <button type="button" class="line-item-add-btn" id="btn-reviews">
+                        <span style="font-size:16px;font-weight:700;">+</span> Add Review
+                    </button>
+                    <input type="hidden" name="reviews_list" id="reviews-data" value="{{ course.reviews_list if course else '' }}">
+                    <div class="section-note">Simple mode: Click + to add each review. Editor mode: Write all reviews as rich HTML.</div>
+                </div>
+                <div id="reviews-editor-wrap" style="display:none">
+                    <div class="rich-editor-grid">
+                        <div class="rich-editor-col"><div id="reviews-editor"></div></div>
+                        <div class="rich-preview-col"><div class="rich-preview-header">👁️ Live Preview</div><div class="rich-preview" id="reviews-preview"></div></div>
+                    </div>
+                    <input type="hidden" name="reviews_html" id="reviews-html-data" value="{{ course.reviews_html if course else '' }}">
+                </div>
             </div>
         </div>
 
@@ -480,9 +493,9 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         </div>
 
         <div class="form-section">
-            <h3>Target Audience</h3>
+            <h3>Who Should Join?</h3>
             <div class="form-group form-group-full">
-                <label>Target Audience Details</label>
+                <label>Who Should Join? Details</label>
                 <div class="rich-toggle-bar">
                     <button type="button" class="rich-mode-btn active" onclick="switchRichMode('target_audience','simple')">Simple</button>
                     <button type="button" class="rich-mode-btn" onclick="switchRichMode('target_audience','editor')">Editor</button>
@@ -1077,9 +1090,10 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         initFieldEditor('certification', 'Describe certification details...');
         initFieldEditor('prerequisites', 'Describe prerequisites...');
         initFieldEditor('why_join', 'Describe why join this program...');
+        initFieldEditor('reviews', 'Write all student reviews with rich formatting...');
 
         // Add help bar below each editor
-        var editorFields = ['description', 'overview', 'training_schedule', 'target_audience', 'certification', 'curriculum', 'prerequisites', 'why_join'];
+        var editorFields = ['description', 'overview', 'training_schedule', 'target_audience', 'certification', 'curriculum', 'prerequisites', 'why_join', 'reviews'];
         editorFields.forEach(function(field) {
             var wrap = document.getElementById(field + '-editor-wrap');
             if (!wrap) return;

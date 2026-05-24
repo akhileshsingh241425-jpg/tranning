@@ -1289,22 +1289,14 @@ def admin_settings():
 @app.route('/admin/categories')
 @login_required
 def admin_categories():
-    import traceback, sys
     try:
         db.session.execute(db.text("CREATE TABLE IF NOT EXISTS category (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(100) NOT NULL, slug VARCHAR(100) UNIQUE, sort_order INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)"))
         db.session.commit()
         categories = Category.query.order_by(Category.sort_order, Category.name).all()
     except Exception:
         db.session.rollback()
-        tb = traceback.format_exc()
-        print("ADMIN CATEGORIES ERROR:", tb, file=sys.stderr)
-        return f"<h2>Query Error</h2><pre>{tb}</pre>"
-    try:
-        return render_template('admin/categories.html', categories=categories)
-    except Exception:
-        tb = traceback.format_exc()
-        print("TEMPLATE RENDER ERROR:", tb, file=sys.stderr)
-        return f"<h2>Template Error</h2><pre>{tb}</pre>"
+        categories = []
+    return render_template('admin/categories.html', categories=categories)
 
 @app.route('/admin/categories/new', methods=['GET', 'POST'])
 @login_required

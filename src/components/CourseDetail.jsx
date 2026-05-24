@@ -70,6 +70,7 @@ const CourseDetail = () => {
           toolsCovered: (data.tools_covered && Array.isArray(data.tools_covered)) ? data.tools_covered : (typeof data.tools_covered === 'string' ? data.tools_covered.split(',').map(t => t.trim()).filter(t => t) : []) || (localCourse && localCourse.toolsCovered) || [],
           skillsCovered: (data.skills_covered && Array.isArray(data.skills_covered)) ? data.skills_covered : (typeof data.skills_covered === 'string' ? data.skills_covered.split(',').map(s => s.trim()).filter(s => s) : []) || (localCourse && localCourse.skillsCovered) || [],
           targetAudience: (data.target_audience && Array.isArray(data.target_audience)) ? data.target_audience : (typeof data.target_audience === 'string' ? data.target_audience.split('\n').filter(t => t.trim()) : []) || (localCourse && localCourse.targetAudience) || [],
+          targetAudienceHtml: data.target_audience_html || '',
           benefits: (data.benefits && Array.isArray(data.benefits)) ? data.benefits : (typeof data.benefits === 'string' ? data.benefits.split('\n').filter(b => b.trim()) : []) || (localCourse && localCourse.benefits) || [],
           trainingSchedule: data.training_schedule || (localCourse && localCourse.trainingSchedule),
           training_schedule_html: data.training_schedule_html || '',
@@ -385,14 +386,18 @@ const CourseDetail = () => {
           )}
 
           {/* Target Audience */}
-          {course.targetAudience && course.targetAudience.length > 0 && (
+          {(course.targetAudience && course.targetAudience.length > 0 || course.targetAudienceHtml) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Who Should Join?</h2>
-            <ul style={{ paddingLeft: '25px', color: '#475569' }}>
-              {course.targetAudience.map((item, index) => (
-                <li key={index} style={{ marginBottom: '8px' }}>{item}</li>
-              ))}
-            </ul>
+            {course.targetAudienceHtml ? (
+              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} dangerouslySetInnerHTML={{ __html: course.targetAudienceHtml }} />
+            ) : (
+              <ul style={{ paddingLeft: '25px', color: '#475569' }}>
+                {course.targetAudience.map((item, index) => (
+                  <li key={index} style={{ marginBottom: '8px' }}>{item}</li>
+                ))}
+              </ul>
+            )}
           </div>
           )}
 

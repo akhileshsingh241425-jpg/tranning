@@ -3032,6 +3032,23 @@ def migrate_db():
                     db.session.rollback()
                     print(f'Column "{col_name}" may already exist: {e}')
 
+        # Create category table if not exists
+        try:
+            db.session.execute(db.text("""
+                CREATE TABLE IF NOT EXISTS category (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name VARCHAR(100) NOT NULL,
+                    slug VARCHAR(100) UNIQUE,
+                    sort_order INTEGER DEFAULT 0,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            db.session.commit()
+            print('Category table created/verified successfully')
+        except Exception as e:
+            db.session.rollback()
+            print(f'Category table may already exist: {e}')
+
         # Migrate course prices from INR to USD (one-time update)
         # Only update if prices are still in INR range (>1000)
         usd_prices = {

@@ -21,7 +21,8 @@ import {
   FaRobot,
   FaSearch,
   FaTimes,
-  FaFilter
+  FaFilter,
+  FaSpinner
 } from 'react-icons/fa';
 import courseDataAnalytics from '../assets/images/courses/data-analytics.jpg';
 import courseNetworkSecurity from '../assets/images/courses/network-security.jpg';
@@ -200,7 +201,8 @@ const fallbackCourses = [
 
 const Courses = () => {
   const [showAll, setShowAll] = useState(false);
-  const [courses, setCourses] = useState(fallbackCourses);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [categories, setCategories] = useState([]);
@@ -236,13 +238,15 @@ const Courses = () => {
             curriculum: c.curriculum || []
           }));
           setCourses(mapped);
-          // Build unique categories list
           const cats = [...new Set(mapped.filter(c => c.category).map(c => c.category))];
           setCategories(cats);
-          console.log('Loaded', mapped.length, 'courses from API');
         }
+        setLoading(false);
       })
-      .catch(err => console.log('Using fallback courses, API error:', err.message));
+      .catch(err => {
+        console.log('API error:', err.message);
+        setLoading(false);
+      });
   }, []);
 
   // Filter and search logic
@@ -330,7 +334,12 @@ const Courses = () => {
         </div>
       )}
 
-      {filteredCourses.length > 0 ? (
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
+          <FaSpinner style={{ fontSize: '2rem', animation: 'spin 1s linear infinite' }} />
+          <p style={{ marginTop: '1rem' }}>Loading courses...</p>
+        </div>
+      ) : filteredCourses.length > 0 ? (
         <div className="tp-courses-grid">
           {displayedCourses.map((course, index) => (
             <Link to={`/courses/${course.slug}`} className="tp-course-card" key={index}>

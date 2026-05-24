@@ -1167,6 +1167,26 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             document.querySelector('form').submit();
         }, 100);
     });
+
+    // Auto-list: pressing Enter after * text adds new * line
+    document.querySelectorAll('textarea.form-control, .line-item-field.field2').forEach(function(ta) {
+        ta.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                var val = this.value;
+                var start = this.selectionStart;
+                var lineStart = val.lastIndexOf('\n', start - 1) + 1;
+                var currentLine = val.substring(lineStart, start);
+                var match = currentLine.match(/^(\s*)(\*\s|•\s)(.*)/);
+                if (match && match[3].trim()) {
+                    e.preventDefault();
+                    var before = val.substring(0, start);
+                    var after = val.substring(this.selectionEnd);
+                    this.value = before + '\n' + match[1] + match[2] + after;
+                    this.selectionStart = this.selectionEnd = start + 1 + match[1].length + match[2].length;
+                }
+            }
+        });
+    });
 })();
 </script>
 

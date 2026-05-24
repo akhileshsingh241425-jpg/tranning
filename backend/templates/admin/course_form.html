@@ -996,6 +996,12 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         document.getElementById('curriculum-mode-editor').className = 'curriculum-mode-btn' + (mode === 'editor' ? ' active' : '');
         document.getElementById('curriculum-simple-wrap').style.display = mode === 'simple' ? 'block' : 'none';
         document.getElementById('curriculum-editor-wrap').style.display = mode === 'editor' ? 'block' : 'none';
+        if (mode === 'simple') {
+            document.getElementById('curriculum-html-data').value = '';
+            if (fieldEditors['curriculum']) {
+                fieldEditors['curriculum'].root.innerHTML = '';
+            }
+        }
     };
 
     window.switchRichMode = function(field, mode) {
@@ -1156,6 +1162,12 @@ textarea.form-control { min-height: 100px; resize: vertical; }
     document.querySelector('form').addEventListener('submit', function(e) {
         e.preventDefault();
         Object.keys(fieldEditors).forEach(function(id) {
+            var simpleWrap = document.getElementById(id + '-simple-wrap');
+            // If simple mode is visible, clear the HTML data (don't save editor content)
+            if (simpleWrap && simpleWrap.style.display !== 'none') {
+                document.getElementById(id + '-html-data').value = '';
+                return;
+            }
             var html = fieldEditors[id].root.innerHTML;
             if (html === '<p><br></p>' || html === '<p></p>' || html === '<br>') html = '';
             document.getElementById(id + '-html-data').value = html;

@@ -62,8 +62,10 @@ const CourseDetail = () => {
             return [];
           })(),
           eligibility: data.eligibility || data.prerequisites || (localCourse && localCourse.eligibility),
+          eligibilityHtml: data.prerequisites_html || '',
           curriculumHtml: data.curriculumHtml || (localCourse && localCourse.curriculumHtml) || '',
           why_join: data.whyJoin || (localCourse && localCourse.why_join),
+          why_join_html: data.why_join_html || '',
           certification: data.certification || (localCourse && localCourse.certification),
           certificationHtml: data.certification_html || '',
           reviewsList: (data.reviewsList && data.reviewsList.length > 0) ? data.reviewsList : (localCourse && localCourse.reviewsList) || [],
@@ -284,10 +286,13 @@ const CourseDetail = () => {
           </div>
           )}
 
-          {/* Course Features */}
-          {course.why_join && course.why_join.length > 0 && (
+          {/* Course Features / Why Join */}
+          {(course.why_join && course.why_join.length > 0 || course.why_join_html) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Course Features</h2>
+            {course.why_join_html ? (
+              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} dangerouslySetInnerHTML={{ __html: course.why_join_html }} />
+            ) : (
             <ul style={{ paddingLeft: '25px', color: '#475569' }}>
               {course.why_join.map((item, index) => {
                 const title = typeof item === 'object' ? item.title : item.split(' | ')[0];
@@ -299,6 +304,7 @@ const CourseDetail = () => {
                 );
               })}
             </ul>
+            )}
           </div>
           )}
 
@@ -315,12 +321,16 @@ const CourseDetail = () => {
           )}
 
           {/* Pre-requisites */}
-          {course.eligibility && (
+          {(course.eligibility || course.eligibilityHtml) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Pre-requisites</h2>
+            {course.eligibilityHtml ? (
+              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} dangerouslySetInnerHTML={{ __html: course.eligibilityHtml }} />
+            ) : (
             <ul style={{ paddingLeft: '25px', color: '#475569', margin: '8px 0 0 0' }}>
               {course.eligibility.split('\n').filter(function(l) { return l.trim(); }).map(function(item, i) { return <li key={i} style={{ marginBottom: '8px', lineHeight: '1.5' }}>{item.trim()}</li>; })}
             </ul>
+            )}
           </div>
           )}
 

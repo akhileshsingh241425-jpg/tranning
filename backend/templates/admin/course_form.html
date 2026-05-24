@@ -263,13 +263,26 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         <div class="form-section">
             <h3>Why Join This Program</h3>
             <div class="form-group form-group-full">
-                <label>Points</label>
-                <div id="why-join-container"></div>
-                <button type="button" class="line-item-add-btn" id="btn-why-join">
-                    <span style="font-size:16px;font-weight:700;">+</span> Add Point
-                </button>
-                <input type="hidden" name="why_join" id="why-join-data" value="{{ course.why_join if course else '' }}">
-                <div class="section-note">Click + to add each point. Format: Title - Description</div>
+                <label>Points / Details</label>
+                <div class="rich-toggle-bar">
+                    <button type="button" class="rich-mode-btn active" onclick="switchRichMode('why_join','simple')">Simple</button>
+                    <button type="button" class="rich-mode-btn" onclick="switchRichMode('why_join','editor')">Editor</button>
+                </div>
+                <div id="why_join-simple-wrap">
+                    <div id="why-join-container"></div>
+                    <button type="button" class="line-item-add-btn" id="btn-why-join">
+                        <span style="font-size:16px;font-weight:700;">+</span> Add Point
+                    </button>
+                    <input type="hidden" name="why_join" id="why-join-data" value="{{ course.why_join if course else '' }}">
+                    <div class="section-note">Click + to add each point. Format: Title - Description</div>
+                </div>
+                <div id="why_join-editor-wrap" style="display:none">
+                    <div class="rich-editor-grid">
+                        <div class="rich-editor-col"><div id="why_join-editor"></div></div>
+                        <div class="rich-preview-col"><div class="rich-preview-header">👁️ Live Preview</div><div class="rich-preview" id="why_join-preview"></div></div>
+                    </div>
+                    <input type="hidden" name="why_join_html" id="why_join-html-data" value="{{ course.why_join_html if course else '' }}">
+                </div>
             </div>
         </div>
 
@@ -290,13 +303,26 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         <div class="form-section">
             <h3>Pre-requisites</h3>
             <div class="form-group form-group-full">
-                <label>Pre-requisites</label>
-                <div id="prerequisites-container"></div>
-                <button type="button" class="line-item-add-btn" id="btn-prerequisites">
-                    <span style="font-size:16px;font-weight:700;">+</span> Add Pre-requisite
-                </button>
-                <input type="hidden" name="prerequisites" id="prerequisites-data" value="{{ course.prerequisites if course else '' }}">
-                <div class="section-note">Click + to add each pre-requisite as a separate row</div>
+                <label>Pre-requisites Details</label>
+                <div class="rich-toggle-bar">
+                    <button type="button" class="rich-mode-btn active" onclick="switchRichMode('prerequisites','simple')">Simple</button>
+                    <button type="button" class="rich-mode-btn" onclick="switchRichMode('prerequisites','editor')">Editor</button>
+                </div>
+                <div id="prerequisites-simple-wrap">
+                    <div id="prerequisites-container"></div>
+                    <button type="button" class="line-item-add-btn" id="btn-prerequisites">
+                        <span style="font-size:16px;font-weight:700;">+</span> Add Pre-requisite
+                    </button>
+                    <input type="hidden" name="prerequisites" id="prerequisites-data" value="{{ course.prerequisites if course else '' }}">
+                    <div class="section-note">Click + to add each pre-requisite as a separate row</div>
+                </div>
+                <div id="prerequisites-editor-wrap" style="display:none">
+                    <div class="rich-editor-grid">
+                        <div class="rich-editor-col"><div id="prerequisites-editor"></div></div>
+                        <div class="rich-preview-col"><div class="rich-preview-header">👁️ Live Preview</div><div class="rich-preview" id="prerequisites-preview"></div></div>
+                    </div>
+                    <input type="hidden" name="prerequisites_html" id="prerequisites-html-data" value="{{ course.prerequisites_html if course else '' }}">
+                </div>
             </div>
         </div>
 
@@ -966,11 +992,11 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         var textarea = document.getElementById(field + '-simple-wrap').querySelector('textarea');
         var hiddenInput = document.getElementById(field + '-html-data');
         if (mode === 'simple') {
-            textarea.removeAttribute('disabled');
+            if (textarea) textarea.removeAttribute('disabled');
             hiddenInput.setAttribute('disabled', 'disabled');
             hiddenInput.value = '';
         } else {
-            textarea.setAttribute('disabled', 'disabled');
+            if (textarea) textarea.setAttribute('disabled', 'disabled');
             hiddenInput.removeAttribute('disabled');
             if (fieldEditors[field]) {
                 document.getElementById(field + '-preview').innerHTML = fieldEditors[field].root.innerHTML;
@@ -1049,9 +1075,11 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         initFieldEditor('training_schedule', 'Describe training schedule...');
         initFieldEditor('target_audience', 'Describe target audience...');
         initFieldEditor('certification', 'Describe certification details...');
+        initFieldEditor('prerequisites', 'Describe prerequisites...');
+        initFieldEditor('why_join', 'Describe why join this program...');
 
         // Add help bar below each editor
-        var editorFields = ['description', 'overview', 'training_schedule', 'target_audience', 'certification', 'curriculum'];
+        var editorFields = ['description', 'overview', 'training_schedule', 'target_audience', 'certification', 'curriculum', 'prerequisites', 'why_join'];
         editorFields.forEach(function(field) {
             var wrap = document.getElementById(field + '-editor-wrap');
             if (!wrap) return;

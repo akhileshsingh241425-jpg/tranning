@@ -68,6 +68,9 @@ textarea.form-control { min-height: 100px; resize: vertical; }
 .curriculum-module { background: #fff; border: 2px solid #0066cc; border-radius: 12px; padding: 18px; margin-bottom: 18px; }
 .topic-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
 .subtopic-item { background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; padding: 10px; margin-bottom: 8px; }
+.ql-auto-format:after { content: '✨ Auto'; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; }
+.ql-auto-format { width: auto !important; padding: 0 10px !important; background: linear-gradient(135deg, #667eea, #764ba2) !important; color: #fff !important; border-radius: 6px !important; margin: 0 3px !important; }
+.ql-auto-format:hover { opacity: 0.9; }
 </style>
 
 <div class="admin-form-container">
@@ -1029,7 +1032,8 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         [{ align: [] }],
         ['table'],
         ['link', 'image', 'video'],
-        ['clean']
+        ['clean'],
+        ['auto-format']
     ];
 
     function initFieldEditor(id, placeholder) {
@@ -1060,6 +1064,51 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                             }
                             table += '</table><p><br></p>';
                             editor.clipboard.dangerouslyPasteHTML(range.index, table);
+                        },
+                        'auto-format': function() {
+                            var html = editor.root.innerHTML;
+                            html = html.replace(/<p><br><\/p>/g, '||BRK||');
+                            var temp = document.createElement('div');
+                            temp.innerHTML = html;
+                            var text = temp.textContent || temp.innerText || '';
+                            var paras = text.split('\n').filter(function(l) { return l.trim(); });
+                            if (paras.length === 0) return;
+                            var result = '';
+                            var inList = false;
+                            var listType = null;
+                            for (var i = 0; i < paras.length; i++) {
+                                var p = paras[i].trim();
+                                if (!p) continue;
+                                if (p.length < 60 && i < paras.length - 1 && !p.match(/[.!?:;]$/) && !p.match(/^[-•*\d]/)) {
+                                    if (inList) { result += '</' + listType + '>'; inList = false; }
+                                    result += '<h3>' + p + '</h3>';
+                                    continue;
+                                }
+                                if (p.match(/^[-•*]\s/)) {
+                                    var item = p.replace(/^[-•*]\s/, '');
+                                    if (!inList || listType !== 'ul') {
+                                        if (inList) result += '</' + listType + '>';
+                                        result += '<ul>'; inList = true; listType = 'ul';
+                                    }
+                                    result += '<li>' + item + '</li>';
+                                    continue;
+                                }
+                                if (p.match(/^\d+[.)]\s/)) {
+                                    var item = p.replace(/^\d+[.)]\s/, '');
+                                    if (!inList || listType !== 'ol') {
+                                        if (inList) result += '</' + listType + '>';
+                                        result += '<ol>'; inList = true; listType = 'ol';
+                                    }
+                                    result += '<li>' + item + '</li>';
+                                    continue;
+                                }
+                                if (inList) { result += '</' + listType + '>'; inList = false; }
+                                result += '<p>' + p + '</p>';
+                            }
+                            if (inList) result += '</' + listType + '>';
+                            result = result.replace(/\|\|BRK\|\|/g, '<p><br></p>');
+                            editor.root.innerHTML = result;
+                            document.getElementById(id + '-preview').innerHTML = result;
                         }
                     }
                 }

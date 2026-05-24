@@ -982,11 +982,12 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         ['bold', 'italic', 'underline', 'strike'],
         [{ script: 'sub' }, { script: 'super' }],
         [{ color: [] }, { background: [] }],
+        ['blockquote', 'code-block'],
         [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
         [{ indent: '-1' }, { indent: '+1' }],
         [{ direction: 'rtl' }],
         [{ align: [] }],
-        ['blockquote', 'code-block'],
+        ['table'],
         ['link', 'image', 'video'],
         ['clean']
     ];
@@ -995,7 +996,34 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         var editor = new Quill('#' + id + '-editor', {
             theme: 'snow',
             placeholder: placeholder || 'Type your content here...',
-            modules: { toolbar: advancedToolbar }
+            modules: {
+                toolbar: {
+                    container: advancedToolbar,
+                    handlers: {
+                        'table': function() {
+                            var value = prompt('Enter table size (rows,columns):\nExample: 3,4 means 3 rows & 4 columns', '3,3');
+                            if (!value) return;
+                            var parts = value.split(',');
+                            var rows = parseInt(parts[0]) || 3;
+                            var cols = parseInt(parts[1]) || 3;
+                            var range = editor.getSelection(true);
+                            var table = '<table style="width:100%;border-collapse:collapse;margin:10px 0;">';
+                            for (var r = 0; r < rows; r++) {
+                                table += '<tr>';
+                                for (var c = 0; c < cols; c++) {
+                                    var tag = r === 0 ? 'th' : 'td';
+                                    var style = 'border:1px solid #cbd5e1;padding:10px;text-align:left;';
+                                    if (r === 0) style += 'background:#f8fafc;font-weight:600;';
+                                    table += '<' + tag + ' style="' + style + '">Cell</' + tag + '>';
+                                }
+                                table += '</tr>';
+                            }
+                            table += '</table><p><br></p>';
+                            editor.clipboard.dangerouslyPasteHTML(range.index, table);
+                        }
+                    }
+                }
+            }
         });
         var saved = document.getElementById(id + '-html-data').value;
         if (saved) { editor.root.innerHTML = saved; }
@@ -1020,6 +1048,17 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         initFieldEditor('training_schedule', 'Describe training schedule...');
         initFieldEditor('target_audience', 'Describe target audience...');
         initFieldEditor('certification', 'Describe certification details...');
+
+        // Add help bar below each editor
+        var editorFields = ['description', 'overview', 'training_schedule', 'target_audience', 'certification', 'curriculum'];
+        editorFields.forEach(function(field) {
+            var wrap = document.getElementById(field + '-editor-wrap');
+            if (!wrap) return;
+            var help = document.createElement('div');
+            help.style.cssText = 'font-size:12px;color:#64748b;margin-top:6px;padding:6px 10px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0;line-height:1.6;';
+            help.innerHTML = 'B I U Heading Bullets Table Link Image Video Color Align Indent — Select text & use toolbar above';
+            wrap.appendChild(help);
+        });
     });
 
     document.querySelector('form').addEventListener('submit', function(e) {

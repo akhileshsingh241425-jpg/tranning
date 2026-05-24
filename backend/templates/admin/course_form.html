@@ -963,8 +963,18 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         btns.forEach(function(b) {
             b.className = 'rich-mode-btn' + (b.getAttribute('onclick').includes("'" + mode + "'") ? ' active' : '');
         });
-        if (mode === 'editor' && fieldEditors[field]) {
-            document.getElementById(field + '-preview').innerHTML = fieldEditors[field].root.innerHTML;
+        var textarea = document.getElementById(field + '-simple-wrap').querySelector('textarea');
+        var hiddenInput = document.getElementById(field + '-html-data');
+        if (mode === 'simple') {
+            textarea.removeAttribute('disabled');
+            hiddenInput.setAttribute('disabled', 'disabled');
+            hiddenInput.value = '';
+        } else {
+            textarea.setAttribute('disabled', 'disabled');
+            hiddenInput.removeAttribute('disabled');
+            if (fieldEditors[field]) {
+                document.getElementById(field + '-preview').innerHTML = fieldEditors[field].root.innerHTML;
+            }
         }
     };
 

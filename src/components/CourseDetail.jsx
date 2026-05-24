@@ -265,10 +265,10 @@ const CourseDetail = () => {
           </div>
 
           {/* About Course */}
-          {(course.overview || course.overview_html) && (
+          {(course.overview || course.overview_html && course.overview_html.replace(/<[^>]*>/g,'').trim()) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>About This Course</h2>
-            <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.overview_html || course.overview }} />
+            <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.overview_html && course.overview_html.replace(/<[^>]*>/g,'').trim() ? course.overview_html : course.overview }} />
           </div>
           )}
 
@@ -325,23 +325,23 @@ const CourseDetail = () => {
           )}
 
           {/* Target Audience */}
-          {(course.targetAudience && course.targetAudience.length > 0 || course.targetAudienceHtml) && (
+          {(course.targetAudience && course.targetAudience.length > 0 || course.targetAudienceHtml && course.targetAudienceHtml.replace(/<[^>]*>/g,'').trim()) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Who Should Join?</h2>
-            {course.targetAudienceHtml ? (
+            {course.targetAudienceHtml && course.targetAudienceHtml.replace(/<[^>]*>/g,'').trim() ? (
               <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} dangerouslySetInnerHTML={{ __html: course.targetAudienceHtml }} />
-            ) : (
+            ) : course.targetAudience && course.targetAudience.length > 0 ? (
               <ul style={{ paddingLeft: '25px', color: '#475569' }}>
                 {course.targetAudience.map((item, index) => (
                   <li key={index} style={{ marginBottom: '8px' }}>{item}</li>
                 ))}
               </ul>
-            )}
+            ) : null}
           </div>
           )}
 
           {/* Course Curriculum */}
-          {course.curriculumHtml && (
+          {course.curriculumHtml && course.curriculumHtml.replace(/<[^>]*>/g,'').trim() && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Course Curriculum</h2>
             <div className="curriculum-html-content" style={{ color: '#334155', fontSize: '15px', lineHeight: '1.8' }} dangerouslySetInnerHTML={{ __html: course.curriculumHtml }} />
@@ -688,7 +688,7 @@ const CourseDetail = () => {
                       <span style={{ fontSize: '13px', color: '#475569' }}>Weekdays (Mon-Fri): <strong style={{ color: '#1e293b' }}>{course.start_date || 'Every Monday'}</strong></span>
                     </div>
                     <div style={{ fontSize: '12px', color: '#64748b', marginLeft: '16px' }}>
-                      <span dangerouslySetInnerHTML={{ __html: course.training_schedule_html || course.trainingSchedule || '07:00 PM - 10:00 PM IST' }} />
+                      <span dangerouslySetInnerHTML={{ __html: course.training_schedule_html && course.training_schedule_html.replace(/<[^>]*>/g,'').trim() ? course.training_schedule_html : course.trainingSchedule || '07:00 PM - 10:00 PM IST' }} />
                     </div>
                   </div>
                 )}

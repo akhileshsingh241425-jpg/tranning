@@ -1055,7 +1055,9 @@ textarea.form-control { min-height: 100px; resize: vertical; }
     document.querySelector('form').addEventListener('submit', function(e) {
         e.preventDefault();
         Object.keys(fieldEditors).forEach(function(id) {
-            document.getElementById(id + '-html-data').value = fieldEditors[id].root.innerHTML;
+            var html = fieldEditors[id].root.innerHTML;
+            if (html === '<p><br></p>' || html === '<p></p>' || html === '<br>') html = '';
+            document.getElementById(id + '-html-data').value = html;
         });
         collectLineItems();
         collectReviewsData();

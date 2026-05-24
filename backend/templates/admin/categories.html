@@ -1,0 +1,76 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Categories{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+            <span class="logo-text">TrainingProtec</span>
+        </div>
+        <nav>
+            <ul class="sidebar-nav">
+                <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
+                <li><a href="{{ url_for('admin_courses') }}"><i class="fas fa-book-open"></i><span>Courses</span></a></li>
+                <li><a href="{{ url_for('admin_categories') }}" class="active"><i class="fas fa-tags"></i><span>Categories</span></a></li>
+                <li><a href="{{ url_for('admin_blogs') }}"><i class="fas fa-newspaper"></i><span>Blog Posts</span></a></li>
+                <li><a href="{{ url_for('admin_testimonials') }}"><i class="fas fa-star"></i><span>Testimonials</span></a></li>
+                <li><a href="{{ url_for('admin_contacts') }}"><i class="fas fa-envelope"></i><span>Messages</span></a></li>
+                <li><a href="{{ url_for('admin_subscribers') }}"><i class="fas fa-users"></i><span>Subscribers</span></a></li>
+                <li><a href="{{ url_for('admin_settings') }}"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+                <li><a href="{{ url_for('admin_change_password') }}"><i class="fas fa-key"></i><span>Change Password</span></a></li>
+                <li><a href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Categories</h1>
+            <a href="{{ url_for('admin_category_new') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Category</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}"><i class="fas fa-{% if category == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Slug</th>
+                            <th>Sort Order</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td>{{ category.id }}</td>
+                            <td><strong>{{ category.name }}</strong></td>
+                            <td><code>{{ category.slug }}</code></td>
+                            <td>{{ category.sort_order }}</td>
+                            <td class="actions">
+                                <a href="{{ url_for('admin_category_edit', id=category.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                                <a href="{{ url_for('admin_category_delete', id=category.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this category?')"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5"><div class="empty-state"><i class="fas fa-tags"></i><p>No categories yet.</p><a href="{{ url_for('admin_category_new') }}" class="btn btn-primary">Add First Category</a></div></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

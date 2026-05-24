@@ -203,13 +203,7 @@ const Courses = () => {
   const [courses, setCourses] = useState(fallbackCourses);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
-
-  const filterOptions = [
-    { key: 'all', label: 'All Courses' },
-    { key: 'Beginner', label: 'Beginner' },
-    { key: 'Intermediate', label: 'Intermediate' },
-    { key: 'Advanced', label: 'Advanced' },
-  ];
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/api/courses` : '/api/courses';
@@ -235,12 +229,16 @@ const Courses = () => {
             duration: c.duration || '',
             level: c.level || 'Beginner',
             tag: c.tag || '',
+            category: c.category || '',
             modules: c.modules || 0,
             projects: c.projects || 0,
             instructor: c.instructor || {},
             curriculum: c.curriculum || []
           }));
           setCourses(mapped);
+          // Build unique categories list
+          const cats = [...new Set(mapped.filter(c => c.category).map(c => c.category))];
+          setCategories(cats);
           console.log('Loaded', mapped.length, 'courses from API');
         }
       })
@@ -254,15 +252,25 @@ const Courses = () => {
       course.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.level?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.tag?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.duration?.toLowerCase().includes(searchQuery.toLowerCase());
+      course.duration?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.category?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesFilter = activeFilter === 'all' ||
-      course.level?.toLowerCase().includes(activeFilter.toLowerCase());
+      course.level?.toLowerCase().includes(activeFilter.toLowerCase()) ||
+      course.category?.toLowerCase() === activeFilter.toLowerCase();
 
     return matchesSearch && matchesFilter;
   });
 
   const displayedCourses = showAll ? filteredCourses : filteredCourses.slice(0, 12);
+
+  const allFilterOptions = [
+    { key: 'all', label: 'All Courses' },
+    { key: 'Beginner', label: 'Beginner' },
+    { key: 'Intermediate', label: 'Intermediate' },
+    { key: 'Advanced', label: 'Advanced' },
+    ...categories.map(cat => ({ key: cat, label: cat })),
+  ];
 
   const getDiscount = (price, original) => {
     const p = parseInt(price.replace(/[₹$,]/g, ''));
@@ -302,7 +310,7 @@ const Courses = () => {
         </div>
         <div className="tp-filter-buttons">
           <FaFilter className="tp-filter-icon" />
-          {filterOptions.map(opt => (
+          {allFilterOptions.map(opt => (
             <button
               key={opt.key}
               className={`tp-filter-btn ${activeFilter === opt.key ? 'active' : ''}`}
@@ -329,6 +337,7 @@ const Courses = () => {
               <div className="tp-course-img">
                 <img src={course.image} alt={course.title} />
                 {course.tag && <span className="tp-course-badge" data-tag={course.tag}>{course.tag}</span>}
+                {course.category && <span className="tp-course-badge" style={{background:'#0066cc',right: course.tag ? '90px' : '12px'}}>{course.category}</span>}
                 <span className="tp-course-discount">{getDiscount(course.price, course.originalPrice)}% OFF</span>
               </div>
               <div className="tp-course-body">

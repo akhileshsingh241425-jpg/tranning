@@ -446,18 +446,9 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <label>Select Course Category</label>
                 <select name="category" class="form-control">
                     <option value="">-- Select Category --</option>
-                    <option value="Cyber Security" {{ 'selected' if course and course.category == 'Cyber Security' }}>Cyber Security</option>
-                    <option value="Data Science & AI" {{ 'selected' if course and course.category == 'Data Science & AI' }}>Data Science & AI</option>
-                    <option value="Cloud Computing" {{ 'selected' if course and course.category == 'Cloud Computing' }}>Cloud Computing</option>
-                    <option value="DevOps" {{ 'selected' if course and course.category == 'DevOps' }}>DevOps</option>
-                    <option value="Web Development" {{ 'selected' if course and course.category == 'Web Development' }}>Web Development</option>
-                    <option value="Mobile App Development" {{ 'selected' if course and course.category == 'Mobile App Development' }}>Mobile App Development</option>
-                    <option value="Digital Marketing" {{ 'selected' if course and course.category == 'Digital Marketing' }}>Digital Marketing</option>
-                    <option value="Blockchain" {{ 'selected' if course and course.category == 'Blockchain' }}>Blockchain</option>
-                    <option value="Big Data" {{ 'selected' if course and course.category == 'Big Data' }}>Big Data</option>
-                    <option value="Networking" {{ 'selected' if course and course.category == 'Networking' }}>Networking</option>
-                    <option value="Project Management" {{ 'selected' if course and course.category == 'Project Management' }}>Project Management</option>
-                    <option value="Business Analytics" {{ 'selected' if course and course.category == 'Business Analytics' }}>Business Analytics</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.name }}" {{ 'selected' if course and course.category == cat.name }}>{{ cat.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>

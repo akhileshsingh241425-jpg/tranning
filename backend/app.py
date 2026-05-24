@@ -871,6 +871,23 @@ class Course(db.Model):
         base['certification_html'] = self.certification_html or ''
         
         return base
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    slug = db.Column(db.String(100), unique=True, nullable=True)
+    sort_order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'slug': self.slug,
+            'sort_order': self.sort_order,
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else ''
+        }
+
 class Subscriber(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -1269,6 +1286,61 @@ def admin_settings():
     
     return render_template('admin/settings.html', settings=settings)
 
+@app.route('/admin/categories')
+@login_required
+def admin_categories():
+    categories = Category.query.order_by(Category.sort_order, Category.name).all()
+    return render_template('admin/categories.html', categories=categories)
+
+@app.route('/admin/categories/new', methods=['GET', 'POST'])
+@login_required
+def admin_category_new():
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        slug = request.form.get('slug', '').strip() or name.lower().replace(' ', '-').replace('&', 'and')
+        sort_order = int(request.form.get('sort_order', 0))
+        category = Category(name=name, slug=slug, sort_order=sort_order)
+        db.session.add(category)
+        try:
+            db.session.commit()
+            flash('Category created successfully!', 'success')
+            return redirect(url_for('admin_categories'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error: {str(e)}', 'error')
+    return render_template('admin/category_form.html', category=None)
+
+@app.route('/admin/categories/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def admin_category_edit(id):
+    category = Category.query.get_or_404(id)
+    if request.method == 'POST':
+        category.name = request.form.get('name', '').strip()
+        category.slug = request.form.get('slug', '').strip() or category.name.lower().replace(' ', '-').replace('&', 'and')
+        category.sort_order = int(request.form.get('sort_order', 0))
+        try:
+            db.session.commit()
+            flash('Category updated successfully!', 'success')
+            return redirect(url_for('admin_categories'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error: {str(e)}', 'error')
+    return render_template('admin/category_form.html', category=category)
+
+@app.route('/admin/categories/delete/<int:id>')
+@login_required
+def admin_category_delete(id):
+    category = Category.query.get_or_404(id)
+    db.session.delete(category)
+    db.session.commit()
+    flash('Category deleted successfully!', 'success')
+    return redirect(url_for('admin_categories'))
+
+@app.route('/api/categories', methods=['GET'])
+def get_categories():
+    categories = Category.query.order_by(Category.sort_order, Category.name).all()
+    return jsonify([c.to_dict() for c in categories])
+
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if current_user.is_authenticated:
@@ -1443,6 +1515,7 @@ def safe_float(value, default=4.5):
 @app.route('/admin/courses/new', methods=['GET', 'POST'])
 @login_required
 def admin_course_new():
+    categories = Category.query.order_by(Category.sort_order, Category.name).all()
     if request.method == 'POST':
         title = request.form.get('title', '').strip()
         slug = request.form.get('slug', '').strip() or title.lower().replace(' ', '-').replace('&', 'and')
@@ -1537,14 +1610,15 @@ def admin_course_new():
         except Exception as e:
             db.session.rollback()
             flash(f'Error creating course: {str(e)}', 'error')
-            return render_template('admin/course_form.html', course=course)
+            return render_template('admin/course_form.html', course=course, categories=categories)
         return redirect(url_for('admin_courses'))
 
-    return render_template('admin/course_form.html', course=None)
+    return render_template('admin/course_form.html', course=None, categories=categories)
 
 @app.route('/admin/courses/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def admin_course_edit(id):
+    categories = Category.query.order_by(Category.sort_order, Category.name).all()
     course = Course.query.get_or_404(id)
     
     # File upload helper
@@ -1643,10 +1717,10 @@ def admin_course_edit(id):
         except Exception as e:
             db.session.rollback()
             flash(f'Error updating course: {str(e)}', 'error')
-            return render_template('admin/course_form.html', course=course)
+            return render_template('admin/course_form.html', course=course, categories=categories)
         return redirect(url_for('admin_courses'))
 
-    return render_template('admin/course_form.html', course=course)
+    return render_template('admin/course_form.html', course=course, categories=categories)
 
 @app.route('/admin/courses/delete/<int:id>')
 @login_required

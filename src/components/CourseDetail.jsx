@@ -726,9 +726,6 @@ const CourseDetail = () => {
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', flexShrink: 0 }}></span>
                       <span style={{ fontSize: '13px', color: '#475569' }}>Weekdays (Mon-Fri): <strong style={{ color: '#1e293b' }}>{course.start_date || 'Every Monday'}</strong></span>
                     </div>
-                    <div style={{ fontSize: '12px', color: '#64748b', marginLeft: '16px' }}>
-                      <span dangerouslySetInnerHTML={{ __html: course.training_schedule_html || course.trainingSchedule || '07:00 PM - 10:00 PM IST' }} />
-                    </div>
                   </div>
                 )}
               </div>

@@ -325,7 +325,7 @@ const CourseDetail = () => {
           </div>
 
           {/* About Course */}
-          {course.overview && (
+          {(course.overview || course.overview_html) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>About This Course</h2>
             <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.overview_html || course.overview }} />

@@ -558,13 +558,22 @@ textarea.form-control { min-height: 100px; resize: vertical; }
 
 <script>
 (function() {
+    function renumberContainer(container) {
+        var items = container.querySelectorAll('.line-item-row');
+        items.forEach(function(item, idx) {
+            var labelEl = item.querySelector('.line-item-label');
+            if (labelEl) {
+                labelEl.textContent = labelEl.textContent.replace(/\s*\d+$/, '') + ' ' + (idx + 1);
+            }
+        });
+    }
+
     function addLineItem(containerId, label, hasTwoFields, field1Label, field2Label) {
         var container = document.getElementById(containerId);
         if (!container) { console.error('Container not found:', containerId); return; }
         var row = document.createElement('div');
         row.className = 'line-item-row';
-        var inputCount = container.children.length + 1;
-        var html = '<div class="line-item-header"><span class="line-item-label">' + label + ' ' + inputCount + '</span><div class="line-item-controls"><button type="button" class="line-item-btn line-item-btn-add btn-add-inline">+</button><button type="button" class="line-item-btn line-item-btn-remove btn-remove-inline">-</button></div></div>';
+        var html = '<div class="line-item-header"><span class="line-item-label">' + label + ' 1</span><div class="line-item-controls"><button type="button" class="line-item-btn line-item-btn-add btn-add-inline">+</button><button type="button" class="line-item-btn line-item-btn-remove btn-remove-inline">-</button></div></div>';
         if (hasTwoFields) {
             html += '<input type="text" class="line-item-field field1" placeholder="' + field1Label + '">';
             html += '<input type="text" class="line-item-field field2" placeholder="' + field2Label + '">';
@@ -573,6 +582,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         }
         row.innerHTML = html;
         container.appendChild(row);
+        renumberContainer(container);
     }
 
     function addLineItemAfter(containerId, label, hasTwoFields, field1Label, field2Label) {
@@ -582,8 +592,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         var lastRow = rows[rows.length - 1];
         var newRow = document.createElement('div');
         newRow.className = 'line-item-row';
-        var inputCount = rows.length + 1;
-        var html = '<div class="line-item-header"><span class="line-item-label">' + label + ' ' + inputCount + '</span><div class="line-item-controls"><button type="button" class="line-item-btn line-item-btn-add btn-add-inline">+</button><button type="button" class="line-item-btn line-item-btn-remove btn-remove-inline">-</button></div></div>';
+        var html = '<div class="line-item-header"><span class="line-item-label">' + label + ' 1</span><div class="line-item-controls"><button type="button" class="line-item-btn line-item-btn-add btn-add-inline">+</button><button type="button" class="line-item-btn line-item-btn-remove btn-remove-inline">-</button></div></div>';
         if (hasTwoFields) {
             html += '<input type="text" class="line-item-field field1" placeholder="' + field1Label + '">';
             html += '<input type="text" class="line-item-field field2" placeholder="' + field2Label + '">';
@@ -592,12 +601,14 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         }
         newRow.innerHTML = html;
         container.insertBefore(newRow, lastRow.nextSibling);
+        renumberContainer(container);
     }
 
     function removeLineItem(btn) {
         var row = btn.closest('.line-item-row');
         var container = row.parentElement;
         if (container.children.length > 1) { row.remove(); }
+        renumberContainer(container);
     }
 
     function addCurriculumModule(moduleName, topicsText) {
@@ -947,18 +958,17 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             var container = row.parentElement;
             var label = row.querySelector('.line-item-label') ? row.querySelector('.line-item-label').textContent.split(' ').slice(0, -1).join(' ') : 'Item';
             var containerId = container.id;
-            var hasTwo = row.querySelector('.field2') !== null;
-            var f1Label = row.querySelector('.field1') ? row.querySelector('.field1').placeholder : '';
-            var f2Label = row.querySelector('.field2') ? row.querySelector('.field2').placeholder : '';
-            var isTextarea = row.querySelector('.field2') && row.querySelector('.field2').tagName === 'TEXTAREA';
-            var inputCount = Array.from(container.children).indexOf(row) + 2;
             if (containerId === 'curriculum-container') {
                 addCurriculumModule();
                 return;
             }
+            var hasTwo = row.querySelector('.field2') !== null;
+            var f1Label = row.querySelector('.field1') ? row.querySelector('.field1').placeholder : '';
+            var f2Label = row.querySelector('.field2') ? row.querySelector('.field2').placeholder : '';
+            var isTextarea = row.querySelector('.field2') && row.querySelector('.field2').tagName === 'TEXTAREA';
             var newRow = document.createElement('div');
             newRow.className = 'line-item-row';
-            var html = '<div class="line-item-header"><span class="line-item-label">' + label + ' ' + inputCount + '</span><div class="line-item-controls"><button type="button" class="line-item-btn line-item-btn-add btn-add-inline">+</button><button type="button" class="line-item-btn line-item-btn-remove btn-remove-inline">-</button></div></div>';
+            var html = '<div class="line-item-header"><span class="line-item-label">' + label + ' 1</span><div class="line-item-controls"><button type="button" class="line-item-btn line-item-btn-add btn-add-inline">+</button><button type="button" class="line-item-btn line-item-btn-remove btn-remove-inline">-</button></div></div>';
             if (hasTwo) {
                 html += '<input type="text" class="line-item-field field1" placeholder="' + f1Label + '">';
                 if (isTextarea) {
@@ -971,6 +981,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             }
             newRow.innerHTML = html;
             container.insertBefore(newRow, row.nextSibling);
+            renumberContainer(container);
         }
         if (e.target.classList.contains('btn-remove-inline')) {
             removeLineItem(e.target);

@@ -26,6 +26,8 @@
 .rich-preview h3 { font-size: 17px; font-weight: 600; margin: 12px 0 6px; color: #334155; }
 .rich-preview ul { list-style-type: disc; padding-left: 24px; margin: 8px 0; }
 .rich-preview ol { list-style-type: decimal; padding-left: 24px; margin: 8px 0; }
+.rich-preview li[data-list="bullet"] { list-style-type: disc; }
+.rich-preview li[data-list="ordered"] { list-style-type: decimal; }
 .rich-preview li { margin-bottom: 4px; }
 .rich-preview p { margin: 8px 0; line-height: 1.8; }
 .rich-preview blockquote { border-left: 4px solid #0066cc; padding-left: 16px; margin: 12px 0; color: #475569; font-style: italic; }
@@ -1124,7 +1126,8 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         var saved = document.getElementById(id + '-html-data').value;
         if (saved) { editor.root.innerHTML = saved; }
         editor.on('text-change', function() {
-            document.getElementById(id + '-preview').innerHTML = editor.root.innerHTML;
+            var html = editor.getSemanticHTML ? editor.getSemanticHTML() : editor.root.innerHTML;
+            document.getElementById(id + '-preview').innerHTML = html;
         });
         fieldEditors[id] = editor;
     }
@@ -1169,7 +1172,8 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 document.getElementById(id + '-html-data').value = '';
                 return;
             }
-            var html = fieldEditors[id].root.innerHTML;
+            var editor = fieldEditors[id];
+            var html = editor.getSemanticHTML ? editor.getSemanticHTML() : editor.root.innerHTML;
             if (html === '<p><br></p>' || html === '<p></p>' || html === '<br>') html = '';
             document.getElementById(id + '-html-data').value = html;
         });

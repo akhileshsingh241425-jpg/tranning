@@ -251,7 +251,6 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 <div class="section-note">Type any way you want left side, right side mein live preview dikhega ki UI par exactly kaisa show hoga.</div>
             </div>
         </div>
-        </div>
 
         <div class="form-section">
             <h3>Industry Projects</h3>
@@ -1010,12 +1009,6 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         document.getElementById('curriculum-mode-editor').className = 'curriculum-mode-btn' + (mode === 'editor' ? ' active' : '');
         document.getElementById('curriculum-simple-wrap').style.display = mode === 'simple' ? 'block' : 'none';
         document.getElementById('curriculum-editor-wrap').style.display = mode === 'editor' ? 'block' : 'none';
-        if (mode === 'simple') {
-            document.getElementById('curriculum-html-data').value = '';
-            if (fieldEditors['curriculum']) {
-                fieldEditors['curriculum'].root.innerHTML = '';
-            }
-        }
     };
 
     window.switchRichMode = function(field, mode) {
@@ -1029,12 +1022,21 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         var hiddenInput = document.getElementById(field + '-html-data');
         if (mode === 'simple') {
             if (textarea) textarea.removeAttribute('disabled');
-            hiddenInput.setAttribute('disabled', 'disabled');
-            hiddenInput.value = '';
+            // Sync editor content to textarea so user doesn't lose data
+            if (fieldEditors[field]) {
+                var editorText = fieldEditors[field].root.innerText || fieldEditors[field].root.textContent || '';
+                if (textarea && editorText.trim()) {
+                    textarea.value = editorText;
+                }
+            }
         } else {
             if (textarea) textarea.setAttribute('disabled', 'disabled');
-            hiddenInput.removeAttribute('disabled');
             if (fieldEditors[field]) {
+                // Sync textarea content to editor if switching from simple mode
+                if (textarea && textarea.value.trim()) {
+                    var textareaHTML = textarea.value.replace(/\n/g, '<br>');
+                    fieldEditors[field].root.innerHTML = textareaHTML;
+                }
                 document.getElementById(field + '-preview').innerHTML = fieldEditors[field].root.innerHTML;
             }
         }
@@ -1178,9 +1180,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         e.preventDefault();
         Object.keys(fieldEditors).forEach(function(id) {
             var simpleWrap = document.getElementById(id + '-simple-wrap');
-            // If simple mode is visible, clear the HTML data (don't save editor content)
             if (simpleWrap && simpleWrap.style.display !== 'none') {
-                document.getElementById(id + '-html-data').value = '';
                 return;
             }
             var editor = fieldEditors[id];

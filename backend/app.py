@@ -1711,7 +1711,8 @@ def admin_course_edit(id):
         course.faq = request.form.get('faq', '')
         course.detail_stats = request.form.get('detail_stats', '')
         course.topic_wise_content = request.form.get('topic_wise_content', '')
-        course.curriculum_html = request.form.get('curriculum_html', '')
+        if 'curriculum_html' in request.form:
+            course.curriculum_html = request.form.get('curriculum_html', '')
         course.eligibility = request.form.get('eligibility', '')
         course.projects_list = request.form.get('projects_list', '')
         course.benefits = request.form.get('benefits', '')
@@ -1741,14 +1742,22 @@ def admin_course_edit(id):
         course.course_objectives = request.form.get('course_objectives', '')
         course.vendors = request.form.get('vendors', '')
         course.category = request.form.get('category', '')
-        course.description_html = request.form.get('description_html', '')
-        course.overview_html = request.form.get('overview_html', '')
-        course.training_schedule_html = request.form.get('training_schedule_html', '')
-        course.target_audience_html = request.form.get('target_audience_html', '')
-        course.certification_html = request.form.get('certification_html', '')
-        course.prerequisites_html = request.form.get('prerequisites_html', '')
-        course.why_join_html = request.form.get('why_join_html', '')
-        course.reviews_html = request.form.get('reviews_html', '')
+        if 'description_html' in request.form:
+            course.description_html = request.form.get('description_html', '')
+        if 'overview_html' in request.form:
+            course.overview_html = request.form.get('overview_html', '')
+        if 'training_schedule_html' in request.form:
+            course.training_schedule_html = request.form.get('training_schedule_html', '')
+        if 'target_audience_html' in request.form:
+            course.target_audience_html = request.form.get('target_audience_html', '')
+        if 'certification_html' in request.form:
+            course.certification_html = request.form.get('certification_html', '')
+        if 'prerequisites_html' in request.form:
+            course.prerequisites_html = request.form.get('prerequisites_html', '')
+        if 'why_join_html' in request.form:
+            course.why_join_html = request.form.get('why_join_html', '')
+        if 'reviews_html' in request.form:
+            course.reviews_html = request.form.get('reviews_html', '')
         
         try:
             db.session.commit()

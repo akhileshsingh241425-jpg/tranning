@@ -303,6 +303,10 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                     <input type="text" name="tools_covered" class="form-control" value="{{ course.tools_covered if course else '' }}" placeholder="TensorFlow, Keras, PyTorch">
                 </div>
             </div>
+            <div class="form-group form-group-full">
+                <label>Technologies (comma-separated)</label>
+                <input type="text" name="technologies_list" class="form-control" value="{{ course.technologies_list if course else '' }}" placeholder="AWS, Docker, Kubernetes, Jenkins">
+            </div>
         </div>
 
         <div class="form-section">
@@ -616,9 +620,12 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         var row = document.createElement('div');
         row.className = 'line-item-row';
         row.innerHTML = '<div class="line-item-header"><span class="line-item-label">Module</span><div class="line-item-controls"><button type="button" class="line-item-btn line-item-btn-add btn-add-inline">+</button><button type="button" class="line-item-btn line-item-btn-remove btn-remove-inline">-</button></div></div>' +
-            '<input type="text" class="line-item-field field1" placeholder="Module Name (e.g. Python Fundamentals)" value="' + (moduleName || '') + '">' +
-            '<textarea class="line-item-field field2" placeholder="Topic Name | Description | Subtopic1::SubDesc1, Subtopic2 (one per line)" style="min-height:80px;resize:vertical;width:100%;">' + (topicsText || '') + '</textarea>';
+            '<input type="text" class="line-item-field field1" placeholder="Module Name (e.g. Python Fundamentals)">' +
+            '<textarea class="line-item-field field2" placeholder="Topic Name | Description | Subtopic1::SubDesc1, Subtopic2 (one per line)" style="min-height:80px;resize:vertical;width:100%;"></textarea>';
         container.appendChild(row);
+        // Set values safely (avoids HTML injection from quotes in data)
+        if (moduleName) row.querySelector('.field1').value = moduleName;
+        if (topicsText) row.querySelector('.field2').value = topicsText;
     }
 
     function addReviewRow() {
@@ -713,45 +720,48 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             dataField.value = items.length > 0 ? JSON.stringify(items) : '';
         })();
 
-        var types = ['key-benefits', 'projects', 'why-join', 'prerequisites', 'objectives'];
-        types.forEach(function(type) {
+        // Why Join: serialize as JSON array of objects
+        (function() {
+            var container = document.getElementById('why-join-container');
+            var dataField = document.getElementById('why-join-data');
+            var items = [];
+            container.querySelectorAll('.line-item-row').forEach(function(row) {
+                var fields = row.querySelectorAll('.line-item-field');
+                var t1 = fields[0] ? fields[0].value.trim() : '';
+                var t2 = fields[1] ? fields[1].value.trim() : '';
+                if (t1) {
+                    items.push({ title: t1, description: t2 });
+                }
+            });
+            dataField.value = items.length > 0 ? JSON.stringify(items) : '';
+        })();
+
+        // Projects: serialize as JSON array of objects
+        (function() {
+            var container = document.getElementById('projects-container');
+            var dataField = document.getElementById('projects-data');
+            var items = [];
+            container.querySelectorAll('.line-item-row').forEach(function(row) {
+                var fields = row.querySelectorAll('.line-item-field');
+                var t1 = fields[0] ? fields[0].value.trim() : '';
+                var t2 = fields[1] ? fields[1].value.trim() : '';
+                if (t1) {
+                    items.push({ title: t1, description: t2 });
+                }
+            });
+            dataField.value = items.length > 0 ? JSON.stringify(items) : '';
+        })();
+
+        // Simple line items: key-benefits, prerequisites, objectives
+        var simpleTypes = ['key-benefits', 'prerequisites', 'objectives'];
+        simpleTypes.forEach(function(type) {
             var container = document.getElementById(type + '-container');
             var dataField = document.getElementById(type + '-data');
             var items = [];
             container.querySelectorAll('.line-item-row').forEach(function(row) {
                 var fields = row.querySelectorAll('.line-item-field');
-                if (type === 'curriculum') {
-                    var t1 = fields[0] ? fields[0].value.trim() : '';
-                    var t2 = fields[1] ? fields[1].value.trim() : '';
-                    if (t1) {
-                        var topicLines = t2.split('\n').filter(function(l) { return l.trim(); });
-                        var topicItems = topicLines.map(function(l) { 
-                            var parts = l.split('|');
-                            var title = parts[0] ? parts[0].trim() : '';
-                            var desc = parts[1] ? parts[1].trim() : '';
-                            var subText = parts.slice(2).join('|').trim();
-                            var subtopics = subText ? subText.split(',').map(function(s) { 
-                                var sp = s.trim().split('::');
-                                var st = { title: sp[0].trim() };
-                                if (sp[1]) st.description = sp.slice(1).join('::').trim();
-                                return st;
-                            }).filter(function(s) { return s.title; }) : [];
-                            return { title: title, description: desc, subtopics: subtopics }; 
-                        });
-                        items.push(JSON.stringify({ heading: t1, items: topicItems }));
-                    }
-                } else if (type === 'projects') {
-                    var t1 = fields[0] ? fields[0].value.trim() : '';
-                    var t2 = fields[1] ? fields[1].value.trim() : '';
-                    if (t1) items.push(t1 + ' - ' + t2);
-                } else if (type === 'why-join') {
-                    var t1 = fields[0] ? fields[0].value.trim() : '';
-                    var t2 = fields[1] ? fields[1].value.trim() : '';
-                    if (t1) items.push(t1 + ' | ' + t2);
-                } else {
-                    var v = fields[0] ? fields[0].value.trim() : '';
-                    if (v) items.push(v);
-                }
+                var v = fields[0] ? fields[0].value.trim() : '';
+                if (v) items.push(v);
             });
             dataField.value = items.join('\n');
         });
@@ -799,8 +809,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             var hiddenInput = document.getElementById(fieldDataMap[field]);
             if (!hiddenInput || !hiddenInput.value) return;
 
-            // Get all lines - handle both \n and | separated formats
-            var allText = hiddenInput.value;
+            var allText = hiddenInput.value.trim();
             var lines = [];
             
             if (idx === 1) { // curriculum - try JSON first, fallback to legacy
@@ -809,7 +818,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                     if (Array.isArray(parsed)) {
                         parsed.forEach(function(g) {
                             var topics = (g.items || []).map(function(it) { 
-                                var line = it.title;
+                                var line = it.title || '';
                                 if (it.description) line += ' | ' + it.description;
                                 if (it.subtopics && it.subtopics.length > 0) {
                                     var subStr = it.subtopics.map(function(s) {
@@ -827,42 +836,123 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                         return;
                     }
                 } catch(e) {}
+                // Legacy fallback
                 lines = allText.split('\n').filter(function(l) { return l.trim(); });
-            } else if (idx === 2) { // projects - check for - separator
-                if (allText.includes(' - ')) {
-                    lines = allText.split('\n').filter(function(l) { return l.trim(); });
-                }
+            } else if (idx === 2) { // projects - try JSON first
+                try {
+                    var parsed = JSON.parse(allText);
+                    if (Array.isArray(parsed)) {
+                        parsed.forEach(function(item) {
+                            var title = typeof item === 'object' ? (item.title || '') : String(item);
+                            var desc = typeof item === 'object' ? (item.description || '') : '';
+                            // If it's a string with ' - ' separator, split it
+                            if (typeof item === 'string' && item.includes(' - ')) {
+                                title = item.split(' - ')[0];
+                                desc = item.split(' - ').slice(1).join(' - ');
+                            }
+                            addLineItem(ids[idx], labels[idx], hasTwo[idx], field1Labels[idx], field2Labels[idx]);
+                            var rows = document.querySelectorAll('#' + ids[idx] + ' .line-item-row');
+                            var lastRow = rows[rows.length - 1];
+                            var fields2 = lastRow.querySelectorAll('.line-item-field');
+                            if (fields2[0]) fields2[0].value = title;
+                            if (fields2[1]) fields2[1].value = desc;
+                        });
+                        return;
+                    }
+                } catch(e) {}
+                // Fallback: newline separated - try ' - ' separator, else whole line is title
+                lines = allText.split('\n').filter(function(l) { return l.trim(); });
+                lines.forEach(function(line) {
+                    addLineItem(ids[idx], labels[idx], hasTwo[idx], field1Labels[idx], field2Labels[idx]);
+                    var rows = document.querySelectorAll('#' + ids[idx] + ' .line-item-row');
+                    var lastRow = rows[rows.length - 1];
+                    var fields2 = lastRow.querySelectorAll('.line-item-field');
+                    if (line.includes(' - ')) {
+                        var parts = line.split(' - ');
+                        if (fields2[0]) fields2[0].value = parts[0].trim();
+                        if (fields2[1]) fields2[1].value = parts.slice(1).join(' - ').trim();
+                    } else {
+                        // No separator - put whole line as title
+                        if (fields2[0]) fields2[0].value = line.trim();
+                        if (fields2[1]) fields2[1].value = '';
+                    }
+                });
+                return;
+            } else if (idx === 3) { // why_join - try JSON first
+                try {
+                    var parsed = JSON.parse(allText);
+                    if (Array.isArray(parsed)) {
+                        parsed.forEach(function(item) {
+                            var title = typeof item === 'object' ? (item.title || '') : String(item);
+                            var desc = typeof item === 'object' ? (item.description || '') : '';
+                            // If string with separator
+                            if (typeof item === 'string') {
+                                if (item.includes(' | ')) {
+                                    title = item.split(' | ')[0];
+                                    desc = item.split(' | ').slice(1).join(' | ');
+                                } else if (item.includes('|')) {
+                                    title = item.split('|')[0].trim();
+                                    desc = item.split('|').slice(1).join('|').trim();
+                                }
+                            }
+                            addLineItem(ids[idx], labels[idx], hasTwo[idx], field1Labels[idx], field2Labels[idx]);
+                            var rows = document.querySelectorAll('#' + ids[idx] + ' .line-item-row');
+                            var lastRow = rows[rows.length - 1];
+                            var fields2 = lastRow.querySelectorAll('.line-item-field');
+                            if (fields2[0]) fields2[0].value = title;
+                            if (fields2[1]) fields2[1].value = desc;
+                        });
+                        return;
+                    }
+                } catch(e) {}
+                // Fallback: newline separated - try ' | ' or '|' separator
+                lines = allText.split('\n').filter(function(l) { return l.trim(); });
+                lines.forEach(function(line) {
+                    addLineItem(ids[idx], labels[idx], hasTwo[idx], field1Labels[idx], field2Labels[idx]);
+                    var rows = document.querySelectorAll('#' + ids[idx] + ' .line-item-row');
+                    var lastRow = rows[rows.length - 1];
+                    var fields2 = lastRow.querySelectorAll('.line-item-field');
+                    var title = '', desc = '';
+                    if (line.includes(' | ')) {
+                        title = line.split(' | ')[0];
+                        desc = line.split(' | ').slice(1).join(' | ');
+                    } else if (line.includes('|')) {
+                        title = line.split('|')[0].trim();
+                        desc = line.split('|').slice(1).join('|').trim();
+                    } else {
+                        title = line.trim();
+                    }
+                    if (fields2[0]) fields2[0].value = title;
+                    if (fields2[1]) fields2[1].value = desc;
+                });
+                return;
+            } else if (idx === 5) { // course_objectives - try JSON first
+                try {
+                    var parsed = JSON.parse(allText);
+                    if (Array.isArray(parsed)) {
+                        parsed.forEach(function(item) {
+                            var val = typeof item === 'string' ? item : (item.title || item.text || JSON.stringify(item));
+                            addLineItem(ids[idx], labels[idx], hasTwo[idx], field1Labels[idx], field2Labels[idx]);
+                            var rows = document.querySelectorAll('#' + ids[idx] + ' .line-item-row');
+                            var lastRow = rows[rows.length - 1];
+                            var fields2 = lastRow.querySelectorAll('.line-item-field');
+                            if (fields2[0]) fields2[0].value = val;
+                        });
+                        return;
+                    }
+                } catch(e) {}
+                lines = allText.split('\n').filter(function(l) { return l.trim(); });
             } else {
                 lines = allText.split('\n').filter(function(l) { return l.trim(); });
             }
 
+            // Generic fallback for simple fields (key-benefits, prerequisites, objectives)
             lines.forEach(function(line) {
                 addLineItem(ids[idx], labels[idx], hasTwo[idx], field1Labels[idx], field2Labels[idx]);
                 var rows = document.querySelectorAll('#' + ids[idx] + ' .line-item-row');
                 var lastRow = rows[rows.length - 1];
                 var fields2 = lastRow.querySelectorAll('.line-item-field');
-                
-                if (hasTwo[idx]) {
-                    if (idx === 1) { // curriculum
-                        var sep2 = line.includes(' || ') ? ' || ' : ' | ';
-                        var parts = line.split(sep2);
-                        if (fields2[0]) fields2[0].value = parts[0] ? parts[0].trim() : '';
-                        if (fields2[1]) {
-                            var topicsVal = parts.slice(1).join(sep2).trim();
-                            fields2[1].value = topicsVal.split(',').join('\n');
-                            // For legacy format with subtopics: Title | Desc,Sub1,Sub2 -> need to handle carefully
-                            // If topicsVal has '|' after joining commas, it means subtopics were embedded
-                            // This is best-effort since legacy comma format is ambiguous with subtopics
-                        }
-                    } else {
-                        var sep = idx === 2 ? ' - ' : ' | ';
-                        var parts = line.split(sep);
-                        if (fields2[0]) fields2[0].value = parts[0] ? parts[0].trim() : '';
-                        if (fields2[1]) fields2[1].value = parts.slice(1).join(sep).trim();
-                    }
-                } else {
-                    if (fields2[0]) fields2[0].value = line;
-                }
+                if (fields2[0]) fields2[0].value = line.trim();
             });
         });
     }
@@ -872,7 +962,15 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         if (!hiddenInput || !hiddenInput.value) return;
         var lines = hiddenInput.value.split('\n').filter(function(l) { return l.trim(); });
         lines.forEach(function(line) {
-            var parts = line.split(' | ');
+            // Try ' | ' first, then '|'
+            var parts;
+            if (line.includes(' | ')) {
+                parts = line.split(' | ');
+            } else if (line.includes('|')) {
+                parts = line.split('|');
+            } else {
+                return;
+            }
             if (parts.length >= 3) {
                 addReviewRow();
                 var items = document.querySelectorAll('#reviews-container .line-item-row');
@@ -880,9 +978,9 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 var nameF = last.querySelector('.review-name');
                 var roleF = last.querySelector('.review-role');
                 var textF = last.querySelector('.review-text');
-                if (nameF) nameF.value = parts[0];
-                if (roleF) roleF.value = parts[1];
-                if (textF) textF.value = parts.slice(2).join(' | ');
+                if (nameF) nameF.value = parts[0].trim();
+                if (roleF) roleF.value = parts[1].trim();
+                if (textF) textF.value = parts.slice(2).join(' | ').trim();
             }
         });
     }
@@ -892,15 +990,23 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         if (!hiddenInput || !hiddenInput.value) return;
         var lines = hiddenInput.value.split('\n').filter(function(l) { return l.trim(); });
         lines.forEach(function(line) {
-            var parts = line.split(' | ');
+            // Try ' | ' first, then '|' as separator
+            var parts;
+            if (line.includes(' | ')) {
+                parts = line.split(' | ');
+            } else if (line.includes('|')) {
+                parts = line.split('|');
+            } else {
+                return; // skip lines without separator
+            }
             if (parts.length >= 2) {
                 addFaqRow();
                 var items = document.querySelectorAll('#faq-container .line-item-row');
                 var last = items[items.length - 1];
                 var qF = last.querySelector('.faq-question');
                 var aF = last.querySelector('.faq-answer');
-                if (qF) qF.value = parts[0];
-                if (aF) aF.value = parts.slice(1).join(' | ');
+                if (qF) qF.value = parts[0].trim();
+                if (aF) aF.value = parts.slice(1).join('|').trim();
             }
         });
     }
@@ -1024,18 +1130,29 @@ textarea.form-control { min-height: 100px; resize: vertical; }
             if (textarea) textarea.removeAttribute('disabled');
             // Sync editor content to textarea so user doesn't lose data
             if (fieldEditors[field]) {
-                var editorText = fieldEditors[field].root.innerText || fieldEditors[field].root.textContent || '';
-                if (textarea && editorText.trim()) {
+                var editorText = fieldEditors[field].getText ? fieldEditors[field].getText().trim() : (fieldEditors[field].root.innerText || fieldEditors[field].root.textContent || '').trim();
+                if (textarea && editorText) {
                     textarea.value = editorText;
                 }
             }
         } else {
             if (textarea) textarea.setAttribute('disabled', 'disabled');
             if (fieldEditors[field]) {
-                // Sync textarea content to editor if switching from simple mode
-                if (textarea && textarea.value.trim()) {
-                    var textareaHTML = textarea.value.replace(/\n/g, '<br>');
-                    fieldEditors[field].root.innerHTML = textareaHTML;
+                // Only sync textarea content to editor if editor is empty (no saved HTML)
+                var currentEditorContent = fieldEditors[field].getText ? fieldEditors[field].getText().trim() : (fieldEditors[field].root.innerText || '').trim();
+                if (!currentEditorContent && textarea && textarea.value.trim()) {
+                    // Editor is empty, load textarea content into it
+                    var lines = textarea.value.split('\n').filter(function(l) { return l.trim(); });
+                    var html = lines.map(function(l) {
+                        var trimmed = l.trim();
+                        if (trimmed.match(/^[-•*]\s/)) {
+                            return '<li>' + trimmed.replace(/^[-•*]\s/, '') + '</li>';
+                        }
+                        return '<p>' + trimmed + '</p>';
+                    }).join('');
+                    // Wrap consecutive <li> in <ul>
+                    html = html.replace(/(<li>.*?<\/li>)+/g, '<ul>$&</ul>');
+                    fieldEditors[field].root.innerHTML = html;
                 }
                 document.getElementById(field + '-preview').innerHTML = fieldEditors[field].root.innerHTML;
             }
@@ -1139,7 +1256,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         var saved = document.getElementById(id + '-html-data').value;
         if (saved) { editor.root.innerHTML = saved; }
         editor.on('text-change', function() {
-            var html = editor.getSemanticHTML ? editor.getSemanticHTML() : editor.root.innerHTML;
+            var html = editor.root.innerHTML;
             document.getElementById(id + '-preview').innerHTML = html;
         });
         fieldEditors[id] = editor;
@@ -1180,13 +1297,32 @@ textarea.form-control { min-height: 100px; resize: vertical; }
         e.preventDefault();
         Object.keys(fieldEditors).forEach(function(id) {
             var simpleWrap = document.getElementById(id + '-simple-wrap');
-            if (simpleWrap && simpleWrap.style.display !== 'none') {
-                return;
-            }
+            var editorWrap = document.getElementById(id + '-editor-wrap');
             var editor = fieldEditors[id];
-            var html = editor.getSemanticHTML ? editor.getSemanticHTML() : editor.root.innerHTML;
-            if (html === '<p><br></p>' || html === '<p></p>' || html === '<br>') html = '';
-            document.getElementById(id + '-html-data').value = html;
+            // Use root.innerHTML directly - preserves exact formatting including line breaks
+            var html = editor.root.innerHTML;
+            // Clean up empty content
+            if (html === '<p><br></p>' || html === '<p></p>' || html === '<br>' || html.trim() === '') html = '';
+            
+            var hiddenField = document.getElementById(id + '-html-data');
+            if (!hiddenField) return;
+            
+            if (simpleWrap && simpleWrap.style.display !== 'none') {
+                // Simple mode is active - clear _html field so plain text is used on frontend
+                hiddenField.value = '';
+            } else {
+                // Editor mode is active - save HTML to hidden field
+                hiddenField.value = html;
+                // Also sync plain text version to textarea for fallback
+                var textarea = simpleWrap ? simpleWrap.querySelector('textarea') : null;
+                if (textarea) {
+                    var plainText = editor.getText ? editor.getText().trim() : (editor.root.innerText || editor.root.textContent || '').trim();
+                    if (plainText) {
+                        textarea.removeAttribute('disabled');
+                        textarea.value = plainText;
+                    }
+                }
+            }
         });
         collectLineItems();
         collectReviewsData();

@@ -8839,6 +8839,8 @@ section {
 .curriculum-html-content li[data-list="ordered"] { list-style-type: decimal; }
 .curriculum-html-content li { margin-bottom: 4px; }
 .curriculum-html-content p { margin: 8px 0; line-height: 1.8; }
+.curriculum-html-content p br { display: block; content: ""; margin-top: 8px; }
+.curriculum-html-content br { display: block; content: ""; margin-top: 8px; }
 .curriculum-html-content blockquote { border-left: 4px solid #0066cc; padding-left: 16px; margin: 12px 0; color: #475569; font-style: italic; }
 .curriculum-html-content pre { background: #f1f5f9; padding: 14px; border-radius: 8px; overflow-x: auto; font-size: 14px; }
 

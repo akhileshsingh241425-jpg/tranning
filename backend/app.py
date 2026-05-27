@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import os
 import json
+import re
 import uuid
 import logging
 import smtplib
@@ -760,7 +761,8 @@ class Course(db.Model):
             'sort_order': self.sort_order,
             'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             'updated_at': self.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
-            'description_html': self.description_html or ''
+            'description_html': self.description_html or '',
+            'category': self.category or ''
         }
 
     def to_detail_dict(self):
@@ -827,10 +829,64 @@ class Course(db.Model):
         base['curriculumHtml'] = self.curriculum_html or ''
         base['eligibility'] = self.eligibility or self.prerequisites or ''
         base['prerequisites'] = self.prerequisites or ''
-        base['projectsList'] = [b.strip() for b in self.projects_list.split('\n') if b.strip()] if self.projects_list else []
+        # Parse projects_list - handle JSON, 'title - desc', or plain titles
+        projects_items = []
+        if self.projects_list:
+            try:
+                parsed = json.loads(self.projects_list)
+                if isinstance(parsed, list):
+                    projects_items = parsed
+            except (json.JSONDecodeError, TypeError):
+                for line in self.projects_list.split('\n'):
+                    line = line.strip()
+                    if not line:
+                        continue
+                    if ' - ' in line:
+                        parts = line.split(' - ', 1)
+                        projects_items.append({'title': parts[0].strip(), 'description': parts[1].strip()})
+                    else:
+                        projects_items.append({'title': line, 'description': ''})
+        base['projectsList'] = projects_items
         base['benefits'] = [b.strip() for b in self.benefits.split('\n') if b.strip()] if self.benefits else []
-        base['reviewsList'] = [b.strip() for b in self.reviews_list.split('\n') if b.strip()] if self.reviews_list else []
-        base['whyJoin'] = self._parse_json_or_lines(self.why_join) if self.why_join else []
+        # Parse reviews_list - handle pipe-separated format
+        reviews_items = []
+        if self.reviews_list:
+            for line in self.reviews_list.split('\n'):
+                line = line.strip()
+                if not line:
+                    continue
+                if ' | ' in line:
+                    parts = line.split(' | ')
+                elif '|' in line:
+                    parts = line.split('|')
+                else:
+                    reviews_items.append({'name': '', 'role': '', 'text': line})
+                    continue
+                if len(parts) >= 3:
+                    reviews_items.append({'name': parts[0].strip(), 'role': parts[1].strip(), 'text': ' | '.join(parts[2:]).strip()})
+                elif len(parts) == 2:
+                    reviews_items.append({'name': parts[0].strip(), 'role': '', 'text': parts[1].strip()})
+                else:
+                    reviews_items.append({'name': '', 'role': '', 'text': line})
+        base['reviewsList'] = reviews_items
+        # Parse why_join - handle JSON, pipe-separated, and plain text
+        why_join_items = []
+        if self.why_join:
+            try:
+                parsed = json.loads(self.why_join)
+                if isinstance(parsed, list):
+                    why_join_items = parsed
+            except (json.JSONDecodeError, TypeError):
+                for line in self.why_join.split('\n'):
+                    line = line.strip()
+                    if not line:
+                        continue
+                    if '|' in line:
+                        parts = line.split('|', 1)
+                        why_join_items.append({'title': parts[0].strip(), 'description': parts[1].strip()})
+                    else:
+                        why_join_items.append({'title': line, 'description': ''})
+        base['whyJoin'] = why_join_items
         base['certification'] = self.certification or ''
         
         # New fields
@@ -1545,13 +1601,23 @@ def safe_float(value, default=4.5):
     except (ValueError, TypeError, AttributeError):
         return default
 
+def generate_slug(title):
+    """Generate a URL-safe slug from title."""
+    slug = title.lower().strip()
+    slug = slug.replace('&', 'and').replace('+', 'plus')
+    slug = re.sub(r'[^a-z0-9\s-]', '', slug)
+    slug = re.sub(r'[\s]+', '-', slug)
+    slug = re.sub(r'-+', '-', slug)
+    slug = slug.strip('-')
+    return slug
+
 @app.route('/admin/courses/new', methods=['GET', 'POST'])
 @login_required
 def admin_course_new():
     categories = Category.query.order_by(Category.sort_order, Category.name).all()
     if request.method == 'POST':
         title = request.form.get('title', '').strip()
-        slug = request.form.get('slug', '').strip() or title.lower().replace(' ', '-').replace('&', 'and')
+        slug = request.form.get('slug', '').strip() or generate_slug(title)
         
         # Handle image upload
         image_url = request.form.get('image', '')
@@ -1667,7 +1733,7 @@ def admin_course_edit(id):
 
     if request.method == 'POST':
         course.title = request.form.get('title', '').strip()
-        course.slug = request.form.get('slug', '').strip() or course.title.lower().replace(' ', '-').replace('&', 'and')
+        course.slug = request.form.get('slug', '').strip() or generate_slug(course.title)
         course.description = request.form.get('description', '')
         
         # Handle image upload (file takes priority over URL)

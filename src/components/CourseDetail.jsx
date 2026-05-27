@@ -299,12 +299,12 @@ const CourseDetail = () => {
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Course Features</h2>
             {course.why_join_html ? (
-              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} dangerouslySetInnerHTML={{ __html: course.why_join_html }} />
+              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.why_join_html }} />
             ) : (
             <ul style={{ paddingLeft: '25px', color: '#475569' }}>
               {course.why_join.map((item, index) => {
-                const title = typeof item === 'object' ? item.title : item.split(' | ')[0];
-                const desc = typeof item === 'object' ? item.description : item.split(' | ')[1] || '';
+                const title = typeof item === 'object' ? item.title : (item.includes('|') ? item.split('|')[0].trim() : item.split(' | ')[0]);
+                const desc = typeof item === 'object' ? item.description : (item.includes('|') ? item.split('|').slice(1).join('|').trim() : (item.split(' | ')[1] || ''));
                 return (
                 <li key={index} style={{ marginBottom: '10px', lineHeight: '1.6' }}>
                   <strong>{title}</strong>{desc ? ` - ${desc}` : ''}
@@ -333,7 +333,7 @@ const CourseDetail = () => {
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Pre-requisites</h2>
             {course.eligibilityHtml ? (
-              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} dangerouslySetInnerHTML={{ __html: course.eligibilityHtml }} />
+              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.eligibilityHtml }} />
             ) : (
             <ul style={{ paddingLeft: '25px', color: '#475569', margin: '8px 0 0 0' }}>
               {course.eligibility.split('\n').filter(function(l) { return l.trim(); }).map(function(item, i) { return <li key={i} style={{ marginBottom: '8px', lineHeight: '1.5' }}>{item.trim()}</li>; })}
@@ -353,7 +353,7 @@ const CourseDetail = () => {
                 ))}
               </ul>
             ) : course.targetAudienceHtml ? (
-              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} dangerouslySetInnerHTML={{ __html: course.targetAudienceHtml }} />
+              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.targetAudienceHtml }} />
             ) : null}
           </div>
           )}
@@ -557,19 +557,21 @@ const CourseDetail = () => {
           )}
 
           {/* Certification Details */}
-          {course.parsedCertification && (
+          {(course.certificationHtml || course.parsedCertification) && (
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>
-              {course.parsedCertification.title || 'Certification'}
+              {course.parsedCertification ? (course.parsedCertification.title || 'Certification') : 'Certification'}
             </h2>
-            {course.parsedCertification.faqs && course.parsedCertification.faqs.length > 0 && course.parsedCertification.faqs.map(function(faq, idx) {
+            {course.certificationHtml ? (
+              <div style={{ color: '#475569', fontSize: '16px', lineHeight: '1.75' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.certificationHtml }} />
+            ) : course.parsedCertification && course.parsedCertification.faqs && course.parsedCertification.faqs.length > 0 ? course.parsedCertification.faqs.map(function(faq, idx) {
               return (
                 <div key={idx} style={{ marginBottom: '12px', border: '1px solid #e2e8f0', borderRadius: '10px', overflow: 'hidden' }}>
                   <div style={{ background: 'linear-gradient(135deg, #f8fafc, #f1f5f9)', padding: '12px 18px', fontWeight: '600', color: '#1e293b', fontSize: '15px' }}>{faq.title || faq.question || ''}</div>
                   <div style={{ padding: '14px 18px', color: '#475569', fontSize: '15px', lineHeight: '1.6' }}>{faq.text || faq.answer || ''}</div>
                 </div>
               );
-            })}
+            }) : null}
           </div>
           )}
 
@@ -578,7 +580,7 @@ const CourseDetail = () => {
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '25px', marginBottom: '18px', borderRadius: '12px' }}>
             <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '26px', fontWeight: '600', color: '#1e293b', marginTop: 0, paddingBottom: '10px', borderBottom: '2px solid #e2e8f0' }}>Reviews</h2>
             {course.reviewsHtml ? (
-              <div style={{ color: '#475569', fontSize: '15px', lineHeight: '1.8' }} dangerouslySetInnerHTML={{ __html: course.reviewsHtml }} />
+              <div style={{ color: '#475569', fontSize: '15px', lineHeight: '1.8' }} className="curriculum-html-content" dangerouslySetInnerHTML={{ __html: course.reviewsHtml }} />
             ) : (
               course.reviewsList.map((review, index) => (
                 <div key={index} style={{ border: '1px solid #e2e8f0', padding: '18px', marginBottom: '14px', background: '#fafafa', borderRadius: '10px' }}>

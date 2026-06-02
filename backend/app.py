@@ -3175,30 +3175,6 @@ def migrate_db():
             db.session.rollback()
             print(f'Category table may already exist: {e}')
 
-        # Migrate course prices from INR to USD (one-time update)
-        # Only update if prices are still in INR range (>1000)
-        usd_prices = {
-            'data-science-ai': (199, 569),
-            'cloud-computing-devops': (179, 499),
-            'cyber-security': (189, 549),
-            'web-development': (149, 449),
-            'digital-marketing': (119, 349),
-            'business-analytics': (139, 399),
-            'ui-ux-design': (129, 389),
-            'mobile-app-development': (179, 499),
-        }
-        courses_to_update = Course.query.filter(Course.price > 1000).all()
-        if courses_to_update:
-            for course in courses_to_update:
-                if course.slug in usd_prices:
-                    course.price, course.original_price = usd_prices[course.slug]
-                else:
-                    # Fallback: rough INR→USD conversion for custom courses
-                    course.price = round(course.price / 80)
-                    course.original_price = round(course.original_price / 80)
-            db.session.commit()
-            print(f'Updated {len(courses_to_update)} course prices from INR to USD')
-
         print('Database migration completed!')
 
 # Error handler for file too large

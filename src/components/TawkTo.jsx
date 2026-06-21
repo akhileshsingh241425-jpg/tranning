@@ -1,16 +1,13 @@
 import { useEffect } from 'react';
 
-const styleId = 'tawk-hide-style';
-
 const TawkTo = () => {
   useEffect(() => {
-    const style = document.createElement('style');
-    style.id = styleId;
-    style.textContent = '.tawk-min-container,.tawk-max-container,.tawk-widget{display:none!important}';
-    document.head.appendChild(style);
-
     window.Tawk_API = window.Tawk_API || {};
     window.Tawk_LoadStart = new Date();
+
+    window.Tawk_API.onLoad = function () {
+      window.Tawk_API.hideWidget();
+    };
 
     const s1 = document.createElement('script');
     const s0 = document.getElementsByTagName('script')[0];

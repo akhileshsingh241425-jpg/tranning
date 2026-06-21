@@ -722,7 +722,7 @@ const CourseDetail = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', flexShrink: 0 }}></span>
-                      <span style={{ fontSize: '13px', color: '#475569' }}>Weekend (Sat-Sun): <strong style={{ color: '#1e293b' }}>{course.start_date || 'Every Saturday'}</strong></span>
+                      <span style={{ fontSize: '13px', color: '#475569' }}>Weekend (Sat-Sun): <strong style={{ color: '#1e293b' }}>{course.start_date || 'Every Monday'}</strong></span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', flexShrink: 0 }}></span>

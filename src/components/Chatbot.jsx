@@ -4,6 +4,7 @@ import { FaCommentDots, FaTimes, FaPaperPlane, FaRobot, FaUser, FaGraduationCap,
 const quickReplies = [
   "Tell me about courses",
   "Course fees & EMI options",
+  "Training schedule & batches",
   "Placement assistance details",
   "Talk to a counsellor",
   "Certification details",
@@ -18,7 +19,8 @@ const botResponses = {
   counsellor: "📧 **Connect with a Career Counsellor:**\n\n🔹 **Email:** contact@trainingprotec.com\n🔹 **Response Time:** Within 24 hours (Mon-Sat)\n\nOr fill out the Contact form on our website and we'll get back to you promptly!",
   certification: "📜 **Globally Recognized Certifications:**\n\n✅ TrainingProtec Course Completion Certificate\n✅ Prep for AWS, Google, CEH, PMP & more\n✅ Globally recognized credentials\n✅ Shareable on LinkedIn\n✅ Lifetime validity\n\nOur certification programs are designed to help you stand out in the global job market!",
   demo: "🎓 **Book a Free Demo Class:**\n\nExperience our teaching methodology firsthand!\n\n✅ 1-hour live session with industry expert\n✅ Hands-on project walkthrough\n✅ Career path guidance\n✅ Q&A with the instructor\n\nFill out the Contact form or email us at **contact@trainingprotec.com** to book your free class today!",
-  default: "I'd be happy to help! Here are some things I can assist with:\n\n🔹 Course information & curriculum\n🔹 Fees, EMI & scholarship details\n🔹 Placement assistance info\n🔹 Free demo class booking\n🔹 Connecting you with a counsellor\n\nJust ask me anything or choose from the quick options below! 😊"
+  schedule: "📅 **Training Schedule & Batches:**\n\n✅ **Weekend (Sat-Sun):** Every Monday — New batches start every Monday\n✅ **Weekdays (Mon-Fri):** Every Monday — New batches start every Monday\n✅ Flexible timings available\n✅ One-to-one & corporate training options available\n\nWant to know more about a specific course schedule? Just ask!",
+  default: "I'd be happy to help! Here are some things I can assist with:\n\n🔹 Course information & curriculum\n🔹 Fees, EMI & scholarship details\n🔹 Training schedule & batch info\n🔹 Placement assistance info\n🔹 Free demo class booking\n🔹 Connecting you with a counsellor\n\nJust ask me anything or choose from the quick options below! 😊"
 };
 
 const getResponse = (input) => {
@@ -43,6 +45,9 @@ const getResponse = (input) => {
   }
   if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey') || lower.includes('namaste')) {
     return botResponses.greeting;
+  }
+  if (lower.includes('schedule') || lower.includes('batch') || lower.includes('timing') || lower.includes('weekend') || lower.includes('weekday')) {
+    return botResponses.schedule;
   }
   return botResponses.default;
 };

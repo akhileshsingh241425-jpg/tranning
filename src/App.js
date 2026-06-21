@@ -14,6 +14,7 @@ import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Chatbot from './components/Chatbot';
+import TawkTo from './components/TawkTo';
 import TermsAndConditions from './components/TermsAndConditions';
 import Sitemap from './components/Sitemap';
 import EnquiryInstructor from './components/EnquiryInstructor';
@@ -107,6 +108,7 @@ function App() {
         </Routes>
         <Footer />
         <Chatbot />
+        <TawkTo />
       </div>
     </Router>
     </HelmetProvider>

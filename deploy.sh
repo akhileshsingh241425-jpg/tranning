@@ -32,6 +32,7 @@ echo -e "${GREEN}✓ Python dependencies updated${NC}"
 echo -e "\n${YELLOW}[3/6] Building React frontend...${NC}"
 cd /var/www/tranning
 npm install --legacy-peer-deps
+export REACT_APP_TAWK_ID=5f2c0161ed9d9d262708b09a
 npm run build
 echo -e "${GREEN}✓ Frontend built successfully${NC}"
 

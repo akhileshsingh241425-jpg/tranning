@@ -88,9 +88,8 @@ const Chatbot = () => {
         setMessages(prev => [...prev, { type: 'bot', text: botResponses.counsellor, time: new Date() }]);
         setIsTyping(false);
         setTimeout(() => {
-          if (window.Tawk_API) {
-            if (typeof window.Tawk_API.showWidget === 'function') window.Tawk_API.showWidget();
-            if (typeof window.Tawk_API.maximize === 'function') window.Tawk_API.maximize();
+          if (window.Tawk_API && typeof window.Tawk_API.maximize === 'function') {
+            window.Tawk_API.maximize();
           }
         }, 500);
       }, 800 + Math.random() * 700);

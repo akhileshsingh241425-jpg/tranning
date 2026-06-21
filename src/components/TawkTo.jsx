@@ -5,10 +5,6 @@ const TawkTo = () => {
     window.Tawk_API = window.Tawk_API || {};
     window.Tawk_LoadStart = new Date();
 
-    window.Tawk_API.onLoad = function () {
-      window.Tawk_API.hideWidget();
-    };
-
     const s1 = document.createElement('script');
     const s0 = document.getElementsByTagName('script')[0];
     s1.async = true;

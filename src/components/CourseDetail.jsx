@@ -12,7 +12,6 @@ const CourseDetail = () => {
   const [curriculumOpen, setCurriculumOpen] = useState(-1);
   const [topicOpen, setTopicOpen] = useState({});
   const [subtopicOpen, setSubtopicOpen] = useState({});
-  const [showSchedule, setShowSchedule] = useState(true);
   const [showCorporate, setShowCorporate] = useState(false);
 
   useEffect(() => {
@@ -710,27 +709,12 @@ const CourseDetail = () => {
                 <textarea name="message" rows="2" placeholder="Any questions?" style={{ width: '100%', padding: '10px 12px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '14px', resize: 'none' }}></textarea>
               </div>
 
-              <div style={{ padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', marginBottom: '14px' }}>
-                <div 
-                  onClick={() => setShowSchedule(!showSchedule)}
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', marginBottom: showSchedule ? '12px' : 0 }}
-                >
-                  <h4 style={{ margin: 0, fontSize: '15px', fontWeight: '700', color: '#1e293b' }}>Training Schedule</h4>
-                  <span style={{ fontSize: '18px', fontWeight: '700', color: '#0066cc', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#e0f2fe', borderRadius: '6px' }}>{showSchedule ? '-' : '+'}</span>
+              {course.trainingSchedule && (
+                <div style={{ padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', marginBottom: '14px' }}>
+                  <h4 style={{ margin: '0 0 8px 0', fontSize: '15px', fontWeight: '700', color: '#1e293b' }}>Training Schedule</h4>
+                  <p style={{ margin: 0, fontSize: '14px', color: '#475569', lineHeight: '1.6' }}>{course.trainingSchedule}</p>
                 </div>
-                {showSchedule && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', flexShrink: 0 }}></span>
-                      <span style={{ fontSize: '13px', color: '#475569' }}>Weekend (Sat-Sun): <strong style={{ color: '#1e293b' }}>{course.start_date || 'Every Monday'}</strong></span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', flexShrink: 0 }}></span>
-                      <span style={{ fontSize: '13px', color: '#475569' }}>Weekdays (Mon-Fri): <strong style={{ color: '#1e293b' }}>{course.start_date || 'Every Monday'}</strong></span>
-                    </div>
-                  </div>
-                )}
-              </div>
+              )}
 
               <button type="submit" style={{ width: '100%', background: 'linear-gradient(135deg, #0066cc, #0052a3)', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', marginBottom: '10px' }}>
                 Submit Enquiry

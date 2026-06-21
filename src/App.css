@@ -8939,7 +8939,7 @@ section {
 .chatbot-wrapper {
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  left: 24px;
   z-index: 9998;
   font-family: 'Poppins', sans-serif;
 }
@@ -9004,7 +9004,7 @@ section {
 .chatbot-window {
   position: absolute;
   bottom: 75px;
-  right: 0;
+  left: 0;
   width: 380px;
   height: 560px;
   background: #fff;
@@ -9325,7 +9325,7 @@ section {
     width: calc(100vw - 24px);
     height: calc(100vh - 120px);
     bottom: 70px;
-    right: -12px;
+    left: -12px;
     border-radius: 16px;
   }
 

@@ -2295,11 +2295,96 @@ section {
   .about-why-grid {
     grid-template-columns: 1fr 1fr;
   }
+  .about-image img {
+    height: 280px;
+  }
+  .about-info-card {
+    padding: 1.75rem;
+  }
+  .about-text > p {
+    font-size: 0.9rem;
+  }
+  .contact-form {
+    padding: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
+  .about-hero-title {
+    font-size: 1.5rem;
+  }
+  .about-hero-subtitle {
+    font-size: 0.9rem;
+  }
+  .about-image img {
+    height: 220px;
+  }
+  .about-stats {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+  .stat-box {
+    padding: 0.75rem 1rem;
+  }
+  .stat-box h3 {
+    font-size: 1.2rem;
+  }
   .about-why-grid {
     grid-template-columns: 1fr;
+  }
+  .about-info-card {
+    padding: 1.25rem;
+  }
+  .about-info-card h3 {
+    font-size: 1.15rem;
+  }
+  .about-info-card > p {
+    font-size: 0.85rem;
+  }
+  .mission-card {
+    padding: 1.5rem;
+  }
+  .mission-card h3 {
+    font-size: 1.1rem;
+  }
+  .about-cards-row {
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  .about-section-header h2 {
+    font-size: 1.3rem;
+  }
+  .about-why-card {
+    padding: 1.25rem 1rem;
+  }
+  .about-why-card span {
+    font-size: 0.85rem;
+  }
+  .contact-content {
+    gap: 1.5rem;
+  }
+  .contact-info h3 {
+    font-size: 1.2rem;
+  }
+  .contact-info > p {
+    font-size: 0.85rem;
+  }
+  .contact-form {
+    padding: 1.25rem;
+  }
+  .contact-item {
+    gap: 0.75rem;
+  }
+  .contact-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+  .section-title {
+    font-size: 1.5rem;
   }
 }
 

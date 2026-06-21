@@ -249,9 +249,9 @@ const CourseDetail = () => {
 
       {/* Main Content */}
       <div style={{ padding: '40px 5%', maxWidth: '1400px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start' }}>
+        <div className="cd-layout" style={{ display: 'flex', gap: '40px', alignItems: 'flex-start' }}>
           {/* Left Content */}
-          <div style={{ flex: '1', minWidth: 0 }}>
+          <div className="cd-main" style={{ flex: '1', minWidth: 0 }}>
           {/* Course Features Bar */}
           <div style={{ display: 'flex', gap: '12px', marginBottom: '25px', flexWrap: 'wrap' }}>
             {course.mode && (
@@ -663,7 +663,7 @@ const CourseDetail = () => {
         </div>
 
         {/* Right Sidebar */}
-        <div style={{ flex: '0 0 30%', position: 'sticky', top: '20px', alignSelf: 'flex-start' }}>
+        <div className="cd-sidebar" style={{ flex: '0 0 30%', position: 'sticky', top: '20px', alignSelf: 'flex-start' }}>
           {/* Enroll Now Card */}
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '24px', marginBottom: '20px' }}>
             <h3 style={{ margin: '0 0 16px 0', fontSize: '22px', fontWeight: '700', color: '#1e293b', fontFamily: 'Poppins, sans-serif' }}>Enroll Now</h3>

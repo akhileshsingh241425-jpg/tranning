@@ -8893,6 +8893,23 @@ section {
   }
 }
 
+/* Course Detail Mobile */
+@media (max-width: 900px) {
+  .cd-layout {
+    flex-direction: column !important;
+  }
+  .cd-sidebar {
+    flex: none !important;
+    width: 100% !important;
+    position: static !important;
+    align-self: auto !important;
+    order: 2;
+  }
+  .cd-main {
+    order: 1;
+  }
+}
+
 /* ===== UTILITY & HELPERS ===== */
 .hero-highlight-item {
   display: flex;

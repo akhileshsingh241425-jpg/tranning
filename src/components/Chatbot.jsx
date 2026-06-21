@@ -16,7 +16,7 @@ const botResponses = {
   courses: "We offer 150+ certification training programs:\n\n🔹 **Data Science & AI**\n🔹 **Cloud Computing & DevOps**\n🔹 **Cyber Security**\n🔹 **Full Stack Web Dev**\n🔹 **Digital Marketing**\n🔹 **Business Analytics**\n🔹 **UI/UX Design**\n🔹 **Project Management** & more\n\nAll courses include live classes, hands-on projects & certification support. Which domain interests you?",
   fees: "💰 **Flexible Payment Options:**\n\n✅ One-time payment with attractive discounts\n✅ EMI options available\n✅ No-cost EMI on select courses\n✅ Corporate group discounts available\n✅ Customized training packages\n\nWant me to connect you with a counsellor for the best offer?",
   placement: "🎯 **Career Support Program:**\n\n✅ Certification Exam Preparation\n✅ Resume Building & LinkedIn Optimization\n✅ Mock Interviews with Industry Experts\n✅ 1-on-1 Career Mentoring\n✅ Job Interview Preparation\n✅ Live Project Support\n\nOur team supports you throughout your learning journey! 🚀",
-  counsellor: "📧 **Connect with a Career Counsellor:**\n\n🔹 **Email:** contact@trainingprotec.com\n🔹 **Response Time:** Within 24 hours (Mon-Sat)\n\nOr fill out the Contact form on our website and we'll get back to you promptly!",
+  counsellor: "🟢 **Connecting you to Live Support...**\n\nPlease wait, our team will be with you shortly. In the meantime, you can also reach us at **contact@trainingprotec.com**",
   certification: "📜 **Globally Recognized Certifications:**\n\n✅ TrainingProtec Course Completion Certificate\n✅ Prep for AWS, Google, CEH, PMP & more\n✅ Globally recognized credentials\n✅ Shareable on LinkedIn\n✅ Lifetime validity\n\nOur certification programs are designed to help you stand out in the global job market!",
   demo: "🎓 **Book a Free Demo Class:**\n\nExperience our teaching methodology firsthand!\n\n✅ 1-hour live session with industry expert\n✅ Hands-on project walkthrough\n✅ Career path guidance\n✅ Q&A with the instructor\n\nFill out the Contact form or email us at **contact@trainingprotec.com** to book your free class today!",
   schedule: "📅 **Training Schedule & Batches:**\n\n✅ **Weekend (Sat-Sun):** Every Monday — New batches start every Monday\n✅ **Weekdays (Mon-Fri):** Every Monday — New batches start every Monday\n✅ Flexible timings available\n✅ One-to-one & corporate training options available\n\nWant to know more about a specific course schedule? Just ask!",
@@ -81,6 +81,20 @@ const Chatbot = () => {
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
+
+    const lower = text.toLowerCase();
+    if (lower.includes('counsell') || lower.includes('talk to') || (lower.includes('call') && !lower.includes('demo') && !lower.includes('free'))) {
+      setTimeout(() => {
+        setMessages(prev => [...prev, { type: 'bot', text: botResponses.counsellor, time: new Date() }]);
+        setIsTyping(false);
+        setTimeout(() => {
+          if (window.Tawk_API && typeof window.Tawk_API.maximize === 'function') {
+            window.Tawk_API.maximize();
+          }
+        }, 500);
+      }, 800 + Math.random() * 700);
+      return;
+    }
 
     setTimeout(() => {
       const response = getResponse(text);
